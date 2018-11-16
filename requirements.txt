@@ -1,0 +1,17 @@
+certifi==2017.7.27.1
+chardet==3.0.4
+Django==1.11.5
+django-bootstrap-form==3.3
+django-filter==1.0.4
+django-pure-pagination==0.3.0
+djangorestframework==3.6.4
+idna==2.6
+numpy==1.13.3
+pandas==0.20.3
+PyMySQL==0.7.11
+python-dateutil==2.6.1
+pytz==2017.2
+requests==2.18.4
+six==1.11.0
+urllib3==1.22
+uWSGI==2.0.15

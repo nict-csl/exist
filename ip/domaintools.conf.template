@@ -1,0 +1,4 @@
+[domaintools]
+url = http://api.domaintools.com/v1/
+api_username = YOUR_USERNAME
+api_key = YOUR_KEY

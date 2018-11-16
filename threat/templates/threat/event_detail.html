@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load humanize %}
+<div class="container">
+<h4 class="p-3 bg-dark text-white">{{ event.info }}</h4>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<table class="table table-striped shadow-sm" style="table-layout:fixed;width:100%;">
+    <tr>
+        <th class="w-25">EventID</th>
+        <td><a href="{% url 'threat:event_detail' event.id %}">{{ event.id }}</a></td>
+    </tr>
+    <tr>
+        <th>Org</th>
+        <td><a href="{% url 'threat:event_list' %}?org={{ event.orgc.id }}">{{ event.orgc.name }}</a></td>
+    </tr>
+    <tr>
+        <th>Tags</th>
+        <td>{% for tag in event.tags.all %}<a href="{% url 'threat:event_list' %}?tag={{ tag.id }}"><span class="badge badge-secondary shadow" style="color: {{ tag.get_textcolor }}; background-color: {{ tag.colour }};">{{ tag.name }}</span></a> {% endfor %}</td>
+    </tr>
+    <tr>
+        <th>RelatedEvents</th>
+        <td>{% for revent in event.relatedevents.all %}<a href="{% url 'threat:event_detail' revent.id %}">{{ revent.info }}</a><br>{% endfor %}</td>
+    </tr>
+    <tr>
+        <th>Date</th>
+        <td>{{ event.date }}</td>
+    </tr>
+    <tr>
+        <th>Threat Level</th>
+        <td>
+        {% if event.threat_level_id == 1 %}
+        <button class="btn btn-sm shadow text-white bg-danger">
+        {% elif event.threat_level_id == 2 %}
+        <button class="btn btn-sm shadow text-dark bg-warning">
+        {% elif event.threat_level_id == 3 %}
+        <button class="btn btn-sm shadow text-white bg-info">
+        {% elif event.threat_level_id == 4 %}
+        <button class="btn btn-sm shadow text-white bg-secondary">
+        {% endif %}
+        {{ event.get_threat_level_id_display }} </button> </td>
+    </tr>
+    <tr>
+        <th>Analysis</th>
+        <td>{{ event.get_analysis_display }}</td>
+    </tr>
+    <tr>
+        <th>#Attributes</th>
+        <td>{{ event.attribute_count }}</td>
+    </tr>
+    <tr>
+        <th>info</th>
+        <td>{{ event.info }}</td>
+    </tr>
+    <tr>
+        <th>Timestamp (JST)</th>
+        <td>{{ event.timestamp }}</td>
+    </tr>
+    <tr>
+        <th>Published (JST)</th>
+        <td>{{ event.publish_timestamp }}</td>
+    </tr>
+</table>
+<a class="btn btn-primary shadow" href="{% url 'threat:event_list' %}">Back</a>
+</div>
+<h3 class="my-4 p-2 border-bottom">Attributes</h3>
+
+<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+    <div class="btn-group btn-group-sm" role="group">
+        <button id="btnGroupCategory" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Category
+        </button>
+        <div class="dropdown-menu" aria-labelledby="btnGroupCategory">
+            {% for category in categories %}
+            <a class="dropdown-item" href="{{ request.path }}?category={{ category }}">{{ category }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="btn-group btn-group-sm" role="group">
+        <button id="btnGroupType" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Type
+        </button>
+        <div class="dropdown-menu" aria-labelledby="btnGroupType">
+            {% for type in types %}
+            <a class="dropdown-item" href="{{ request.path }}?type={{ type }}">{{ type }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<p class="text-right"> Attributes: {{ count| intcomma }} </p>
+<table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
+    <thead>
+    <tr>
+        <th style="width: 100px;">EventID</th>
+        <th style="width: 200px;">Category</th>
+        <th style="width: 150px;">Type</th>
+        <th>Value</th>
+        <th>Tags</th>
+        <th>Comment</th>
+        <th style="width: 200px;">Object</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for attr in attributes %}
+    <tr>
+        <td><a href="{% url 'threat:event_detail' attr.event %}">{{ attr.event }}</a></td>
+        <td>{{ attr.category }}</td>
+        <td>{{ attr.type }}</td>
+        <td style="word-wrap:break-word;">{% if attr.type == 'link' %}{{ attr.value | urlize}}{% else %}{{ attr.value }}{% endif %}</td>
+        <td>{% for tag in attr.tags.all %}<span class="badge badge-secondary">{{ tag.name }}</span> {% endfor %}</td>
+        <td>{{ attr.comment }}</td>
+        <td>{{ attr.object_id.name }}
+    </tr>
+    </tbody>
+    {% endfor %}
+</table>
+{% include "threat/page.html" %}
+{% endblock %}

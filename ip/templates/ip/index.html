@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load humanize %}
+{% load staticfiles %}
+<div class="jumbotron">
+    <div class="container">
+        <h1>IP Lookup</h1>
+    </div>
+</div>
+{% include "ip/searchBar.html" %}
+
+{% endblock %}

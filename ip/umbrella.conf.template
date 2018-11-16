@@ -1,0 +1,8 @@
+[umbrella]
+key = YOUT_KEY
+secret = YOUR_SECRET
+base64str = YOUR_BASE64STR
+
+[investigate]
+token = YOUR_TOKEN
+baseURL = https://investigate.api.umbrella.com/

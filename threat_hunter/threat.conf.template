@@ -1,0 +1,8 @@
+[insertdb]
+syspath = YOUR_SYSPATH
+
+[hunter]
+logdir = YOUR_LOGDIR
+
+[watchhunter]
+logdir = YOUR_LOGDIR

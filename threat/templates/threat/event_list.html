@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load humanize %}
+{% load staticfiles %}
+{% include "threat/searchBar.html" %}
+<canvas id="myChart" width="400" height="30"></canvas>
+<p class="text-right"> Events: {{ count| intcomma }} </p>
+<table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
+    <thead>
+    <tr>
+        <th style="width: 200px;">Published (JST)</th>
+        <th style="width: 130px;">DATE</th>
+        <th>Info</th>
+        <th>Tags</th>
+        <th style="width: 100px;">Level</th>
+        <th style="width: 100px;">#Attrs</th>
+        <th style="width: 200px;">Org</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for event in events %}
+    <tr>
+        <td nowrap>{{ event.publish_timestamp }}</td>
+        <td nowrap>{{ event.date }}</td>
+        <td style="word-wrap:break-word;"><a href="{% url 'threat:event_detail' event.id %}">{{ event.info }}</a></td>
+        <td style="word-wrap:break-word;">
+            {% for tag in event.tags.all %}
+            <a href="{{ request.path }}?{{ request.GET.urlencode }}&tag={{ tag.id }}"><span class="badge badge-secondary shadow" style="color: {{ tag.get_textcolor }}; background-color: {{ tag.colour }};">{{ tag.name }}</span></a>
+            {% endfor %}
+        </td>
+        <td>
+        {% if event.threat_level_id == 1 %}
+        <button class="btn btn-sm shadow text-white bg-danger">
+        {% elif event.threat_level_id == 2 %}
+        <a class="btn btn-sm shadow text-dark bg-warning" href="{{ request.path }}?{{ request.GET.urlencode }}&level={{ event.threat_level_id }}">
+        {% elif event.threat_level_id == 3 %}
+        <a class="btn btn-sm shadow text-white bg-info" href="{{ request.path }}?{{ request.GET.urlencode }}&level={{ event.threat_level_id }}">
+        {% elif event.threat_level_id == 4 %}
+        <a class="btn btn-sm shadow text-white bg-secondary" href="{{ request.path }}?{{ request.GET.urlencode }}&level={{ event.threat_level_id }}">
+        {% endif %}
+        {{ event.get_threat_level_id_display }} </button> </td>
+        <td><a href="{% url 'threat:event_detail' event.id %}">{{ event.attribute_count | intcomma }}</a></td>
+        <td><a href="{{ request.path }}?org={{ event.orgc.id }}">{{ event.orgc.name }}</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% include "threat/page.html" %}
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+var ctx = document.getElementById("myChart");
+var data = {
+    {% autoescape off %}
+    labels: {{ 30_day_labels }},
+    {% endautoescape %}
+    datasets: [{
+        label: 'count',
+        data: {{ 30_day_data }},
+        backgroundColor: "rgba(200,30,30,0.4)",
+        borderColor: "rgba(230,10,10,1)"
+    }],
+};
+var options = {
+legend: {
+    display: false,
+    }
+};
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: options,
+});
+</script>
+{% endblock %}
+

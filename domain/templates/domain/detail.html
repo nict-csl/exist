@@ -1,0 +1,558 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load humanize %}
+{% load staticfiles %}
+{% include "domain/searchBar.html" %}
+
+<div class="container">
+    <a class="btn btn-sm btn-primary mb-3 shadow" href="{% url 'cross' %}?keyword={{ view.kwargs.pk }}" target="_blank">Cross-cutting Search</a>
+    <table class="table table-striped">
+        <tr>
+            <th>Domain</th>
+            <td>{{ view.kwargs.pk }}</td>
+        </tr>
+        <tr>
+            <th>Whois Registrant Name</th>
+            <td>{{ domaintools_domainprofile.registrant.name }}</td>
+        </tr>
+        <tr>
+            <th>IP Address</th>
+            <td>{% if ipaddress %}<a href="{% url 'ip:detail' ipaddress %}">{{ ipaddress }}</a>{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Resolutions</th>
+            <td><article>{% for resolution in vt_domain.resolutions|dictsortreversed:"last_resolved" %}{{ resolution.last_resolved }}: <a href="{% url 'ip:detail' resolution.ip_address %}">{{ resolution.ip_address }}</a><br>{% endfor %}</article></td>
+        </tr>
+        <tr>
+            <th>Category</th>
+            <td>{% for category in vt_domain.categories %}{{ category }}<br>{% endfor %}</td>
+        </tr>
+        <tr>
+            <th>Domain Siblings</th>
+            <td><article>{% for domain in vt_domain.domain_siblings %}<a href="{% url 'domain:detail' domain %}">{{ domain }}</a><br>{% endfor %}</article></td>
+        </tr>
+        <tr>
+            <th>Country</th>
+            <td>{{ geoip }}</td>
+        </tr>
+        <tr>
+            <th>Prefix</th>
+            <td><article>{% for prefix in umbrella_dnsdb.features.prefixes %}{{ prefix }}<br>{% endfor %}</article></td>
+        </tr>
+        <tr>
+            <th>CNAME</th>
+            <td>{% for tf in umbrella_cname.rrs_tf %}{% for r in tf.rrs %}{{ r.rr }}<br>{% endfor %}{% endfor %}</td>
+        </tr>
+        <tr>
+            <th>VirusTotal Detections</th>
+            <td>
+            {% for url in vt_domain.detected_urls %}
+                {% if url.url == 'http://'|add:view.kwargs.pk|add:'/' %}
+                    {% if url.positives < 2 %}
+                        <button class="btn btn-sm shadow text-white bg-info">
+                    {% elif url.positives < 5 %}
+                        <button class="btn btn-sm shadow text-dark bg-warning">
+                    {% else %}
+                        <button class="btn btn-sm shadow text-white bg-danger">
+                    {% endif %}
+                    {{ url.positives }} / {{ url.total }}
+                {% endif %}
+            {% endfor %}
+            </button>
+            </td>
+        </tr>
+        <tr>
+            <th>Umbrella Threat Score</th>
+            <td>
+            {% if umbrella_score < 20 %}
+            <button class="btn btn-sm shadow text-white bg-info">
+            {% elif umbrella_score < 70 %}
+            <button class="btn btn-sm shadow text-dark bg-warning">
+            {% else %}
+            <button class="btn btn-sm shadow text-white bg-danger">
+            {% endif %}
+                {{ umbrella_score }}
+            </button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<ul class="nav nav-tabs nav-pills">
+    <li class="nav-item">
+        <a class="nav-link active" id="virustotal-tab" data-toggle="tab" href="#virustotal">VirusTotal</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="domaintools-tab" data-toggle="tab" href="#domaintools">DomainTools</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="umbrella-tab" data-toggle="tab" href="#umbrella">Umbrella</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="threatminer-tab" data-toggle="tab" href="#threatminer">ThreatMiner</a>
+    </li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="virustotal" role="tabpanel" aria-labelledby="virustotal-tab">
+
+        <img class="p-3" src="{% static 'img/virustotal_logo.png' %}" height="100" alt="VirusTotal">
+        <ul class="nav nav-tabs nav-pills">
+            <li class="nav-item">
+            <a class="nav-link active" id="detected-urls-tab" data-toggle="tab" href="#detected-urls">Detected URLs{% if vt_domain.detected_urls %}<span class="badge badge-secondary ml-2">{{ vt_domain.detected_urls|length }}</span>{% endif %}</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" id="detected-communicating-samples-tab" data-toggle="tab" href="#detected-communicating-samples">Detected Communicating Samples{% if vt_domain.detected_communicating_samples %}<span class="badge badge-secondary ml-2">{{ vt_domain.detected_communicating_samples|length }}</span>{% endif %}</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" id="detected-downloaded-samples-tab" data-toggle="tab" href="#detected-downloaded-samples">Detected Downloaded Samples{% if vt_domain.detected_downloaded_samples %}<span class="badge badge-secondary ml-2">{{ vt_domain.detected_downloaded_samples|length }}</span>{% endif %}</a>
+            </li>
+        </ul>
+        <div class="container">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="detected-urls" role="tabpanel" aria-labelledby="detected-urls-tab">
+                    <table class="table table-hover w-100" style="table-layout:fixed">
+                        <thead>
+                        <tr>
+                            <th>URL</th>
+                            <th style="width:100px;">Score</th>
+                            <th style="width:220px;">Scan Date</th>
+                        </tr>
+                        </thead>
+                        {% for url in vt_domain.detected_urls|dictsort:"url" %}
+                        <tr>
+                            <td style="word-wrap:break-word;"><a href="{% url 'url:index' %}?keyword={{ url.url }}">{{ url.url }}</a></td>
+                            <td>
+                            {% if url.positives < 2 %}
+                            <button class="btn btn-sm shadow text-white bg-info">
+                            {% elif url.positives < 5 %}
+                            <button class="btn btn-sm shadow text-dark bg-warning">
+                            {% else %}
+                            <button class="btn btn-sm shadow text-white bg-danger">
+                            {% endif %}
+                            {{ url.positives }} / {{ url.total }}</button></td>
+                            <td>{{ url.scan_date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="detected-communicating-samples" role="tabpanel" aria-labelledby="detected-communicating-samples-tab">
+                    <table class="table table-hover w-100">
+                        <thead>
+                        <tr>
+                            <th>sha256</th>
+                            <th>Score</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        {% for sample in vt_domain.detected_communicating_samples|dictsortreversed:"positives" %}
+                        <tr>
+                            <td><a href="{% url 'filehash:detail' sample.sha256 %}">{{ sample.sha256 }}</a></td>
+                            <td>
+                            {% if sample.positives < 2 %}
+                            <button class="btn btn-sm shadow text-white bg-info">
+                            {% elif sample.positives < 5 %}
+                            <button class="btn btn-sm shadow text-dark bg-warning">
+                            {% else %}
+                            <button class="btn btn-sm shadow text-white bg-danger">
+                            {% endif %}
+                            {{ sample.positives }} / {{ sample.total }}</button></td>
+                            <td>{{ sample.date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="detected-downloaded-samples" role="tabpanel" aria-labelledby="detected-downloaded-samples-tab">
+                    <table class="table table-hover w-100">
+                        <thead>
+                        <tr>
+                            <th>sha256</th>
+                            <th>Score</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        {% for sample in vt_domain.detected_downloaded_samples|dictsortreversed:"positives" %}
+                        <tr>
+                            <td><a href="{% url 'filehash:detail' sample.sha256 %}">{{ sample.sha256 }}</a></td>
+                            <td>
+                            {% if sample.positives < 2 %}
+                            <button class="btn btn-sm shadow text-white bg-info">
+                            {% elif sample.positives < 5 %}
+                            <button class="btn btn-sm shadow text-dark bg-warning">
+                            {% else %}
+                            <button class="btn btn-sm shadow text-white bg-danger">
+                            {% endif %}
+                            {{ sample.positives }} / {{ sample.total }}</button></td>
+                            <td>{{ sample.date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="tab-pane fade" id="domaintools" role="tabpanel" aria-labelledby="domaintools-tab">
+
+        <img class="p-3" src="{% static 'img/domaintools_logo.png' %}" height="100" alt="DomainTools">
+        <div class="row">
+            <div class="col">
+                <table class="table table-striped">
+                    <tr>
+                        <th>Created Date</th>
+                        <td>{{ domaintools_whois.created_date }}</td>
+                    </tr>
+                    <tr>
+                        <th>Updated Date</th>
+                        <td>{{ domaintools_whois.updated_date }}</td>
+                    </tr>
+                    <tr>
+                        <th>Expired Date</th>
+                        <td>{{ domaintools_whois.expired_date }}</td>
+                    </tr>
+                    <tr>
+                        <th>Statuses</th>
+                        <td>{% for status in domaintools_whois.statuses %}{{ status }}<br>{% endfor %}</td>
+                    </tr>
+                    <tr>
+                        <th>Name Servers</th>
+                        <td>{% for ns in domaintools_whois.name_servers %}{{ ns }}<br>{% endfor %}</td>
+                    </tr>
+                    <tr>
+                        <th>Website Data</th>
+                        <td>{% for key, value in domaintools_domainprofile.website_data.meta.items %}<strong>{{ key }}: </strong>{{ value }}<br>{% endfor %}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col">
+                <h5 class="p-3 bg-secondary text-white">Registrar</h5>
+                <table class="table table-striped">
+                    <tr>
+                        <th>Registrar Name</th>
+                        <td>{{ domaintools_whois.registrar.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Registrar Abuse Contact Phone</th>
+                        <td>{{ domaintools_whois.registrar.abuse_contact_phone }}</td>
+                    </tr>
+                    <tr>
+                        <th>Registrar Abuse Contact Email</th>
+                        <td>{{ domaintools_whois.registrar.abuse_contact_email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Registrar IANA ID</th>
+                        <td>{{ domaintools_whois.registrar.iana_id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Registrar URL</th>
+                        <td>{{ domaintools_whois.registrar.url }}</td>
+                    </tr>
+                    <tr>
+                        <th>Registrar Whois Server</th>
+                        <td>{{ domaintools_whois.registrar.whois_server }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <h5 class="p-3 bg-secondary text-white">Contacts</h5>
+        <div class="row">
+            <div class="col">
+                <h5 class="py-1 pl-3 bg-secondary text-white">Registrant</h5>
+                <table class="table table-striped">
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ domaintools_whois.contacts.registrant.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Org</th>
+                        <td>{{ domaintools_whois.contacts.registrant.org }}</td>
+                    </tr>
+                    <tr>
+                        <th>Street</th>
+                        <td>{% for st in domaintools_whois.contacts.registrant.street %}{{ st }}<br>{% endfor %}</td>
+                    </tr>
+                    <tr>
+                        <th>City</th>
+                        <td>{{ domaintools_whois.contacts.registrant.city }}</td>
+                    </tr>
+                    <tr>
+                        <th>State</th>
+                        <td>{{ domaintools_whois.contacts.registrant.state }}</td>
+                    </tr>
+                    <tr>
+                        <th>Postal</th>
+                        <td>{{ domaintools_whois.contacts.registrant.postal }}</td>
+                    </tr>
+                    <tr>
+                        <th>Country</th>
+                        <td>{{ domaintools_whois.contacts.registrant.country }}</td>
+                    </tr>
+                    <tr>
+                        <th>Phone</th>
+                        <td>{{ domaintools_whois.contacts.registrant.phone }}</td>
+                    </tr>
+                    <tr>
+                        <th>Fax</th>
+                        <td>{{ domaintools_whois.contacts.registrant.fax }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ domaintools_whois.contacts.registrant.email }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col">
+                <h5 class="py-1 pl-3 bg-secondary text-white">Admin</h5>
+                <table class="table table-striped">
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ domaintools_whois.contacts.admin.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Org</th>
+                        <td>{{ domaintools_whois.contacts.admin.org }}</td>
+                    </tr>
+                    <tr>
+                        <th>Street</th>
+                        <td>{% for st in domaintools_whois.contacts.admin.street %}{{ st }}<br>{% endfor %}</td>
+                    </tr>
+                    <tr>
+                        <th>City</th>
+                        <td>{{ domaintools_whois.contacts.admin.city }}</td>
+                    </tr>
+                    <tr>
+                        <th>State</th>
+                        <td>{{ domaintools_whois.contacts.admin.state }}</td>
+                    </tr>
+                    <tr>
+                        <th>Postal</th>
+                        <td>{{ domaintools_whois.contacts.admin.postal }}</td>
+                    </tr>
+                    <tr>
+                        <th>Country</th>
+                        <td>{{ domaintools_whois.contacts.admin.country }}</td>
+                    </tr>
+                    <tr>
+                        <th>Phone</th>
+                        <td>{{ domaintools_whois.contacts.admin.phone }}</td>
+                    </tr>
+                    <tr>
+                        <th>Fax</th>
+                        <td>{{ domaintools_whois.contacts.admin.fax }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ domaintools_whois.contacts.admin.email }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col">
+                <h5 class="py-1 pl-3 bg-secondary text-white">Tech</h5>
+                <table class="table table-striped">
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ domaintools_whois.contacts.tech.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Org</th>
+                        <td>{{ domaintools_whois.contacts.tech.org }}</td>
+                    </tr>
+                    <tr>
+                        <th>Street</th>
+                        <td>{% for st in domaintools_whois.contacts.tech.street %}{{ st }}<br>{% endfor %}</td>
+                    </tr>
+                    <tr>
+                        <th>City</th>
+                        <td>{{ domaintools_whois.contacts.tech.city }}</td>
+                    </tr>
+                    <tr>
+                        <th>State</th>
+                        <td>{{ domaintools_whois.contacts.tech.state }}</td>
+                    </tr>
+                    <tr>
+                        <th>Postal</th>
+                        <td>{{ domaintools_whois.contacts.tech.postal }}</td>
+                    </tr>
+                    <tr>
+                        <th>Country</th>
+                        <td>{{ domaintools_whois.contacts.tech.country }}</td>
+                    </tr>
+                    <tr>
+                        <th>Phone</th>
+                        <td>{{ domaintools_whois.contacts.tech.phone }}</td>
+                    </tr>
+                    <tr>
+                        <th>Fax</th>
+                        <td>{{ domaintools_whois.contacts.tech.fax }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ domaintools_whois.contacts.tech.email }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col">
+                <h5 class="py-1 pl-3 bg-secondary text-white">Billing</h5>
+                <table class="table table-striped">
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ domaintools_whois.contacts.billing.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Org</th>
+                        <td>{{ domaintools_whois.contacts.billing.org }}</td>
+                    </tr>
+                    <tr>
+                        <th>Street</th>
+                        <td>{% for st in domaintools_whois.contacts.billing.street %}{{ st }}<br>{% endfor %}</td>
+                    </tr>
+                    <tr>
+                        <th>City</th>
+                        <td>{{ domaintools_whois.contacts.billing.city }}</td>
+                    </tr>
+                    <tr>
+                        <th>State</th>
+                        <td>{{ domaintools_whois.contacts.billing.state }}</td>
+                    </tr>
+                    <tr>
+                        <th>Postal</th>
+                        <td>{{ domaintools_whois.contacts.billing.postal }}</td>
+                    </tr>
+                    <tr>
+                        <th>Country</th>
+                        <td>{{ domaintools_whois.contacts.billing.country }}</td>
+                    </tr>
+                    <tr>
+                        <th>Phone</th>
+                        <td>{{ domaintools_whois.contacts.billing.phone }}</td>
+                    </tr>
+                    <tr>
+                        <th>Fax</th>
+                        <td>{{ domaintools_whois.contacts.billing.fax }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ domaintools_whois.contacts.billing.email }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="umbrella" role="tabpanel" aria-labelledby="umbrella-tab">
+
+        <img class="p-3" src="{% static 'img/Cisco-Umbrella-logo.jpg' %}" height="80" alt="Umbrella">
+        <table class="table table-hover w-100">
+            <thead>
+            <tr>
+                <th>Score</th>
+                <th>sha256</th>
+                <th class="w-25">MagicType</th>
+                <th>AV Result</th>
+            </tr>
+            </thead>
+            {% for sample in umbrella_samples.samples %}
+            <tr>
+                <td>
+                {% if sample.threatScore < 20 %}
+                <button class="btn btn-sm shadow text-white bg-info">
+                {% elif sample.threatScore < 70 %}
+                <button class="btn btn-sm shadow text-dark bg-warning">
+                {% else %}
+                <button class="btn btn-sm shadow text-white bg-danger">
+                {% endif %}
+                    {{ sample.threatScore }}
+                </button>
+                </td>
+                <td><a href="{% url 'filehash:detail' sample.sha256 %}">{{ sample.sha256 }}</a></td>
+                <td>{{ sample.magicType }}</td>
+                <td>{% for av in sample.avresults %}{{ av.signature }} <p class="font-italic text-muted" style="display:inline;">({{ av.product }})</p><br>{% endfor %}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="tab-pane fade" id="threatminer" role="tabpanel" aria-labelledby="theatminer-tab">
+
+        <img class="p-3" src="{% static 'img/threatminer_logo.png' %}" height="120" alt="ThreatMiner">
+        <ul class="nav nav-tabs nav-pills">
+            <li class="nav-item">
+            <a class="nav-link active" id="threatminer-urls-tab" data-toggle="tab" href="#threatminer-urls">URLs{% if tm_url.results %}<span class="badge badge-secondary ml-2">{{ tm_url.results|length }}</span>{% endif %}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="threatminer-samples-tab" data-toggle="tab" href="#threatminer-samples">Samples{% if tm_sample.results %}<span class="badge badge-secondary ml-2">{{ tm_sample.results|length }}</span>{% endif %}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="threatminer-reports-tab" data-toggle="tab" href="#threatminer-reports">Reports{% if tm_report.results %}<span class="badge badge-secondary ml-2">{{ tm_report.results|length }}</span>{% endif %}</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="threatminer-urls" role="tabpanel" aria-labelledby="threatminer-urls-tab">
+                <table class="table table-hover w-100" style="table-layout:fixed">
+                    <thead>
+                    <tr>
+                        <th style="width:220px;">Last Seen</th>
+                        <th>Domain</th>
+                        <th>IP</th>
+                        <th style="width:1000px;">URL</th>
+                    </tr>
+                    </thead>
+                    {% for result in tm_url.results|dictsortreversed:"last_seen" %}
+                    <tr>
+                        <td>{{ result.last_seen }}</td>
+                        <td><a href="{% url 'domain:detail' result.domain %}">{{ result.domain }}</a></td>
+                        <td>{% if result.ip %}<a href="{% url 'ip:detail' result.ip %}">{{ result.ip }}</a>{% endif %}</td>
+                        <td style="word-wrap:break-word;"><a href="{% url 'url:index' %}?keyword={{ result.uri }}">{{ result.uri }}</a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="tab-pane fade" id="threatminer-samples" role="tabpanel" aria-labelledby="threatminer-samples-tab">
+                <div class="container">
+                    <table class="table table-hover w-100">
+                        <thead>
+                        <tr>
+                            <th>Samples</th>
+                        </tr>
+                        </thead>
+                        {% for result in tm_sample.results %}
+                        <tr>
+                            <td><a href="{% url 'filehash:detail' result %}">{{ result }}</a></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="threatminer-reports" role="tabpanel" aria-labelledby="threatminer-reports-tab">
+                <div class="container">
+                    <table class="table table-hover w-100">
+                        <thead>
+                        <tr>
+                            <th>Reports</th>
+                            <th>Year</th>
+                        </tr>
+                        </thead>
+                        {% for result in tm_report.results|dictsortreversed:"year" %}
+                        <tr>
+                            <td><a href="{{ result.URL }}">{{ result.filename }}</a></td>
+                            <td>{{ result.year }}</a></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+{% endblock %}
+
+{% block javascript %}
+<script>
+$(function () {
+    $('article').readmore({
+        speed: 1000,
+        moreLink: '<a href="#">read more</a>',
+        lessLink: '<a href="#">close</a>'
+    });
+});
+</script>
+{% endblock %}

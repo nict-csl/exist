@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load humanize %}
+{% load staticfiles %}
+<div class="container">
+    <p class="text-right"> Tags: {{ count| intcomma }} </p>
+    <table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
+        <thead>
+        <tr>
+            <th style="width: 100px;">ID</th>
+            <th>Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for tag in tags %}
+        <tr>
+            <td><a href="{% url 'threat:event_list' %}?tag={{ tag.id }}">{{ tag.id }}</a></td>
+            <td><a href="{% url 'threat:event_list' %}?tag={{ tag.id }}">{{ tag.name }}</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

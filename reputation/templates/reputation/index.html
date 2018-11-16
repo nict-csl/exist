@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load humanize %}
+{% load staticfiles %}
+{% include "reputation/searchBar.html" %}
+<canvas id="myChart" width="400" height="30"></canvas>
+<p class="text-right"> Records: {{ count| intcomma }} </p>
+<table class="table table-hover w-100">
+    <thead>
+    <tr>
+        <th style="width: 220px;">Date (JST)</th>
+        <th nowrap style="width: 150px;">IP Address</th>
+        <th>Domain</th>
+        <th>URL</th>
+        <th style="width: 300px;">Source</th>
+        <th style="width: 50px;">VT</th>
+        <th style="width: 50px;">DT</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for bl in bls %}
+    <tr>
+        <td nowrap><a href="{% url 'reputation:detail' bl.id %}">{{ bl.datetime }}</a></td>
+        <td>{{ bl.ip | default_if_none:'' }}</td>
+        <td style="word-wrap:break-word;">{{ bl.domain }}</td>
+        <td style="word-wrap:break-word;">{{ bl.url }}</td>
+        <td><a href="{% url 'reputation:index' %}?source={{ bl.source }}">{{ bl.get_source_display }}</a></td>
+        <td><a href="{{ bl.get_vturl }}"><img src="{% static 'img/vt.svg' %}" alt="VirusTotal" width="20"></a></td>
+        <td><a href="{{ bl.get_dturl }}"><img src="{% static 'img/domaintools.png' %}" alt="DomainTools" width="20"></a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% include "reputation/page.html" %}
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+$(function(){
+    $('a[name=tooltip]').mouseover(function(){
+        var orgurl = $(this).text();
+        $('a[name=tooltip]').tooltip('hide');
+        $.ajax({
+            element: this,
+            url: '/twitter/ajax/expand_url/',
+            data: {
+                'url': orgurl
+            },
+            dataType: 'json',
+            success: function(exurl){
+                $(this.element).attr({
+                    'data-toggle': 'tooltip',
+                    'data-placement': 'auto',
+                    'title': exurl.url
+                }).tooltip('show');
+            }
+        });
+    });
+});
+</script>
+<script type="text/javascript">
+var ctx = document.getElementById("myChart");
+var data = {
+    {% autoescape off %}
+    labels: {{ 30_day_labels }},
+    {% endautoescape %}
+    datasets: [{
+        label: 'count',
+        data: {{ 30_day_data }},
+        backgroundColor: "rgba(200,30,30,0.4)",
+        borderColor: "rgba(230,10,10,1)"
+    }],
+};
+var options = {
+legend: {
+    display: false,
+    }
+};
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: options,
+});
+</script>
+{% endblock %}

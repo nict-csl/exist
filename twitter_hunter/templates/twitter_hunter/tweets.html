@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load humanize %}
+{% load staticfiles %}
+{% load twitter_tag %}
+<table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
+    <thead>
+        <tr>
+            <th style="width: 200px;">Date (JST)</th>
+            <th>Tweet</th>
+            <th style="width: 400px;">User</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for tw in tws %}
+    <tr>
+        <td nowrap>{{ tw.datetime }}</td>
+        <td>{{ tw.text | urlize | add_a_tag_name_tooltip | linebreaksbr }}</td>
+        <td><a href="https://twitter.com/{{ tw.screen_name }}">{{ tw.user }} @{{ tw.screen_name }}</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% include "twitter_hunter/page.html" %}
+{% endblock %}
+
+{% block javascript %}
+<script>
+$(function(){
+    $('a[name=tooltip]').mouseover(function(){
+        var orgurl = $(this).text();
+        $('a[name=tooltip]').tooltip('hide');
+        $.ajax({
+            element: this,
+            url: '/twitter_hunter/ajax/expand_url/',
+            data: {
+                'url': orgurl
+            },
+            dataType: 'json',
+            success: function(exurl){
+                $(this.element).attr({
+                    'data-toggle': 'tooltip',
+                    'data-placement': 'auto',
+                    'title': exurl.url
+                }).tooltip('show');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+

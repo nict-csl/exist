@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load humanize %}
+{% load staticfiles %}
+<p class="mb-0 text-right font-italic">Last Modified: {{ vuln.vulndb_last_modified }} JST</p>
+<h4 class="p-3 bg-dark text-white">{{ vuln.title }}</h4>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<div class="row">
+    <div class="col-5">
+        {% for cvss in vuln.cvsses.all %}
+        {% if cvss.score < 4.0 %}
+        <a class="btn btn-block mb-2 shadow-sm text-white bg-info" data-toggle="collapse" href="#collapse{{ cvss.id }}" role="button" aria-expanded="false">
+        {% elif cvss.score < 7.0 %}
+        <a class="btn btn-block mb-2 shadow-sm text-dark bg-warning" data-toggle="collapse" href="#collapse{{ cvss.id }}" role="button" aria-expanded="false">
+        {% else %}
+        <a class="btn btn-block mb-2 shadow-sm text-white bg-danger" data-toggle="collapse" href="#collapse{{ cvss.id }}" role="button" aria-expanded="false">
+        {% endif %}
+        CVSS Base Score: <strong>{{ cvss.calculated_cvss_base_score }}</strong> ({{ cvss.source }})
+        </a>
+        <div class="collapse" id="collapse{{ cvss.id }}">
+           <div class="card-body">
+               <table class="table table-striped shadow-sm">
+                   <tr>
+                   <th>Score</th>
+                   <td>{{ cvss.score }}</td>
+                   </tr>
+                   <tr>
+                   <th>Access Vector</th>
+                   <td>{{ cvss.access_vector }}</td>
+                   </tr>
+                   <tr>
+                   <th>Access Complexity</th>
+                   <td>{{ cvss.access_complexity }}</td>
+                   </tr>
+                   <tr>
+                   <th>Authentication</th>
+                   <td>{{ cvss.authentication }}</td>
+                   </tr>
+                   <tr>
+                   <th>Confidentiality Impact</th>
+                   <td>{{ cvss.confidentiality_impact }}</td>
+                   </tr>
+                   <tr>
+                   <th>Integrity Impact</th>
+                   <td>{{ cvss.integrity_impact }}</td>
+                   </tr>
+                   <tr>
+                   <th>Availability Impact</th>
+                   <td>{{ cvss.availability_impact }}</td>
+                   </tr>
+                   <tr>
+                   <th>CVE-ID</th>
+                   <td>{{ cvss.cve_id }}</td>
+                   </tr>
+                   <tr>
+                   <th>Source</th>
+                   <td>{{ cvss.source }}</td>
+                   </tr>
+                   <tr>
+                   <th>Generated On</th>
+                   <td>{{ cvss.generated_on }}</td>
+               </table>
+           </div>
+        </div>
+        {% endfor %}
+        <table class="table table-striped w-100">
+            <tr>
+                <th class="w-25">Published Date</th>
+                <td>{{ vuln.vulndb_published_date }} JST</td>
+            </tr>
+            <tr>
+                <th>CVE ID</th>
+                <td>
+                    {% for nvd in vuln.nvds.all %}
+                    <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name={{ nvd.id }}" target="_blank">{{ nvd.id }}</a>
+                    (
+                    <a href="https://nvd.nist.gov/vuln/detail/{{ nvd.id }}" target="_blank">NVD</a>
+                    /
+                    <a href="https://jvndb.jvn.jp/search/index.php?mode=_vulnerability_search_IA_VulnSearch&lang=ja&keyword={{ nvd.id }}" target="_blank">JVN</a>
+                    )<br>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <th>Vendor</th>
+                <td style="word-wrap:break-word;">{% for vendor in vuln.vendors.all %}{{ vendor.name }}<br>{% endfor %}</td>
+            </tr>
+            <tr>
+                <th>Product</th>
+                <td>
+                    <table class="table w-100">
+                        <tr><th>Name</th><th>Google Hits</th></tr>
+                        {% for product in vuln.products.all %}
+                        {% if product.googlehit == None %}
+                        <tr class="text-white bg-info">
+                        {% elif product.googlehit < 100000000 %}
+                        <tr class="text-white bg-info">
+                        {% elif product.googlehit < 300000000 %}
+                        <tr class="text-dark bg-warning">
+                        {% else %}
+                        <tr class="text-white bg-danger">
+                        {% endif %}
+                            <td style="word-wrap:break-word;">{{ product.name }}<br></td>
+                            <td style="word-wrap:break-word;">{{ product.googlehit | intcomma }}<br></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <th>Source</th>
+                <td><a href="https://vulndb.cyberriskanalytics.com/vulnerabilities/{{ vuln.id }}" target="_blank">{{ vuln.get_source_display }} ID:{{ vuln.id }}</a></td>
+            </tr>
+        </table>
+        
+        <div class="card mb-2 shadow-sm">
+            <h5 class="card-header">Tags</h5>
+            <div class="card-body">
+                <p class="card-text">
+                {% for tag in vuln.tags.all %}
+                <a href="{% url 'vuln:index' %}?tag={{ tag.id }}"><span class="badge badge-secondary shadow" style="color: {{ tag.get_textcolor }}; background-color: {{ tag.get_backgroundcolor }};" data-toggle="tooltip" title="{{ tag.description }}">{{ tag.name }}</span></a>
+                {% endfor %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card mb-2 shadow-sm">
+            <h5 class="card-header">Description</h5>
+            <div class="card-body">
+                <p class="card-text">
+                    {{ vuln.description }}
+                </p>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <h5 class="card-header">Technical Information</h5>
+            <div class="card-body">
+                <p class="card-text">
+                    {{ vuln.t_description }}
+                </p>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <h5 class="card-header">Solution</h5>
+            <div class="card-body">
+                <p class="card-text">
+                    {{ vuln.solution }}
+                </p>
+            </div>
+        </div>
+        {% if vuln.nvds.count > 0 %}
+        <div class="card mb-2 shadow-sm">
+            <h5 class="card-header">
+                NVD Info
+            </h5>
+            <div class="card-body">
+                {% for nvd in vuln.nvds.all %}
+                <table class="table table-striped border w-100">
+                    <tr>
+                        <th class="w-25">CVE-ID</th>
+                        <td>{{ nvd.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>CWE-ID</th>
+                        <td>{{ nvd.cwe_id }}</td>
+                    </tr>
+                    <tr>
+                        <th>CVSS</th>
+                        <td>{{ nvd.cvss_score }}</td>
+                    </tr>
+                    <tr>
+                        <th>Summary</th>
+                        <td>{{ nvd.summary }}</td>
+                    </tr>
+                </table>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="card mb-2 shadow-sm">
+            <h5 class="card-header">Reference</h5>
+            <div class="card-body">
+                <table class="table table-striped w-100">
+                    {% for ref in vuln.references.all|dictsort:"reftype" %}
+                    <tr>
+                    <th class="w-25">{{ ref.reftype }}</th>
+                    {% if ref.reftype == "CVE ID" %}
+                    <td>
+                        <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name={{ ref.value }}" target="_blank">{{ ref.value }}</a>
+                        (
+                        <a href="https://nvd.nist.gov/vuln/detail/CVE-{{ ref.value }}" target="_blank">NVD</a>
+                        /
+                        <a href="https://jvndb.jvn.jp/search/index.php?mode=_vulnerability_search_IA_VulnSearch&lang=ja&keyword=CVE-{{ ref.value }}" target="_blank">JVN</a>
+                        )<br>
+                    </td>
+                    {% elif ref.reftype == "Related VulnDB ID" %}
+                    <td><a href="{% url 'vuln:detail' ref.value %}">{{ ref.value }}</a></td>
+                    {% else %}
+                    <td>{{ ref.value|urlize }}</td>
+                    {% endif %}
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<a class="btn btn-primary shadow" href="{% url 'vuln:index' %}">Back</a>
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+{% endblock %}
+

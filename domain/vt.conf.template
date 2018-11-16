@@ -1,0 +1,9 @@
+[local]
+resultdir = ./results
+logfile = ./vt.log
+
+[vt]
+baseURL = https://www.virustotal.com/vtapi/v2/
+retrieving_url = https://www.virustotal.com/vtapi/v2/file/report
+apikey = YOUR_KEY
+ratelimit = 1

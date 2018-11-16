@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load humanize %}
+{% load staticfiles %}
+<p class="text-right"> Events: {{ count| intcomma }} </p>
+<table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
+    <thead>
+    <tr>
+        <th style="width: 200px;">Published (JST)</th>
+        <th style="width: 130px;">DATE</th>
+        <th>Info</th>
+        <th>Tags</th>
+        <th style="width: 100px;">Level</th>
+        <th style="width: 100px;">#Attrs</th>
+        <th style="width: 200px;">Org</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for event in events %}
+    <tr>
+        <td nowrap>{{ event.publish_timestamp }}</td>
+        <td nowrap>{{ event.date }}</td>
+        <td style="word-wrap:break-word;"><a href="{% url 'threat:event_detail' event.id %}">{{ event.info }}</a></td>
+        <td style="word-wrap:break-word;">
+            {% for tag in event.tags.all %}
+            <a href="{{ request.path }}?tag={{ tag.id }}"><span class="badge badge-secondary">{{ tag.name }}</span></a> 
+            {% endfor %}
+        </td>
+        <td>{{ event.get_threat_level_id_display }}</td>
+        <td><a href="{% url 'threat:event_detail' event.id %}">{{ event.attribute_count | intcomma }}</a></td>
+        <td><a href="{{ request.path }}?org={{ event.orgc.id }}">{{ event.orgc.name }}</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% include "threat/page.html" %}
+{% endblock %}

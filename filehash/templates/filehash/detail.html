@@ -1,0 +1,811 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load humanize %}
+{% load staticfiles %}
+{% load getkey_tag %}
+{% load unixtime_tag %}
+{% include "filehash/searchBar.html" %}
+
+<div class="container">
+    <a class="btn btn-sm btn-primary mb-2 shadow" href="{% url 'cross' %}?keyword={{ view.kwargs.pk }}" target="_blank">Cross-cutting Search</a>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <tr>
+                <th>md5</th>
+                <td>
+                    {% if vt_hash.md5 %}
+                    {{ vt_hash.md5 }}
+                    {% elif umbrella_sample.md5 %}
+                    {{ umbrella_sample.md5 }}
+                    {% elif tm_meta.results.0.md5 %}
+                    {{ tm_meta.results.0.md5 }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>sha1</th>
+                <td>
+                    {% if vt_hash.sha1 %}
+                    {{ vt_hash.sha1 }}
+                    {% elif umbrella_sample.sha1 %}
+                    {{ umbrella_sample.sha1 }}
+                    {% elif tm_meta.results.0.sha1 %}
+                    {{ tm_meta.results.0.sha1 }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>sha256</th>
+                <td>
+                    {% if vt_hash.sha256 %}
+                    {{ vt_hash.sha256 }}
+                    {% elif umbrella_sample.sha256 %}
+                    {{ umbrella_sample.sha256 }}
+                    {% elif tm_meta.results.0.sha256 %}
+                    {{ tm_meta.results.0.sha256 }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>File Name</th>
+                <td>
+                    <article>
+                    {% if vt_hash.submission_names %}
+                    {% for name in vt_hash.submission_names %}{{ name }}<br>{% endfor %}
+                    {% elif tm_meta.results.0.file_name %}
+                    {{ tm_meta.results.0.file_name }}
+                    {% endif %}
+                    </article>
+                </td>
+            </tr>
+            <tr>
+                <th>Magic Type</th>
+                <td>
+                    {% if vt_hash.additional_info.magic %}
+                    {{ vt_hash.additional_info.magic }}
+                    {% elif umbrella_sample.magicType %}
+                    {{ umbrella_sample.magicType }}
+                    {% elif tm_meta.results.0.file_type %}
+                    {{ tm_meta.results.0.file_type }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Size</th>
+                <td>
+                    {% if vt_hash.size %}
+                    {{ vt_hash.size|filesizeformat }}
+                    {% elif umbrella_sample.size %}
+                    {{ umbrella_sample.size|filesizeformat }}
+                    {% elif tm_meta.results.0.file_size %}
+                    {{ tm_meta.results.0.file_size|filesizeformat }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>VirusTotal Detections</th>
+                <td>
+                {% if vt_hash.positives %}
+                {% if vt_hash.positives < 2 %}
+                    <button class="btn btn-sm shadow text-white bg-info">
+                {% elif vt_hash.positives < 5 %}
+                    <button class="btn btn-sm shadow text-dark bg-warning">
+                {% else %}
+                    <button class="btn btn-sm shadow text-white bg-danger">
+                {% endif %}
+                    {{ vt_hash.positives }} / {{ vt_hash.total }}
+                </button>
+                {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Umbrella Threat Score</th>
+                <td>
+                {% if umbrella_sample.threatScore %}
+                {% if umbrella_sample.threatScore < 20 %}
+                <button class="btn btn-sm shadow text-white bg-info">
+                {% elif umbrella_sample.threatScore < 70 %}
+                <button class="btn btn-sm shadow text-dark bg-warning">
+                {% else %}
+                <button class="btn btn-sm shadow text-white bg-danger">
+                {% endif %}
+                    {{ umbrella_sample.threatScore }}
+                </button>
+                {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<ul class="nav nav-tabs nav-pills">
+    <li class="nav-item">
+        <a class="nav-link active" id="virustotal-tab" data-toggle="tab" href="#virustotal">VirusTotal</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="umbrella-tab" data-toggle="tab" href="#umbrella">Umbrella</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="threatminer-tab" data-toggle="tab" href="#threatminer">ThreatMiner</a>
+    </li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="virustotal" role="tabpanel" aria-labelledby="virustotal-tab">
+
+        <img class="p-3" src="{% static 'img/virustotal_logo.png' %}" height="100" alt="VirusTotal">
+        <ul class="nav nav-tabs nav-pills">
+            <li class="nav-item">
+                <a class="nav-link active" id="virustotal-base-tab" data-toggle="tab" href="#virustotal-base">Base Info</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="virustotal-exiftool-tab" data-toggle="tab" href="#virustotal-exiftool">ExifTool</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" id="virustotal-av-tab" data-toggle="tab" href="#virustotal-av">AV Detections{% if vt_hash.positives > 0 %}<span class="badge badge-secondary ml-2">{{ vt_hash.positives }}</span>{% endif %}</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" id="virustotal-behavior-tab" data-toggle="tab" href="#virustotal-behavior">Behavior</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="virustotal-base" role="tabpanel" aria-labelledby="virustotal-base-tab">
+                <div class="container">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <tr>
+                                <th>md5</th>
+                                <td>{{ vt_hash.md5 }}</td>
+                            </tr>
+                            <tr>
+                                <th>sha1</th>
+                                <td>{{ vt_hash.sha1 }}</td>
+                            </tr>
+                            <tr>
+                                <th>sha256</th>
+                                <td>{{ vt_hash.sha256 }}</td>
+                            </tr>
+                            <tr>
+                                <th>Type</th>
+                                <td>{{ vt_hash.type }}</td>
+                            </tr>
+                            <tr>
+                                <th>Magic Type</th>
+                                <td>{{ vt_hash.additional_info.magic }}</td>
+                            </tr>
+                            <tr>
+                                <th>Size</th>
+                                <td>{{ vt_hash.size|filesizeformat }}</td>
+                            </tr>
+                            <tr>
+                                <th>Submission Name</th>
+                                <td><article>{% for name in vt_hash.submission_names %}{{ name }}<br>{% endfor %}</article></td>
+                            </tr>
+                            <tr>
+                                <th>Times Submitted</th>
+                                <td>{{ vt_hash.times_submitted }}</td>
+                            </tr>
+                            <tr>
+                                <th>Timestamp</th>
+                                <td>
+                                    {% for key, value in vt_hash.additional_info.items %}
+                                    {% if key == "pe-timestamp" %}
+                                    {{ value|unixtimetostr }}
+                                    {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Sig Check</th>
+                                <td>
+                                    <table class="table table-sm">
+                                    {% for key, value in vt_hash.additional_info.sigcheck.items %}
+                                        <tr>
+                                            <th>{{ key }}</th>
+                                            <td>{{ value }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>ssdeep</th>
+                                <td>{{ vt_hash.ssdeep }}</td>
+                            </tr>
+                            <tr>
+                                <th>First Seen</th>
+                                <td>{{ vt_hash.first_seen }}</td>
+                            </tr>
+                            <tr>
+                                <th>Last Seen</th>
+                                <td>{{ vt_hash.last_seen }}</td>
+                            </tr>
+                            <tr>
+                                <th>Scan Date</th>
+                                <td>{{ vt_hash.scan_date }}</td>
+                            </tr>
+                            <tr>
+                                <th>Tags</th>
+                                <td>{% for tag in vt_hash.tags %}{{ tag }}<br>{% endfor %}</td>
+                            </tr>
+                            <tr>
+                                <th>Compressed Parents</th>
+                                <td>{% for parent in vt_hash.additional_info.compressed_parents %}<a href="{% url 'filehash:detail' parent %}">{{ parent }}</a><br>{% endfor %}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    {% if vt_hash.md5 %}
+                    <a class="btn btn-sm btn-primary mb-3 shadow" href="{% url 'filehash:getpcap' view.kwargs.pk %}" download>Download PCAP</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="tab-pane fade" id="virustotal-exiftool" role="tabpanel" aria-labelledby="virustotal-exiftool-tab">
+                <div class="container">
+                    <table class="table table-striped">
+                        {% for key, value in vt_hash.additional_info.exiftool.items %}
+                        <tr>
+                            <th>{{ key }}</th>
+                            <td>{{ value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="virustotal-av" role="tabpanel" aria-labelledby="virustotal-av-tab">
+                <div class="container">
+                    <table class="table table-hover w-100">
+                        <thead>
+                        <tr>
+                            <th>Detection</th>
+                            <th>Product</th>
+                        </tr>
+                        </thead>
+                        {% for key, value in vt_hash.scans.items %}
+                        {% if value.detected == True %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>{{ value.result }}</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="virustotal-behavior" role="tabpanel" aria-labelledby="virustotal-behavior-tab">
+                <ul class="nav nav-tabs nav-pills">
+                    <li class="nav-item">
+                    <a class="nav-link active" id="virustotal-host-tab" data-toggle="tab" href="#virustotal-host">Hosts{% if vt_behavior.network.hosts %}<span class="badge badge-secondary ml-2">{{ vt_behavior.network.hosts|length }}</span>{% endif %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="virustotal-http-tab" data-toggle="tab" href="#virustotal-http">HTTP{% if vt_behavior.network.http %}<span class="badge badge-secondary ml-2">{{ vt_behavior.network.http|length }}</span>{% endif %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="virustotal-dns-tab" data-toggle="tab" href="#virustotal-dns">DNS{% if vt_behavior.network.dns %}<span class="badge badge-secondary ml-2">{{ vt_behavior.network.dns|length }}</span>{% endif %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="virustotal-tcp-tab" data-toggle="tab" href="#virustotal-tcp">TCP{% if vt_behavior.network.tcp %}<span class="badge badge-secondary ml-2">{{ vt_behavior.network.tcp|length }}</span>{% endif %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="virustotal-udp-tab" data-toggle="tab" href="#virustotal-udp">UDP{% if vt_behavior.network.udp %}<span class="badge badge-secondary ml-2">{{ vt_behavior.network.udp|length }}</span>{% endif %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="virustotal-file-tab" data-toggle="tab" href="#virustotal-file">Files{% if vt_behavior.network.files %}<span class="badge badge-secondary ml-2">{{ vt_behavior.network.files|length }}</span>{% endif %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="virustotal-mutex-tab" data-toggle="tab" href="#virustotal-mutex">Mutexes{% if vt_behavior.network.summary.mutexes %}<span class="badge badge-secondary ml-2">{{ vt_behavior.network.summary.mutexes|length }}</span>{% endif %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="virustotal-key-tab" data-toggle="tab" href="#virustotal-key">Keys{% if vt_behavior.network.summary.keys %}<span class="badge badge-secondary ml-2">{{ vt_behavior.network.summary.keys|length }}</span>{% endif %}</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="virustotal-host" role="tabpanel" aria-labelledby="virustotal-host-tab">
+                        <div class="container">
+                            <table class="table table-striped">
+                                {% for host in vt_behavior.network.hosts %}
+                                <tr>
+                                    <td><a href="{% url 'ip:detail' host %}">{{ host }}</a></td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="virustotal-http" role="tabpanel" aria-labelledby="virustotal-http-tab">
+                        <div class="table-responsive">
+                            <table class="table table-hover w-100">
+                                <thead>
+                                <tr>
+                                    <th>URI</th>
+                                    <th>Host</th>
+                                    <th>Port</th>
+                                    <th>Method</th>
+                                    <th>Path</th>
+                                    <th>Version</th>
+                                    <th>User Agent</th>
+                                    <th>Body</th>
+                                    <th>Data</th>
+                                </tr>
+                                </thead>
+                                {% for http in vt_behavior.network.http %}
+                                <tr>
+                                    <td>{{ http.uri }}</td>
+                                    <td>{% if http.host %}<a href="{% url 'domain:detail' http.host %}">{{ http.host }}</a>{% endif %}</td>
+                                    <td>{{ http.port }}</td>
+                                    <td>{{ http.method }}</td>
+                                    <td>{{ http.path }}</td>
+                                    <td>{{ http.version }}</td>
+                                    <td>{{ http|getkey:'user-agent' }}</td>
+                                    <td>{{ http.body }}</td>
+                                    <td>{{ http.data }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="virustotal-dns" role="tabpanel" aria-labelledby="virustotal-dns-tab">
+                        <div class="container">
+                            <table class="table table-hover w-100">
+                                <thead>
+                                <tr>
+                                    <th>IP</th>
+                                    <th>Hostname</th>
+                                </tr>
+                                <thead>
+                                {% for dns in vt_behavior.network.dns %}
+                                <tr>
+                                    <td>{% if dns.ip %}<a href="{% url 'ip:detail' dns.ip %}">{{ dns.ip }}</a>{% endif %}</td>
+                                    <td>{% if dns.hostname %}<a href="{% url 'domain:detail' dns.hostname %}">{{ dns.hostname }}</a>{% endif %}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="virustotal-tcp" role="tabpanel" aria-labelledby="virustotal-tcp-tab">
+                        <div class="container">
+                            <table class="table table-hover w-100">
+                                <thead>
+                                <tr>
+                                    <th>Src IP</th>
+                                    <th>Src Port</th>
+                                    <th>Dst IP</th>
+                                    <th>Dst Port</th>
+                                </tr>
+                                <thead>
+                                {% for tcp in vt_behavior.network.tcp %}
+                                <tr>
+                                    <td>{% if tcp.src %}<a href="{% url 'ip:detail' tcp.src %}">{{ tcp.src }}</a>{% endif %}</td>
+                                    <td>{{ tcp.sport }}</td>
+                                    <td>{% if tcp.dst %}<a href="{% url 'ip:detail' tcp.dst %}">{{ tcp.dst }}</a>{% endif %}</td>
+                                    <td>{{ tcp.dport }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="virustotal-udp" role="tabpanel" aria-labelledby="virustotal-udp-tab">
+                        <div class="container">
+                            <table class="table table-hover w-100">
+                                <thead>
+                                <tr>
+                                    <th>Src IP</th>
+                                    <th>Src Port</th>
+                                    <th>Dst IP</th>
+                                    <th>Dst Port</th>
+                                </tr>
+                                </thead>
+                                {% for udp in vt_behavior.network.udp %}
+                                <tr>
+                                    <td>{% if udp.src %}<a href="{% url 'ip:detail' udp.src %}">{{ udp.src }}</a>{% endif %}</td>
+                                    <td>{{ udp.sport }}</td>
+                                    <td>{% if udp.dst %}<a href="{% url 'ip:detail' udp.dst %}">{{ udp.dst }}</a>{% endif %}</td>
+                                    <td>{{ udp.dport }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="virustotal-file" role="tabpanel" aria-labelledby="virustotal-file-tab">
+                        <div class="container">
+                            <table class="table table-striped">
+                                {% for file in vt_behavior.behavior.summary.files %}
+                                <tr>
+                                    <td>{{ file }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="virustotal-mutex" role="tabpanel" aria-labelledby="virustotal-mutex-tab">
+                        <div class="container">
+                            <table class="table table-striped">
+                                {% for mutex in vt_behavior.behavior.summary.mutexes %}
+                                <tr>
+                                    <td>{{ mutex }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="virustotal-key" role="tabpanel" aria-labelledby="virustotal-key-tab">
+                        <div class="container">
+                            <table class="table table-striped">
+                                {% for key in vt_behavior.behavior.summary.keys %}
+                                <tr>
+                                    <td>{{ key }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="umbrella" role="tabpanel" aria-labelledby="umbrella-tab">
+
+        <img class="p-3" src="{% static 'img/Cisco-Umbrella-logo.jpg' %}" height="80" alt="Umbrella">
+        <ul class="nav nav-tabs nav-pills">
+            <li class="nav-item">
+                <a class="nav-link active" id="umbrella-base-tab" data-toggle="tab" href="#umbrella-base">Base Info</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="umbrella-connections-tab" data-toggle="tab" href="#umbrella-connections">Connections{% if umbrella_sample.connections.connections %}<span class="badge badge-secondary ml-2">{{ umbrella_sample.connections.connections|length }}</span>{% endif %}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="umbrella-behaviors-tab" data-toggle="tab" href="#umbrella-behaviors">Behaviors{% if umbrella_sample.behaviors  %}<span class="badge badge-secondary ml-2">{{ umbrella_sample.behaviors|length }}</span>{% endif %}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="umbrella-samples-tab" data-toggle="tab" href="#umbrella-samples">Samples{% if umbrella_sample.samples.samples %}<span class="badge badge-secondary ml-2">{{ umbrella_sample.samples.samples|length }}</span>{% endif %}</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="umbrella-base" role="tabpanel" aria-labelledby="umbrella-base-tab">
+
+                <div class="container">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>md5</th>
+                            <td>{{ umbrella_sample.md5 }}</td>
+                        </tr>
+                        <tr>
+                            <th>sha1</th>
+                            <td>{{ umbrella_sample.sha1 }}</td>
+                        </tr>
+                        <tr>
+                            <th>sha256</th>
+                            <td>{{ umbrella_sample.sha256 }}</td>
+                        </tr>
+                        <tr>
+                            <th>Threat Score</th>
+                            <td>
+                            {% if umbrella_sample.threatScore %}
+                            {% if umbrella_sample.threatScore < 20 %}
+                            <button class="btn btn-sm shadow text-white bg-info">
+                            {% elif umbrella_sample.threatScore < 70 %}
+                            <button class="btn btn-sm shadow text-dark bg-warning">
+                            {% else %}
+                            <button class="btn btn-sm shadow text-white bg-danger">
+                            {% endif %}
+                                {{ umbrella_sample.threatScore }}
+                            </button>
+                            {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Magic Type</th>
+                            <td>{{ umbrella_sample.magicType }}</td>
+                        </tr>
+                        <tr>
+                            <th>Size</th>
+                            <td>{{ umbrella_sample.size|filesizeformat }}</td>
+                        </tr>
+                        <tr>
+                            <th>First Seen</th>
+                            <td>{% if umbrella_sample.firstSeen %}{{ umbrella_sample.firstSeen|unixtimetostrmillisec }}{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Last Seen</th>
+                            <td>{% if umbrella_sample.lastSeen %}{{ umbrella_sample.lastSeen|unixtimetostrmillisec }}{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>AV Detections</th>
+                            <td>{% for av in umbrella_sample.avresults %}{{ av.signature }} <p class="font-italic text-muted" style="display:inline;">({{ av.product }})</p><br>{% endfor %}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="umbrella-connections" role="tabpanel" aria-labelledby="umbrella-connections-tab">
+                <table class="table table-hover w-100">
+                    <thead>
+                    <tr>
+                        <th>IPs</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>URLs</th>
+                        <th>SecurityCategories</th>
+                        <th>ThreatTypes</th>
+                    </tr>
+                    </thead>
+                    {% for con in umbrella_sample.connections.connections %}
+                    <tr>
+                        <td>{% for ip in con.ips %}<a href="{% url 'ip:detail' ip %}">{{ ip }}</a><br>{% endfor %}</td>
+                        <td><a href="{% url 'domain:detail' con.name %}">{{ con.name }}</a></td>
+                        <td>{{ con.type }}</td>
+                        <td>{% for url in con.urls %}<a href="{% url 'url:index' %}?keyword={{ url }}">{{ url }}</a><br>{% endfor %}</td>
+                        <td>{% for cat in con.securityCategories %}{{ cat }}<br>{% endfor %}</td>
+                        <td>{% for type in con.threatTypes %}{{ type }}<br>{% endfor %}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="tab-pane fade" id="umbrella-behaviors" role="tabpanel" aria-labelledby="umbrella-behaviors-tab">
+        
+                <table class="table table-hover w-100">
+                    <thead>
+                    <tr>
+                        <th>Threat</th>
+                        <th>Severity</th>
+                        <th>Confidence</th>
+                        <th>Title</th>
+                        <th>Name</th>
+                        <th>Hits</th>
+                        <th>Category</th>
+                        <th>Tags</th>
+                    </tr>
+                    </thead>
+                    {% for behavior in umbrella_sample.behaviors|dictsortreversed:"threat" %}
+                    <tr>
+                        <td>
+                        {% if behavior.threat < 20 %}
+                        <button class="btn btn-sm shadow text-white bg-info">
+                        {% elif behavior.threat < 70 %}
+                        <button class="btn btn-sm shadow text-dark bg-warning">
+                        {% else %}
+                        <button class="btn btn-sm shadow text-white bg-danger">
+                        {% endif %}
+                            {{ behavior.threat }}
+                        </button>
+                        </td>
+                        <td>
+                        {% if behavior.severity < 20 %}
+                        <button class="btn btn-sm shadow text-white bg-info">
+                        {% elif behavior.severity < 70 %}
+                        <button class="btn btn-sm shadow text-dark bg-warning">
+                        {% else %}
+                        <button class="btn btn-sm shadow text-white bg-danger">
+                        {% endif %}
+                            {{ behavior.severity }}
+                        </button>
+                        </td>
+                        <td>
+                        {% if behavior.confidence < 20 %}
+                        <button class="btn btn-sm shadow text-white bg-info">
+                        {% elif behavior.confidence < 70 %}
+                        <button class="btn btn-sm shadow text-dark bg-warning">
+                        {% else %}
+                        <button class="btn btn-sm shadow text-white bg-danger">
+                        {% endif %}
+                            {{ behavior.confidence }}
+                        </button>
+                        </td>
+                        <td>{{ behavior.title }}</td>
+                        <td>{{ behavior.name }}</td>
+                        <td>{{ behavior.hits }}</td>
+                        <td>{% for cat in behavior.category %}{{ cat }}<br>{% endfor %}</td>
+                        <td>{% for tag in behavior.tags %}{{ tag }}<br>{% endfor %}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="tab-pane fade" id="umbrella-samples" role="tabpanel" aria-labelledby="umbrella-samples-tab">
+                <table class="table table-hover w-100">
+                    <thead>
+                    <tr>
+                        <th>Score</th>
+                        <th>sha256</th>
+                        <th class="w-25">MagicType</th>
+                        <th>AV Result</th>
+                    </tr>
+                    </thead>
+                    {% for sample in umbrella_sample.samples.samples %}
+                    <tr>
+                        <td>
+                        {% if sample.threatScore < 20 %}
+                        <button class="btn btn-sm shadow text-white bg-info">
+                        {% elif sample.threatScore < 70 %}
+                        <button class="btn btn-sm shadow text-dark bg-warning">
+                        {% else %}
+                        <button class="btn btn-sm shadow text-white bg-danger">
+                        {% endif %}
+                            {{ sample.threatScore }}
+                        </button>
+                        </td>
+                        <td><a href="{% url 'filehash:detail' sample.sha256 %}">{{ sample.sha256 }}</a></td>
+                        <td>{{ sample.magicType }}</td>
+                        <td>{% for av in sample.avresults %}{{ av.signature }} <p class="font-italic text-muted" style="display:inline;">({{ av.product }})</p><br>{% endfor %}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="threatminer" role="tabpanel" aria-labelledby="theatminer-tab">
+
+        <img class="p-3" src="{% static 'img/threatminer_logo.png' %}" height="120" alt="ThreatMiner">
+        <ul class="nav nav-tabs nav-pills">
+            <li class="nav-item">
+                <a class="nav-link active" id="threatminer-meta-tab" data-toggle="tab" href="#threatminer-meta">Meta Data</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="threatminer-av-tab" data-toggle="tab" href="#threatminer-av">AV Detections{% if tm_av.results.0.av_detections %}<span class="badge badge-secondary ml-2">{{ tm_av.results.0.av_detections|length }}</span>{% endif %}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="threatminer-hosts-tab" data-toggle="tab" href="#threatminer-hosts">Hosts{% if tm_host.results.0.domains %}<span class="badge badge-secondary ml-2">{{ tm_host.results.0.domains|length }}</span>{% endif %}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="threatminer-reports-tab" data-toggle="tab" href="#threatminer-reports">Reports{% if tm_report.results %}<span class="badge badge-secondary ml-2">{{ tm_report.results|length }}</span>{% endif %}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="threatminer-http-tab" data-toggle="tab" href="#threatminer-http">HTTP Traffic{% if tm_http.results.0.http_traffic %}<span class="badge badge-secondary ml-2">{{ tm_http.results.0.http_traffic|length }}</span>{% endif %}</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="threatminer-meta" role="tabpanel" aria-labelledby="threatminer-meta-tab">
+                <div class="container">
+                    {% for result in tm_meta.results %}
+                    <table class="table table-striped">
+                        <tr>
+                            <th>md5</th>
+                            <td>{{ result.md5 }}</td>
+                        </tr>
+                        <tr>
+                            <th>sha1</th>
+                            <td>{{ result.sha1 }}</td>
+                        </tr>
+                        <tr>
+                            <th>sha256</th>
+                            <td>{{ result.sha256 }}</td>
+                        </tr>
+                        <tr>
+                            <th>File Type</th>
+                            <td>{{ result.file_type }}</td>
+                        </tr>
+                        <tr>
+                            <th>File Size</th>
+                            <td>{{ result.file_size }}</td>
+                        </tr>
+                        <tr>
+                            <th>File Name</th>
+                            <td>{{ result.file_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date Analysed</th>
+                            <td>{{ result.date_analysed }}</td>
+                        </tr>
+                        <tr>
+                            <th>Architecture</th>
+                            <td>{{ result.architecture }}</td>
+                        </tr>
+                        <tr>
+                            <th>ssdeep</th>
+                            <td>{{ result.ssdeep }}</td>
+                        </tr>
+                        <tr>
+                            <th>imphash</th>
+                            <td>{{ result.imphash }}</td>
+                        </tr>
+                        <tr>
+                            <th>Authentihash</th>
+                            <td>{{ result.authentihash }}</td>
+                        </tr>
+                    </table>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="tab-pane fade" id="threatminer-av" role="tabpanel" aria-labelledby="threatminer-av-tab">
+                <div class="container">
+            
+                    <table class="table table-hover w-100">
+                        <thead>
+                        <tr>
+                            <th>Detection</th>
+                            <th>Product</th>
+                        </tr>
+                        </thead>
+                        {% for result in tm_av.results %}
+                        {% for detection in result.av_detections %}
+                        <tr>
+                            <td>{{ detection.detection }}</td>
+                            <td>{{ detection.av }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="threatminer-hosts" role="tabpanel" aria-labelledby="threatminer-hosts-tab">
+                <div class="container">
+                    <table class="table table-hover w-100">
+                        <thead>
+                        <tr>
+                            <th>IP</th>
+                            <th>Domain</th>
+                        </tr>
+                        </thead>
+                        {% for result in tm_host.results %}
+                        {% for domain in result.domains %}
+                        <tr>
+                            <td>{% if domain.ip %}<a href="{% url 'ip:detail' domain.ip %}">{{ domain.ip }}</a>{% endif %}</td>
+                            <td>{% if domain.domain %}<a href="{% url 'domain:detail' domain.domain %}">{{ domain.domain }}</a>{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="threatminer-reports" role="tabpanel" aria-labelledby="threatminer-reports-tab">
+                <div class="container">
+                    <table class="table table-hover w-100">
+                        <thead>
+                        <tr>
+                            <th>Reports</th>
+                            <th>Year</th>
+                        </tr>
+                        </thead>
+                        {% for result in tm_report.results|dictsortreversed:"year" %}
+                        <tr>
+                            <td><a href="{{ result.URL }}">{{ result.filename }}</a></td>
+                            <td>{{ result.year }}</a></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="threatminer-http" role="tabpanel" aria-labelledby="threatminer-http-tab">
+                <div class="table-responsive">
+                    <table class="table table-hover w-100">
+                        <thead>
+                        <tr>
+                            <th>Domain</th>
+                            <th>URL</th>
+                            <th>IP</th>
+                            <th>Method</th>
+                            <th>UserAgent</th>
+                            <th>Port</th>
+                            <th>Raw</th>
+                        </tr>
+                        </thead>
+                        {% for result in tm_http.results %}
+                        {% for http in result.http_traffic %}
+                        <tr>
+                            <td>{% if http.domain %}<a href="{% url 'domain:detail' http.domain %}">{{ http.domain }}</a>{% endif %}</td>
+                            <td>{% if http.domain and http.url %}<a href="{% url 'url:index' %}?keyword=http://{{ http.domain }}{{ http.url }}">{{ http.url }}</a>{% endif %}</td>
+                            <td>{% if http.ip %}<a href="{% url 'ip:detail' http.ip %}">{{ http.ip }}</a>{% endif %}</td>
+                            <td>{{ http.method }}</td>
+                            <td>{{ http.user_agent }}</td>
+                            <td>{{ http.port }}</td>
+                            <td>{{ http.raw|escape }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+$(function () {
+    $('article').readmore({
+        speed: 1000,
+        moreLink: '<a href="#">read more</a>',
+        lessLink: '<a href="#">close</a>'
+    });
+});
+</script>
+{% endblock %}

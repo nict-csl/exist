@@ -1,0 +1,14 @@
+{% load staticfiles %}
+
+<div class="container">
+    <form class="form" action="{{ request.url }}" method="get">
+        <div class="form-group row">
+            <div class="col-sm-10">
+                {{ search_form }}
+            </div>
+            <button class="btn btn-outline-success my-2" type="submit">Search</button>
+            {% include "reputation/searchTarget.html" %}
+        </div>
+    </form>
+</div>
+{% include "reputation/searchTargetValue.html" %}

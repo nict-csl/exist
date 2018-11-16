@@ -1,0 +1,6 @@
+[slack]
+token = YOUR_TOKEN
+user = ExploitHunter
+#icon = 
+postMessageURL = https://slack.com/api/chat.postMessage
+createChannelURL = https://slack.com/api/channels.create

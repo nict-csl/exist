@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load humanize %}
+{% load staticfiles %}
+<div class="container">
+    <p class="text-right"> Orgs: {{ count| intcomma }} </p>
+    <table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
+        <thead>
+        <tr>
+            <th style="width: 100px;">ID</th>
+            <th>Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for org in orgs %}
+        <tr>
+            <td><a href="{% url 'threat:event_list' %}?org={{ org.id }}">{{ org.id }}</a></td>
+            <td><a href="{% url 'threat:event_list' %}?org={{ org.id }}">{{ org.name }}</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

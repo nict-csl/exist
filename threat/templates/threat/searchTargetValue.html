@@ -1,0 +1,11 @@
+<div class="collapse" id="searchTarget">
+    <div class="container">
+        <table class="table table-striped">
+            <tr><td>
+            {% for tag in alltag %}
+                <a href="{{ request.path }}?{{ request.GET.urlencode }}&tag={{ tag.id }}"><span class="badge badge-secondary shadow" style="color: {{ tag.get_textcolor }}; background-color: {{ tag.colour }};">{{ tag.name }}</span></a>
+            {% endfor %}
+            </td></tr>
+        </table>
+    </div>
+</div>

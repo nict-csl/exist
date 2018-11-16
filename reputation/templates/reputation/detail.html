@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h4 class="p-3 bg-dark text-white">{% if object.url %}{{ object.url }}{% elif object.domain %}{{ object.domain }}{% else %}{{ object.ip }}{% endif %}</h4>
+
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+    <table class="table table-striped shadow-sm" style="table-layout:fixed;width:100%;">
+        <tr>
+            <th class="w-25">IP Address</th>
+            <td>{{ object.ip | default_if_none:'' }}</td>
+        </tr>
+        <tr>
+            <th>Domain</th>
+            <td style="word-wrap:break-word;">{{ object.domain }}</td>
+        </tr>
+        <tr>
+            <th>URL</th>
+            <td style="word-wrap:break-word;">{{ object.url }}</td>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <td>{{ object.datetime }}</td>
+        </tr>
+        <tr>
+            <th>Source</th>
+            <td><a href="{% url 'reputation:index' %}?source={{ object.source }}">{{ object.get_source_display }}</a></td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td style="word-wrap:break-word;">{{ object.description | default_if_none:'' }}</td>
+        </tr>
+        <tr>
+            <th>Referrer</th>
+            <td style="word-wrap:break-word;">{{ object.referrer | urlize }}</td>
+        </tr>
+        <tr>
+            <th>CountryCode</th>
+            <td>{{ object.countrycode }}</td>
+        </tr>
+    </table>
+    <a class="btn btn-primary shadow" href="{% url 'reputation:index' %}">Back</a>
+</div>
+{% endblock %}

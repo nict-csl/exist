@@ -1,0 +1,12 @@
+{% load staticfiles %}
+
+<div class="container">
+    <form class="form" action="{% url 'url:index' %}" method="get">
+        <div class="form-group row">
+            <div class="col-sm-10">
+                {{ search_form }}
+            </div>
+            <button class="btn btn-outline-success my-2" type="submit">Lookup</button>
+        </div>
+    </form>
+</div>

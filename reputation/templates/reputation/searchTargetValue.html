@@ -1,0 +1,10 @@
+{% load lookup %}
+<div class="collapse" id="searchTarget">
+    <div class="container">
+        {% for key, value in target_form.source %}
+        <button type="button" class="btn btn-sm btn-primary my-2" onClick="location.href='{% url 'reputation:index' %}?source={{ key }}'">
+            {{ value }}
+        </button>
+        {% endfor %}
+    </div>
+</div>

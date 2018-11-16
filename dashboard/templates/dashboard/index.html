@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load humanize %}
+{% load staticfiles %}
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">EXIST</h1><h3>(<font color="red">EX</font>ternal <font color="red">I</font>nformation aggregation <font color="red">S</font>ystem against cyber <font color="red">T</font>hreat)</h3>
+        <!--        <p class="lead">Cyber Threat Intelligence is this.</p> -->
+    </div>
+</div>
+
+<div class="container">
+    <form class="form" action="{% url 'cross' %}" method="get">
+        <div class="form-group row">
+            <div class="col-sm-10">
+                {{ cc_search_form }}
+            </div>
+            <button class="btn btn-outline-success my-2" type="submit">Search</button>
+        </div>
+    </form>
+</div>
+<div class="row">
+    <div class="col">
+        <form class="form" action="{% url 'ip:index' %}" method="get">
+            <div class="form-group row">
+                <div class="col-sm-9">
+                    {{ ip_search_form }}
+                </div>
+                <button class="btn btn-outline-success my-2" type="submit">Lookup</button>
+            </div>
+        </form>
+    </div>
+    <div class="col">
+        <form class="form" action="{% url 'domain:index' %}" method="get">
+            <div class="form-group row">
+                <div class="col-sm-9">
+                    {{ domain_search_form }}
+                </div>
+                <button class="btn btn-outline-success my-2" type="submit">Lookup</button>
+            </div>
+        </form>
+    </div>
+    <div class="col">
+        <form class="form" action="{% url 'url:index' %}" method="get">
+            <div class="form-group row">
+                <div class="col-sm-9">
+                    {{ url_search_form }}
+                </div>
+                <button class="btn btn-outline-success my-2" type="submit">Lookup</button>
+            </div>
+        </form>
+    </div>
+    <div class="col">
+        <form class="form" action="{% url 'filehash:index' %}" method="get">
+            <div class="form-group row">
+                <div class="col-sm-9">
+                    {{ hash_search_form }}
+                </div>
+                <button class="btn btn-outline-success my-2" type="submit">Lookup</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <h5 class="card-header">
+        <a href={% url 'threat:event_list' %}>Threat</a>
+    </h5>
+    <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">Shared Threat Intelligence by Circl MISP.</h6>
+        <div class="form-group row">
+            <div class="col-sm-4">
+            <form class="form" action="{% url 'threat:event_list' %}" method="get">
+                    {{ event_search_form }}
+            </div>
+            <button class="btn btn-outline-success my-2" type="submit">Search</button>
+            </form>
+            <div class="col-sm-4">
+            <form class="form" action="{% url 'threat:attribute_list' %}" method="get">
+                    {{ attribute_search_form }}
+            </div>
+            <button class="btn btn-outline-success my-2" type="submit">Search</button>
+            </form>
+        </div>
+    <table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
+        <thead>
+        <tr>
+            <th style="width: 200px;">Published (JST)</th>
+            <th style="width: 130px;">DATE</th>
+            <th>Info</th>
+            <th>Tags</th>
+            <th style="width: 100px;">Level</th>
+            <th style="width: 100px;">#Attrs</th>
+            <th style="width: 200px;">Org</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for event in events %}
+        <tr>
+            <td nowrap>{{ event.publish_timestamp }}</td>
+            <td nowrap>{{ event.date }}</td>
+            <td style="word-wrap:break-word;"><a href="{% url 'threat:event_detail' event.id %}">{{ event.info }}</a></td>
+            <td style="word-wrap:break-word;">
+                {% for tag in event.tags.all %}
+                <a href="{{ request.path }}?{{ request.GET.urlencode }}&tag={{ tag.id }}"><span class="badge badge-secondary shadow" style="color: {{ tag.get_textcolor }}; background-color: {{ tag.colour }};">{{ tag.name }}</span></a>
+                {% endfor %}
+            </td>
+            <td>{{ event.get_threat_level_id_display }}</td>
+            <td><a href="{% url 'threat:event_detail' event.id %}">{{ event.attribute_count | intcomma }}</a></td>
+            <td><a href="{% url 'threat:event_list' %}?org={{ event.orgc.id }}">{{ event.orgc.name }}</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card mb-3">
+    <h5 class="card-header">
+        <a href={% url 'reputation:index' %}>Reputation Tracker</a>
+    </h5>
+    <div class="card-body">
+    <h6 class="card-subtitle mb-2 text-muted">Tracking IP/Domain/URL indicator reputation.</h6>
+    <form class="form" action="{% url 'reputation:index' %}" method="get">
+        <div class="form-group row">
+            <div class="col-sm-4">
+                {{ reputation_search_form }}
+            </div>
+            <button class="btn btn-outline-success my-2" type="submit">Search</button>
+        </div>
+    </form>
+    <table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
+        <thead>
+        <tr>
+            <th style="width: 220px;">Date (JST)</th>
+            <th>IP Address</th>
+            <th>Domain</th>
+            <th>URL</th>
+            <th style="width: 300px;">Source</th>
+            <th style="width: 50px;">VT</th>
+            <th style="width: 50px;">DT</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for bl in bls %}
+        <tr>
+            <td nowrap><a href="{% url 'reputation:detail' bl.id %}">{{ bl.datetime }}</a></td>
+            <td>{{ bl.ip | default_if_none:'' }}</td>
+            <td style="word-wrap:break-word;">{{ bl.domain }}</td>
+            <td style="word-wrap:break-word;">{{ bl.url }}</td>
+            <td><a href="{% url 'reputation:index' %}?source={{ bl.source }}">{{ bl.get_source_display }}</a></td>
+            <td><a href="{{ bl.get_vturl }}"><img src="{% static 'img/vt.svg' %}" alt="VirusTotal" width="20"></a></td>
+            <td><a href="{{ bl.get_dturl }}"><img src="{% static 'img/domaintools.png' %}" alt="DomainTools" width="20"></a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card mb-3">
+    <h5 class="card-header">
+        <a href={% url 'twitter:index' %}>Twitter Tracker</a>
+    </h5>
+    <div class="card-body">
+    <h6 class="card-subtitle mb-2 text-muted">Tracking security cluster's tweet timeline.</h6>
+    <form class="form" action="{% url 'twitter:index' %}" method="get">
+        <div class="form-group row">
+            <div class="col-sm-4">
+                {{ twitter_search_form }}
+            </div>
+            <button class="btn btn-outline-success my-2" type="submit">Search</button>
+        </div>
+    </form>
+    <table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
+        <thead>
+        <tr>
+            <th style="width: 200px;">Date (JST)</th>
+            <th>Tweet</th>
+            <th style="width: 400px;">User</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for tw in tws %}
+        <tr>
+            <td nowrap>{{ tw.datetime }}</td>
+            <td>{{ tw.text | urlize | linebreaksbr }}</td>
+            <td><a href="https://twitter.com/{{ tw.screen_name }}">{{ tw.user }} @{{ tw.screen_name }}</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card mb-3">
+    <h5 class="card-header">
+        <a href={% url 'twitter_hunter:index' %}>Twitter Hunter</a>
+    </h5>
+    <div class="card-body">
+    <h6 class="card-subtitle mb-2 text-muted">Hunt specific tweets.</h6>
+  </div>
+</div>
+
+<div class="card mb-3">
+    <h5 class="card-header">
+        <a href={% url 'exploit:index' %}>Exploit Tracker</a>
+    </h5>
+    <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">Tracking published exploit code.</h6>
+        <form class="form" action="{% url 'exploit:index' %}" method="get">
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    {{ exploit_search_form }}
+                </div>
+                <button class="btn btn-outline-success my-2" type="submit">Search</button>
+            </div>
+        </form>
+        <table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
+            <thead>
+            <tr>
+                <th style="width: 200px;">Date (JST)</th>
+                <th>Title</th>
+                <th style="width: 200px;">Source</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for ex in exs %}
+            <tr>
+                <td nowrap>{{ ex.datetime }}</td>
+                <td><a href="{% url 'exploit:detail' ex.id %}">{{ ex.title }}</a></td>
+                <td>{{ ex.get_source_display }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <h5 class="card-header">
+        <a href={% url 'vuln:index' %}>Vuln Tracker</a>
+    </h5>
+    <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">Tracking vulnerabilities by VulnDB.</h6>
+        <form class="form" action="{% url 'vuln:index' %}" method="get">
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    {{ vuln_search_form }}
+                </div>
+                <button class="btn btn-outline-success my-2" type="submit">Search</button>
+            </div>
+        </form>
+        <table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
+            <thead>
+                <tr>
+                    <th style="width: 220px;">Last Modified (JST)</th>
+                    <th>Title</th>
+                    <th>Tag</th>
+                    <th style="width: 200px;">CVE-ID</th>
+                    <th style="width: 200px;">CVSS(Base)</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for vu in vus %}
+            <tr>
+                <td nowrap>{{ vu.vulndb_last_modified }}</td>
+                <td style="word-wrap:break-word;"><a href="{% url 'vuln:detail' vu.id %}">{{ vu.title }}</a></td>
+                <td style="word-wrap:break-word;">
+                    {% for tag in vu.tags.all %}
+                    <a href="{% url 'vuln:index' %}?tag={{ tag.id }}"><span class="badge badge-secondary shadow" style="color: {{ tag.get_textcolor }}; background-color: {{ tag.get_backgroundcolor }};">{{ tag.name }}</span></a>
+                    {% endfor %}
+                </td>
+                <td style="word-wrap:break-word;">
+                    {% for nvd in vu.nvds.all %}
+                    <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name={{ nvd.id }}" target="_blank">{{ nvd.id }}</a><br>
+                    {% endfor %}
+                </td>
+                <td style="word-wrap:break-word;">
+                    {% for cvss in vu.cvsses.all %}
+                    {% if cvss.score < 4.0 %}
+                    <button class="btn shadow text-white bg-info">
+                    {% elif cvss.score < 7.0 %}
+                    <button class="btn shadow text-dark bg-warning">
+                    {% else %}
+                    <button class="btn shadow text-white bg-danger">
+                    {% endif %}
+                        {{ cvss.score }}
+                    </button>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}

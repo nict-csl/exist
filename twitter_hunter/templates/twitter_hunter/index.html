@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load humanize %}
+{% load staticfiles %}
+<div class="container col-sm-10">
+    <h1 class="my-4">Twitter Hunter</h1>
+    <a class="btn btn-outline-primary my-2" href="{% url 'twitter_hunter:hunt_create' %}" role="button" data-toggle="tooltip" data-placement="bottom" title="Create new hunter">Add</a>
+    <table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
+        <thead>
+            <tr>
+                <th style="width:50px;"></th>
+                <th style="width: 100px;">On/Off</th>
+                <th style="width: 200px;">Added Date (JST)</th>
+                <th style="width: 100px;">ID</th>
+                <th>Name</th>
+                <th>Track</th>
+                <th>Follow</th>
+                <th style="width:150px;">Notice (slack)</th>
+                <th style="width:100px;">Hits</th>
+                <th style="width:120px;"></th>
+                <th style="width:100px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for ht in hts %}
+        {% if ht.enable %}
+        <tr>
+        {% else %}
+        <tr class="table-secondary">
+        {% endif %}
+            <td><a class="btn btn-outline-secondary btn-sm" href="{% url 'twitter_hunter:hunt_edit' ht.id %}" role="button"><i class="fas fa-edit"></i></a></td>
+            <td>
+                <form method="post" action="{% url 'twitter_hunter:hunt_switch_enable' pk=ht.id %}">
+                    {% csrf_token %}
+                    <label class="switch-light switch-material" onclick="this.form.submit()">
+                        {% if ht.enable %}
+                        <input type="checkbox" checked="checked">
+                        {% else %}
+                        <input type="checkbox">
+                        {% endif %}
+                        <span>
+                            <span>Off</span>
+                            <span>On</span>
+                            <a></a>
+                        </span>
+                    </label>
+                </form>
+            </td>
+            <td nowrap>{{ ht.datetime }}</td>
+            <td>{{ ht.id }}</td>
+            <td><a href="{% url 'twitter_hunter:tweets' pk=ht.id %}">{{ ht.name }}</a></td>
+            <td>{{ ht.track | default_if_none:'' }}</td>
+            <td>{{ ht.follow | default_if_none:'' }}</td>
+            <td>
+                <form method="post" action="{% url 'twitter_hunter:hunt_switch_notice' pk=ht.id %}">
+                    {% csrf_token %}
+                    <label class="switch-light switch-material" onclick="this.form.submit()">
+                        {% if ht.notice %}
+                        <input type="checkbox" checked="checked">
+                        {% else %}
+                        <input type="checkbox">
+                        {% endif %}
+                        <span>
+                            <span>Off</span>
+                            <span>On</span>
+                            <a></a>
+                        </span>
+                    </label>
+                </form>
+            </td>
+            <td>{{ ht.count | intcomma }}</td>
+            <td><a class="btn btn-outline-success btn-sm" href="{% url 'twitter_hunter:hunt_export' pk=ht.id %}" role="button">Export CSV</a></td>
+            <td><button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#deleteModal{{ ht.id }}">Delete</button>
+                <div class="modal fade" id="deleteModal{{ ht.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ ht.id }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel{{ ht.id }}">Delete Hunter</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure to delete hunter "{{ ht.name }}" ?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <a class="btn btn-danger" href="{% url 'twitter_hunter:hunt_del' pk=ht.id %}" role="button">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% include "twitter_hunter/page.html" %}
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+{% endblock %}
