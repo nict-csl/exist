@@ -2,11 +2,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import TemplateView, DetailView
 from .forms import SearchForm
-from .umbrella import Umbrella
-from .domaintools import DomainTools
-from .geoip import GeoIP
-from .vt import VT
-from .threatminer import ThreatMiner
+from lib.umbrella import Umbrella
+from lib.domaintools import DomainTools
+from lib.geoip import GeoIP
+from lib.vt import VT
+from lib.threatminer import ThreatMiner
 import socket
 
 class IndexView(TemplateView):

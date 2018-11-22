@@ -4,7 +4,7 @@ from django.views.generic import TemplateView, DetailView
 from django.urls import reverse
 from django.utils.http import urlquote
 from .forms import SearchForm
-from .vt import VT
+from lib.vt import VT
 import os
 import subprocess
 import hashlib

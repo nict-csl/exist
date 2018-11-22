@@ -36,12 +36,7 @@ class Hunt(models.Model):
         self.save()
 
     def start(self):
-        cmd = "/home/jingu/.pyenv/shims/python ./twitter_hunter/tw_hunter.py " + str(self.id)
-        #cmd = "/home/jingu/.pyenv/shims/python ./twitter_hunter/tw_hunter.py " + str(self.id) + " " + str(self.notice)
-        #if self.track is not None and self.track != '':
-        #    cmd += " -t \"" + str(self.track) + "\""
-        #if self.follow is not None and self.follow != '':
-        #    cmd += " -f \"" + str(self.follow) + "\""
+        cmd = "python scripts/hunter/twitter/tw_hunter.py " + str(self.id)
         subprocess.Popen(cmd, shell=True)
 
     def stop(self):

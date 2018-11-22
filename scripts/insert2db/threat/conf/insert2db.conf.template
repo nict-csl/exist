@@ -1,0 +1,6 @@
+[exist]
+syspath = YOUR_EXIST_DIR
+
+[misp]
+MISP_URL = YOUR_MISP-URL
+API_KEY = YOUR_API_KEY

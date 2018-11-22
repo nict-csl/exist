@@ -33,6 +33,6 @@ class Hunt(models.Model):
         self.save()
 
     def run(self):
-        cmd = "/home/jingu/.pyenv/shims/python ./threat_hunter/th_hunter.py " + str(self.id)
+        cmd = "python scripts/hunter/threat/th_hunter.py " + str(self.id)
         subprocess.Popen(cmd, shell=True)
 
