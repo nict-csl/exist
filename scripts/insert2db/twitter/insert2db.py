@@ -67,20 +67,21 @@ def getTimeline():
 
 def parseTimeline(timeline):
     cnt = 0
-    for line in timeline:
-        logger.info("%s start", line["id"])
-        try:
-            query = tweet(
-                id = line["id"],
-                datetime = datetime.strptime(line["created_at"], "%a %b %d %H:%M:%S +0000 %Y").replace(tzinfo=timezone.utc),
-                user = line["user"]["name"],
-                screen_name = line["user"]["screen_name"],
-                text = line["text"],
-            )
-        except Exception as e:
-            logger.error("%s: %s", e, line)
-        if saveQuery(query, line):
-            cnt += 1
+    if timeline is not None:
+        for line in timeline:
+            logger.info("%s start", line["id"])
+            try:
+                query = tweet(
+                    id = line["id"],
+                    datetime = datetime.strptime(line["created_at"], "%a %b %d %H:%M:%S +0000 %Y").replace(tzinfo=timezone.utc),
+                    user = line["user"]["name"],
+                    screen_name = line["user"]["screen_name"],
+                    text = line["text"],
+                )
+            except Exception as e:
+                logger.error("%s: %s", e, line)
+            if saveQuery(query, line):
+                cnt += 1
     logger.info("%d inserted", cnt)
 
 def saveQuery(q, line):
