@@ -135,5 +135,5 @@ timeline = https://api.twitter.com/1.1/statuses/home_timeline.json
 filter = https://stream.twitter.com/1.1/statuses/filter.json
 showuser = https://api.twitter.com/1.1/users/show.json
 
-[insertdb]
+[exist]
 syspath = YOUR_SYSPATH
