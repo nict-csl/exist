@@ -2,7 +2,6 @@ certifi==2017.7.27.1
 chardet==3.0.4
 configparser==3.5.0
 Django==1.11.5
-django-bootstrap-form==3.3
 django-bootstrap4==0.0.4
 django-filter==2.0.0
 django-pure-pagination==0.3.0

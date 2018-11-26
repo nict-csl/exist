@@ -15,12 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from dashboard.views import IndexView, CrossView
+from dashboard.views import IndexView, CrossView, LookupView
 from . import apis
 
 urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
     url(r'^cross$', CrossView.as_view(), name='cross'),
+    url(r'^lookup$', LookupView.as_view(), name='lookup'),
     url(r'^reputation/', include('reputation.urls')),
     url(r'^twitter/', include('twitter.urls')),
     url(r'^twitter_hunter/', include('twitter_hunter.urls')),
