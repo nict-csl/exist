@@ -8,8 +8,8 @@ from vuln.serializers import vulnSerializer
 class vulnFilter(FilterSet):
     vulndb_published_date = DateTimeFromToRangeFilter()
     vulndb_last_modified = DateTimeFromToRangeFilter()
-    cve = CharFilter(name='nvds__id')
-    tag = ModelMultipleChoiceFilter(name='tags__name', to_field_name='name', queryset=Tag.objects.all(), conjoined=True)
+    cve = CharFilter(field_name='nvds__id')
+    tag = ModelMultipleChoiceFilter(field_name='tags__name', to_field_name='name', queryset=Tag.objects.all(), conjoined=True)
     class Meta:
         model = Vuln
         fields = ['vulndb_published_date', 'vulndb_last_modified']
