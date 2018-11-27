@@ -6,11 +6,13 @@
 {% include "ip/searchBar.html" %}
 
 <div class="container">
-    <a class="btn btn-sm btn-primary mb-3 shadow" href="{% url 'cross' %}?keyword={{ view.kwargs.pk }}" target="_blank">Cross-cutting Search</a>
     <table class="table table-striped">
         <tr>
             <th>IP Address</th>
-            <td>{{ view.kwargs.pk }}</td>
+            <td>
+                {{ view.kwargs.pk }}
+                <a class="btn-sm btn-primary ml-2" href="{% url 'cross' %}?keyword={{ view.kwargs.pk }}" target="_blank">Cross-cutting Search</a>
+            </td>
         </tr>
         <tr>
             <th>Resolv Host</th>

@@ -6,11 +6,13 @@
 {% include "url/searchBar.html" %}
 
 <div class="container">
-    <a class="btn btn-sm btn-primary mb-2 shadow" href="{% url 'cross' %}?keyword={{ view.kwargs.pk }}" target="_blank">Cross-cutting Search</a>
     <table class="table table-striped">
         <tr>
             <th>URL</th>
-            <td>{{ view.kwargs.pk }}</td>
+            <td>
+                {{ view.kwargs.pk }}
+                <a class="btn-sm btn-primary ml-2" href="{% url 'cross' %}?keyword={{ view.kwargs.pk }}" target="_blank">Cross-cutting Search</a>
+            </td>
         </tr>
         <tr>
             <th>Response content SHA-256</th>
@@ -38,9 +40,20 @@
             </td>
         </tr>
     </table>
-    <img src="/{{ imagefile }}" alt="screenshot">
+    <div id="loader-bg">
+        <div id="loader">
+            <img src="{% static 'img/load.gif' %}" class="mx-auto d-block" alt="Now Loading...">
+        </div>
+    </div>
+    <div id="wrap">
+        <div style="height: 500px;">
+            <a href="/{{ imagefile }}" data-lightbox="webimage">
+                <img src="/{{ imagefile }}" id="webimage" class="rounded img-thumbnail mx-auto d-block mh-100" alt="screenshot">
+            </a>
+        </div>
+    </div>
+    <a class="btn btn-sm btn-info mt-2 shadow" href="{% url 'url:code' websrc %}" target="_blank">View Source</a>
 </div>
-
 
 <ul class="nav nav-tabs nav-pills">
     <li class="nav-item">
@@ -141,6 +154,22 @@ $(function () {
         moreLink: '<a href="#">read more</a>',
         lessLink: '<a href="#">close</a>'
     });
+});
+
+$(function(){
+  var h = $(window).height();
+  $('#wrap').css('display','none');
+  $('#loader-bg ,#loader').height(h).css('display','block');
+});
+ 
+$(window).load(function(){ 
+  var reload = function(){
+    $("#webimage").attr("src", document.getElementById('webimage').src + "?" + new Date().getTime());
+  }
+  $('#loader-bg').delay(900).fadeOut(800);
+  $('#loader').delay(600).fadeOut(300);
+  $('#wrap').css('display', 'block');
+  setTimeout(reload,10000);
 });
 </script>
 {% endblock %}

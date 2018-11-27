@@ -1,0 +1,45 @@
+.prettyprint
+{
+    border: 1px solid #cccccc !important;
+    line-height: 1.5em;
+    overflow: auto;
+    padding: 2em !important;
+}
+.prettyprint > ol.linenums
+{
+    padding-left: 2em;
+}
+.prettyprint > ol.linenums > li
+{
+    border-left: 1px solid #cccccc;
+    margin-bottom: 0;
+}
+.prettyprint > ol.linenums > li.L0,
+.prettyprint > ol.linenums > li.L1,
+.prettyprint > ol.linenums > li.L2,
+.prettyprint > ol.linenums > li.L3,
+.prettyprint > ol.linenums > li.L4,
+.prettyprint > ol.linenums > li.L5,
+.prettyprint > ol.linenums > li.L6,
+.prettyprint > ol.linenums > li.L7,
+.prettyprint > ol.linenums > li.L8,
+.prettyprint > ol.linenums > li.L9 
+{
+    list-style-type: decimal;
+}
+.prettyprint > ol.linenums > li.L1,
+.prettyprint > ol.linenums > li.L3,
+.prettyprint > ol.linenums > li.L5,
+.prettyprint > ol.linenums > li.L7,
+.prettyprint > ol.linenums > li.L9 
+{
+    background-color: transparent;
+}
+.prettyprint > ol.linenums > li span:first-child
+{
+    padding-left: 1em;
+}
+.prettyprint > ol.linenums > li span:last-child
+{
+    padding-right: 1em;
+}

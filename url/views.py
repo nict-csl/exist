@@ -32,9 +32,8 @@ class DetailView(TemplateView):
         context['search_form'] = SearchForm()
         url = self.kwargs['pk']
 
-        print(url)
-        image = self.getimage(url)
-        context['imagefile'] = image
+        context['imagefile'] = self.getimage(url)
+        context['websrc'] = self.getsrc(url)
 
         vt = VT()
         context['vt_url'] = vt.getURLReport(url)
@@ -43,11 +42,28 @@ class DetailView(TemplateView):
 
     def getimage(self, url):
         imagehash = hashlib.md5(url.encode('utf-8')).hexdigest()
-        filepath = "url/images/" + imagehash + ".png"
-        print(filepath)
+        filepath = "static/webimg/" + imagehash + ".png"
         if not os.path.exists(filepath):
-            print(filepath + " is not exist")
             cmd = "/usr/local/bin/wkhtmltoimage " + url + " " + filepath
-            print(cmd)
             subprocess.Popen(cmd, shell=True)
         return filepath
+
+    def getsrc(self, url):
+        imagehash = hashlib.md5(url.encode('utf-8')).hexdigest()
+        filepath = "static/websrc/" + imagehash
+        if not os.path.exists(filepath):
+            ua = "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv 11.0) like Gecko"
+            cmd = "/usr/bin/wget --no-check-certificate -q --user-agent=\"" + ua + "\" -O " + filepath + " \"" + url + "\""
+            subprocess.Popen(cmd, shell=True)
+        return imagehash
+
+class CodeView(TemplateView):
+    template_name = 'url/code.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        srcpath = 'static/websrc/' + self.kwargs['pk']
+        f = open(srcpath, 'r')
+        context['websrc'] = f.read()
+        f.close()
+        return context
