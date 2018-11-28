@@ -31,8 +31,6 @@ class DetailView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['search_form'] = SearchForm()
         url = self.kwargs['pk']
-        if not '://' in url:
-            url = url.replace(':/', '://')
 
         context['imagefile'] = self.getimage(url)
         context['websrc'] = self.getsrc(url)
