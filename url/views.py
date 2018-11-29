@@ -33,7 +33,11 @@ class DetailView(TemplateView):
         context['search_form'] = SearchForm()
         url = self.kwargs['pk']
 
-        context['title'] = self.gettitle(url)
+        response = self.getResponse(url)
+        context['response_sha256'] = self.gethash(response)
+        context['response_code'] = response.status_code
+        context['content_type'] = self.getcontenttype(response)
+        context['title'] = self.gettitle(response)
         context['imagefile'] = self.getimage(url)
         context['websrc'] = self.getsrc(url)
 
@@ -42,10 +46,31 @@ class DetailView(TemplateView):
 
         return context
 
-    def gettitle(self, url):
-        res = requests.get(url, verify=False)
+    def getResponse(self, url):
+        ua = "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv 11.0) like Gecko"
+        headers = {'User-Agent': ua}
+        try:
+            res = requests.get(url, headers=headers, verify=False)
+        except Exception as e:
+            return
         res.encoding = res.apparent_encoding
-        title = res.text.split('<title>')[1].split('</title>')[0]
+        return res
+
+    def getcontenttype(self, res):
+        return res.headers["content-type"]
+
+    def gethash(self, res):
+        if res.headers["content-type"] == 'text/html':
+            sha256 = hashlib.sha256(res.text.encode('utf-8')).hexdigest()
+        else:
+            sha256 = hashlib.sha256(res.content).hexdigest()
+        return sha256
+
+    def gettitle(self, res):
+        if res.headers["content-type"] == 'text/html':
+            title = res.text.split('<title>')[1].split('</title>')[0]
+        else:
+            return
         return title
 
     def getimage(self, url):

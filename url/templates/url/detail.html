@@ -16,12 +16,15 @@
         </tr>
         <tr>
             <th>Response content SHA-256</th>
-            <td>{% for key, value in vt_url.additional_info.items %}
-                {% if key == "Response content SHA-256" %}
-                <a href="{% url 'filehash:detail' value %}">{{ value }}</a>
-                {% endif %}
-                {% endfor %}
-            </td>
+            <td><a href="{% url 'filehash:detail' response_sha256 %}">{{ response_sha256 }}</a></td>
+        </tr>
+        <tr>
+            <th>Response Status Code</th>
+            <td>{{ response_code }}</td>
+        </tr>
+        <tr>
+            <th>Content-Type</th>
+            <td>{{ content_type }}</td>
         </tr>
         <tr>
             <th>Title</th>
@@ -44,6 +47,7 @@
             </td>
         </tr>
     </table>
+    {% if content_type == 'text/html' %}
     <div id="loader-bg">
         <div id="loader">
             <img src="{% static 'img/load.gif' %}" class="mx-auto d-block" alt="Now Loading...">
@@ -57,6 +61,7 @@
         </div>
     </div>
     <a class="btn btn-sm btn-info mt-2 shadow" href="{% url 'url:code' websrc %}" target="_blank">View Source</a>
+    {% endif %}
 </div>
 
 <ul class="nav nav-tabs nav-pills">
