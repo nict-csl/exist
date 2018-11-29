@@ -1,11 +1,9 @@
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DetailView
 from pure_pagination.mixins import PaginationMixin
-from django.db.models import Q
 from .models import blacklist
 from .forms import SearchForm, TargetForm
-from datetime import datetime, timezone, timedelta
+from .tasks import get_thirty_day_labels, get_thirty_day_data
+from django_celery_results.models import TaskResult
 
 class IndexView(PaginationMixin, ListView):
     template_name = 'reputation/index.html'
@@ -21,8 +19,10 @@ class IndexView(PaginationMixin, ListView):
         count = self.object_list.count()
         context['count'] = count
         #context['source_count'] = self.count_source()
-        context['30_day_labels'] = self.thirty_day_labels()
-        context['30_day_data'] = self.thirty_day_data()
+        thirty_day_labels_taskid = get_thirty_day_labels.delay()
+        thirty_day_data_taskid = get_thirty_day_data.delay()
+        context['30_day_labels'] = TaskResult.objects.filter(task_name='reputation.tasks.get_thirty_day_labels', status='SUCCESS').order_by('-date_done')[0].result
+        context['30_day_data'] = TaskResult.objects.filter(task_name='reputation.tasks.get_thirty_day_data', status='SUCCESS').order_by('-date_done')[0].result
         return context
 
     def get_queryset(self):
@@ -36,51 +36,6 @@ class IndexView(PaginationMixin, ListView):
         if source is not None:
             query = query.filter(source=source)
         return query
-
-#    def thirty_day_data(self):
-#        alldata = {}
-#        today = datetime.now(timezone(timedelta(hours=+9), 'JST'))
-#        today = today.replace(hour=0, minute=0, second=0, microsecond=0)
-#        for src in blacklist.SOURCES:
-#            data = []
-#            for day in range(30)[::-1]:
-#                from_date = today - timedelta(days=day)
-#                to_date = today - timedelta(days=day-1)
-#                count = self.object_list.filter(source=src[0], datetime__gte=from_date, datetime__lte=to_date).count()
-#                data.append(count)
-#            alldata[src[1]] = data
-#        return alldata
-
-    def thirty_day_data(self):
-        data = []
-        today = datetime.now(timezone(timedelta(hours=+9), 'JST'))
-        today = today.replace(hour=0, minute=0, second=0, microsecond=0)
-        for day in range(30)[::-1]:
-            from_date = today - timedelta(days=day)
-            to_date = today - timedelta(days=day-1)
-            count = self.object_list.filter(datetime__gte=from_date, datetime__lte=to_date).count()
-            data.append(count)
-        return data
-
-#    def thirty_day_labels(self):
-#        labels = []
-#        today = datetime.now(timezone(timedelta(hours=+9), 'JST'))
-#        today = today.replace(hour=0, minute=0, second=0, microsecond=0)
-#        for day in range(30)[::-1]:
-#            date = today - timedelta(days=day)
-#            label = date.strftime('%Y-%m-%d')
-#            labels.append(label)
-#        return labels
-
-    def thirty_day_labels(self):
-        labels = []
-        today = datetime.now(timezone(timedelta(hours=+9), 'JST'))
-        today = today.replace(hour=0, minute=0, second=0, microsecond=0)
-        for day in range(30)[::-1]:
-            date = today - timedelta(days=day)
-            label = date.strftime('%Y-%m-%d')
-            labels.append(label)
-        return labels
 
     def count_source(self):
         data = {}

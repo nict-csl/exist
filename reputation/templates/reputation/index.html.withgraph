@@ -50,6 +50,7 @@ var data = {
     labels: {{ 30_day_labels }},
     {% endautoescape %}
     datasets: [
+//        {{ 30_day_data }}
         {% for key, value in 30_day_data.items %}
         {
         label: "{{ key }}",

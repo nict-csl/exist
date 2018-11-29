@@ -1,13 +1,18 @@
+amqp==2.3.2
+billiard==3.5.0.4
+celery==4.2.1
 certifi==2017.7.27.1
 chardet==3.0.4
 configparser==3.5.0
 Django==1.11.5
 django-bootstrap4==0.0.4
+django-celery-results==1.0.4
 django-filter==2.0.0
 django-pure-pagination==0.3.0
 djangorestframework==3.6.4
 geoip2==2.9.0
 idna==2.6
+kombu==4.2.1
 maxminddb==1.4.1
 numpy==1.13.3
 oauthlib==2.0.6
@@ -15,6 +20,7 @@ pandas==0.20.3
 PyMySQL==0.7.11
 python-dateutil==2.6.1
 pytz==2017.2
+redis==2.10.6
 requests==2.18.4
 requests-oauthlib==0.8.0
 simplejson==3.11.1
@@ -22,3 +28,4 @@ six==1.11.0
 tweepy==3.5.0
 urllib3==1.22
 uWSGI==2.0.15
+vine==1.1.4
