@@ -8,6 +8,7 @@ from lib.vt import VT
 import os
 import subprocess
 import hashlib
+import requests
 
 class IndexView(TemplateView):
     template_name = 'url/index.html'
@@ -32,6 +33,7 @@ class DetailView(TemplateView):
         context['search_form'] = SearchForm()
         url = self.kwargs['pk']
 
+        context['title'] = self.gettitle(url)
         context['imagefile'] = self.getimage(url)
         context['websrc'] = self.getsrc(url)
 
@@ -39,6 +41,12 @@ class DetailView(TemplateView):
         context['vt_url'] = vt.getURLReport(url)
 
         return context
+
+    def gettitle(self, url):
+        res = requests.get(url, verify=False)
+        res.encoding = res.apparent_encoding
+        title = res.text.split('<title>')[1].split('</title>')[0]
+        return title
 
     def getimage(self, url):
         imagehash = hashlib.md5(url.encode('utf-8')).hexdigest()
