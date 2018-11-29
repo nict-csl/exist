@@ -11,7 +11,9 @@ from reputation.models import blacklist
 from twitter.models import tweet
 from exploit.models import Exploit
 from vuln.models import Vuln
-from .forms import CCSearchForm, LookupForm, LookupChoiceForm
+from .forms import CCSearchForm, LookupForm
+import ipaddress
+import re
 
 class IndexView(TemplateView):
     template_name = 'dashboard/index.html'
@@ -20,7 +22,6 @@ class IndexView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['cc_search_form'] = CCSearchForm()
         context['lookup_form'] = LookupForm()
-        context['lookup_choice_form'] = LookupChoiceForm()
         context['events'] = Event.objects.order_by('-publish_timestamp')[:5]
         context['bls'] = blacklist.objects.order_by('-datetime')[:5]
         context['tws'] = tweet.objects.order_by('-datetime')[:5]
@@ -64,14 +65,43 @@ class CrossView(TemplateView):
 
 class LookupView(View):
     def get(self, request, **kwargs):
-        lookup_type = request.GET.get('lookup_type')
         value = request.GET.get('value')
-        if lookup_type == 'ip':
+        if self.is_valid_ip(value):
             return redirect('ip:detail', pk=value)
-        elif lookup_type == 'domain':
+        elif self.is_valid_domain(value):
             return redirect('domain:detail', pk=value)
-        elif lookup_type == 'url':
+        elif self.is_valid_url(value):
             return HttpResponseRedirect(reverse("url:index") + urlquote(value, safe='') + '/')
-        elif lookup_type == 'hash':
+        elif self.is_valid_hash(value):
             return redirect('filehash:detail', pk=value)
         return redirect('index')
+
+    def is_valid_ip(self, value):
+        try:
+            ipaddress.ip_address(value)
+            return True
+        except ValueError:
+            return False
+
+    def is_valid_domain(self, value):
+        compiled_pattern = re.compile('\w+\.\w+')
+        if compiled_pattern.match(value):
+            return True
+        else:
+            return False
+
+    def is_valid_url(self, value):
+        compiled_pattern = re.compile('http(s)?://\w+')
+        if compiled_pattern.match(value):
+            return True
+        else:
+            return False
+
+    def is_valid_hash(self, value):
+        compiled_pattern_md5 = re.compile(r'(?=(\b[a-fA-F0-9]{32}\b))')
+        compiled_pattern_sha1 = re.compile(r'(?=(\b[a-fA-F0-9]{40}\b))')
+        compiled_pattern_sha256 = re.compile(r'(?=(\b[a-fA-F0-9]{64}\b))')
+        if compiled_pattern_md5.match(value) or compiled_pattern_sha1.match(value) or compiled_pattern_sha256.match(value):
+            return True
+        else:
+            return False

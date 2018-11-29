@@ -37,29 +37,6 @@
 
 {% block javascript %}
 <script type="text/javascript">
-$(function(){
-    $('a[name=tooltip]').mouseover(function(){
-        var orgurl = $(this).text();
-        $('a[name=tooltip]').tooltip('hide');
-        $.ajax({
-            element: this,
-            url: '/twitter/ajax/expand_url/',
-            data: {
-                'url': orgurl
-            },
-            dataType: 'json',
-            success: function(exurl){
-                $(this.element).attr({
-                    'data-toggle': 'tooltip',
-                    'data-placement': 'auto',
-                    'title': exurl.url
-                }).tooltip('show');
-            }
-        });
-    });
-});
-</script>
-<script type="text/javascript">
 var ctx = document.getElementById("myChart");
 var data = {
     {% autoescape off %}

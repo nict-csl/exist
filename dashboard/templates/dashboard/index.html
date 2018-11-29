@@ -6,12 +6,11 @@
 <div class="jumbotron jumbotron-fluid">
     <div class="container">
         <h1 class="display-4">EXIST</h1><h3>(<font color="red">EX</font>ternal <font color="red">I</font>nformation aggregation <font color="red">S</font>ystem against cyber <font color="red">T</font>hreat)</h3>
-        <!--        <p class="lead">Cyber Threat Intelligence is this.</p> -->
     </div>
 </div>
 
 <div class="row">
-    <div class="col-6 mr-auto">
+    <div class="col-6">
         <form class="form" action="{% url 'cross' %}" method="get">
             <div class="form-group row">
                 <div class="col-sm-9">
@@ -21,64 +20,17 @@
             </div>
         </form>
     </div>
-    <div class="col-4">
+    <div class="col-6">
         <form class="form" action="{% url 'lookup' %}" method="get" target="_blank">
-            <div class="form-group row">
-                <div class="col-sm-7">
+            <div class="form-group row justify-content-end mr-1">
+                <div class="col-sm-9">
                     {{ lookup_form }}
                 </div>
-                <div class="col-sm-3">
-                    {{ lookup_choice_form }}
-                </div>
                 <button class="btn btn-outline-success my-2" type="submit">Lookup</button>
             </div>
         </form>
     </div>
 </div>
-<!--
-<div class="row">
-    <div class="col">
-        <form class="form" action="{% url 'ip:index' %}" method="get">
-            <div class="form-group row">
-                <div class="col-sm-9">
-                    {{ ip_search_form }}
-                </div>
-                <button class="btn btn-outline-success my-2" type="submit">Lookup</button>
-            </div>
-        </form>
-    </div>
-    <div class="col">
-        <form class="form" action="{% url 'domain:index' %}" method="get">
-            <div class="form-group row">
-                <div class="col-sm-9">
-                    {{ domain_search_form }}
-                </div>
-                <button class="btn btn-outline-success my-2" type="submit">Lookup</button>
-            </div>
-        </form>
-    </div>
-    <div class="col">
-        <form class="form" action="{% url 'url:index' %}" method="get">
-            <div class="form-group row">
-                <div class="col-sm-9">
-                    {{ url_search_form }}
-                </div>
-                <button class="btn btn-outline-success my-2" type="submit">Lookup</button>
-            </div>
-        </form>
-    </div>
-    <div class="col">
-        <form class="form" action="{% url 'filehash:index' %}" method="get">
-            <div class="form-group row">
-                <div class="col-sm-9">
-                    {{ hash_search_form }}
-                </div>
-                <button class="btn btn-outline-success my-2" type="submit">Lookup</button>
-            </div>
-        </form>
-    </div>
-</div>
--->
 
 <div class="card mb-3">
     <h5 class="card-header">
@@ -200,7 +152,7 @@
             <thead>
             <tr>
                 <th style="width: 200px;">Date (JST)</th>
-                <th>Title</th>
+                <th class="w-100">Title</th>
                 <th style="width: 200px;">Source</th>
             </tr>
             </thead>
