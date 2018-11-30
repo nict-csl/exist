@@ -36,12 +36,14 @@ class DetailView(TemplateView):
         response = self.getResponse(url)
         context['response_sha256'] = self.gethash(response)
         context['response_code'] = response.status_code
-        context['content_type'] = response.headers["content-type"]
+        if "content-type" in response.headers:
+            context['content_type'] = response.headers["content-type"]
         if "last-modified" in response.headers:
             context['last_modified'] = response.headers["last-modified"]
         if "server" in response.headers:
             context['server'] = response.headers["server"]
-        context['content_length'] = response.headers["content-length"]
+        if "content-length" in response.headers:
+            context['content_length'] = response.headers["content-length"]
         context['title'] = self.gettitle(response)
         context['imagefile'] = self.getimage(url)
         context['websrc'] = self.getsrc(url)
@@ -62,17 +64,19 @@ class DetailView(TemplateView):
         return res
 
     def gethash(self, res):
-        if res.headers["content-type"] == 'text/html':
+        if 'text/html' in res.headers["content-type"]:
             sha256 = hashlib.sha256(res.text.encode('utf-8')).hexdigest()
         else:
             sha256 = hashlib.sha256(res.content).hexdigest()
         return sha256
 
     def gettitle(self, res):
-        if res.headers["content-type"] == 'text/html':
-            title = res.text.split('<title>')[1].split('</title>')[0]
-        else:
-            return
+        title = ''
+        if 'text/html' in res.headers["content-type"]:
+            if '<title>' in res.text:
+                title = res.text.split('<title>')[1].split('</title>')[0]
+            elif '<TITLE>' in res.text:
+                title = res.text.split('<TITLE>')[1].split('</TITLE>')[0]
         return title
 
     def getimage(self, url):
