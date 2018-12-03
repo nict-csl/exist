@@ -54,7 +54,6 @@ def argParse():
     return args
 
 def postSlack(name, channel, events):
-    logger.info("postSlack %s", name)
     if channel is None:
         channel = "th-" + name
     slack = slackwrapper.SlackWrapper()
@@ -67,12 +66,14 @@ def postSlack(name, channel, events):
         )
         try:
             res = json.loads(slack.post(channel, message).text)
+            logger.info("postSlack: %s %s %s", name, channel, message.replace('\n',''))
         except Exception as e:
             logger.error(e)
         if not res["ok"] and res["error"] == "channel_not_found":
             slack.createChannel(channel)
             logger.info("Create Channel %s", name)
             slack.post(channel, message)
+            logger.info("postSlack: %s %s %s", name, channel, message.replace('\n',''))
     return
 
 def makeKeywordList(keyword):
@@ -125,7 +126,8 @@ if __name__ == "__main__":
     keyword_list = makeKeywordList(keyword)
     events = searchThreat(keyword_list)
     diff_set = addEvents(hunt_id, events)
-    if diff_set != 0 and notice:
+    print(len(diff_set))
+    if len(diff_set) != 0 and notice:
         postSlack(name, channel, diff_set)
     logger.info("done: %s", hunt_id)
 
