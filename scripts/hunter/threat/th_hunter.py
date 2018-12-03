@@ -126,7 +126,6 @@ if __name__ == "__main__":
     keyword_list = makeKeywordList(keyword)
     events = searchThreat(keyword_list)
     diff_set = addEvents(hunt_id, events)
-    print(len(diff_set))
     if len(diff_set) != 0 and notice:
         postSlack(name, channel, diff_set)
     logger.info("done: %s", hunt_id)
