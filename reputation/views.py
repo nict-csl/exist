@@ -22,13 +22,10 @@ class IndexView(PaginationMixin, ListView):
         count = self.object_list.count()
         context['count'] = count
         context['30_day_labels'] = self.thirty_day_labels()
-        if count < 10000:
-            context['30_day_data'] = self.thirty_day_data()
-        else:
-            thirty_day_data_taskid = get_thirty_day_data.delay()
-            thirty_day_data = TaskResult.objects.filter(task_name='reputation.tasks.get_thirty_day_data', status='SUCCESS').order_by('-date_done')
-            if len(thirty_day_data) > 0:
-                context['30_day_data'] = thirty_day_data[0].result
+        thirty_day_data_taskid = get_thirty_day_data.delay()
+        thirty_day_data = TaskResult.objects.filter(task_name='reputation.tasks.get_thirty_day_data', status='SUCCESS').order_by('-date_done')
+        if len(thirty_day_data) > 0:
+            context['30_day_data'] = thirty_day_data[0].result
         return context
 
     def get_queryset(self):
