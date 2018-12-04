@@ -16,7 +16,7 @@
         </tr>
         <tr>
             <th>Response content SHA-256</th>
-            <td><a href="{% url 'filehash:detail' response_sha256 %}">{{ response_sha256 }}</a></td>
+            <td>{% if response_sha256 %}<a href="{% url 'filehash:detail' response_sha256 %}">{{ response_sha256 }}</a>{% endif %}</td>
         </tr>
         <tr>
             <th>Title</th>
