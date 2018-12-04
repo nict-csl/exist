@@ -1,5 +1,6 @@
 from django.views.generic import ListView, DetailView
 from pure_pagination.mixins import PaginationMixin
+from django.db.models import Q
 from .models import blacklist
 from .forms import SearchForm, TargetForm
 from .tasks import get_thirty_day_labels, get_thirty_day_data
