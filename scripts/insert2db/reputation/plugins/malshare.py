@@ -1,16 +1,16 @@
 import sys
 import os
-from datetime import datetime, timezone
-import django
+import configparser
+import requests
 import pandas as pd
 import hashlib
-import requests
-import configparser
 from io import StringIO
-import pymysql
-pymysql.install_as_MySQLdb()
+from datetime import datetime, timezone
 
 ## Django Setup
+import django
+import pymysql
+pymysql.install_as_MySQLdb()
 conffile = os.path.join(os.path.dirname(__file__), "../conf/insert2db.conf")
 conf = configparser.SafeConfigParser()
 conf.read(conffile)
@@ -30,10 +30,10 @@ logger.propagate = True
 
 DataDir = os.path.join(os.path.dirname(__file__), '../data/')
 
-class Malshare():
-    def __init__(self, ID=0):
+class Tracker():
+    def __init__(self):
         self.name = 'Malshare'
-        self.ID = ID
+        self.ID = 281
         api_key = conf.get('malshare', 'api_key')
         self.URL = 'http://www.malshare.com/api.php?action=getsourcesraw&api_key=' + api_key
         self.DataFilePath = DataDir + 'malshare/getsourceraw.txt'

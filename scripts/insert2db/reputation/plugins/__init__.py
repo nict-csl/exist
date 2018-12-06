@@ -1,14 +1,6 @@
-from . import mdl
-from . import rwtracker
-from . import zeus
-from . import threatexpert
-from . import dshield_low
-from . import dshield_medium
-from . import dshield_high
-from . import phishtank
-from . import bambenek_ip
-from . import bambenek_domain
-from . import cins
-from . import cybercrime
-from . import malshare
-from . import minotr
+import os, glob
+
+__all__ = [
+    os.path.split(os.path.splitext(file)[0])[1]
+    for file in glob.glob(os.path.join(os.path.dirname(__file__), '[a-zA-Z0-9]*.py'))
+]

@@ -1,16 +1,16 @@
 import sys
 import os
-from datetime import datetime, timezone
-import django
+import configparser
+import requests
 import pandas as pd
 import hashlib
-import requests
-import configparser
 from io import StringIO
-import pymysql
-pymysql.install_as_MySQLdb()
+from datetime import datetime, timezone
 
 ## Django Setup
+import django
+import pymysql
+pymysql.install_as_MySQLdb()
 conffile = os.path.join(os.path.dirname(__file__), "../conf/insert2db.conf")
 conf = configparser.SafeConfigParser()
 conf.read(conffile)
@@ -30,10 +30,10 @@ logger.propagate = True
 
 DataDir = os.path.join(os.path.dirname(__file__), '../data/')
 
-class DshieldLow():
-    def __init__(self, ID=0):
+class Tracker():
+    def __init__(self):
         self.name = 'Dshield_Low'
-        self.ID = ID
+        self.ID = 221
         self.URL = 'https://www.dshield.org/feeds/suspiciousdomains_Low.txt'
         self.DataFilePath = DataDir + 'dshield/suspiciousdomains_Low.txt'
         self.header = [
