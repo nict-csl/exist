@@ -1,2 +1,8 @@
 [exist]
 syspath = YOUR_EXIST_DIR
+
+[secureware]
+token = YOUR_TOKEN
+
+[malshare]
+api_key = YOUR_API_KEY

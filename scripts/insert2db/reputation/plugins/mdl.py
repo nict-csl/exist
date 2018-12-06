@@ -1,0 +1,104 @@
+import sys
+import os
+from datetime import datetime, timezone
+import django
+import pandas as pd
+import hashlib
+import requests
+import configparser
+from io import StringIO
+import pymysql
+pymysql.install_as_MySQLdb()
+
+## Django Setup
+conffile = os.path.join(os.path.dirname(__file__), "../conf/insert2db.conf")
+conf = configparser.SafeConfigParser()
+conf.read(conffile)
+sys.path.append(conf.get('exist', 'syspath'))
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'intelligence.settings')
+django.setup()
+from reputation.models import blacklist
+import django.utils.timezone as tzone
+from django.db import IntegrityError
+
+## Logger Setup
+from logging import getLogger, DEBUG, NullHandler
+logger = getLogger(__name__)
+logger.addHandler(NullHandler())
+logger.setLevel(DEBUG)
+logger.propagate = True
+
+DataDir = os.path.join(os.path.dirname(__file__), '../data/')
+
+class MDL():
+    def __init__(self, ID=0):
+        self.name = 'MalwareDomainList'
+        self.ID = ID
+        self.URL = 'http://www.malwaredomainlist.com/updatescsv.php'
+        self.DataFilePath = DataDir + 'mdl/updatescsv.php'
+        self.header = [
+            'datetime',
+            'domain',
+            'ip',
+            'reverse',
+            'description',
+            'registant',
+            'asn',
+        ]
+
+    def cmpFiles(self, oldfile, newtext):
+        diffline = ''
+        if not os.path.exists(oldfile):
+            f = open(oldfile, 'w')
+            f.close()
+        oldsets = set(open(oldfile).readlines())
+        newsets = set(newtext.replace('\r\n','\n').splitlines(True))
+        results = newsets.difference(oldsets)
+        for result in results:
+            diffline += result
+        return diffline[:-1]
+
+    def makeDataframe(self):
+        df = pd.DataFrame()
+        newline = ''
+        try:
+            res = requests.get(self.URL)
+            if res.status_code != 200:
+                return df
+            newline = self.cmpFiles(self.DataFilePath, res.text)
+        except Exception as e:
+            logger.error(e)
+        if not newline == '':
+            open(self.DataFilePath, 'w').write(res.text)
+            df = pd.read_csv(StringIO(newline), names=self.header)
+        return df
+
+    def parse(self):
+        logger.info("start parsing: %s", self.name)
+
+        df = self.makeDataframe()
+        queries = []
+        if not df.empty:
+            for i, v in df.iterrows():
+                line = str(self.ID) + ","
+                line += str(v.values)
+                md5 = hashlib.md5(line.encode('utf-8')).hexdigest()
+                try:
+                    query = blacklist(
+                        id = md5,
+                        ip = v.ip,
+                        url = 'http://' + v.domain[:248],
+                        datetime = datetime.strptime(v.datetime, '%Y/%m/%d_%H:%M').replace(tzinfo=timezone.utc),
+                        description = v.description,
+                        source = self.ID,
+                        referrer = 'https://www.malwaredomainlist.com/mdl.php?search=' + v.ip,
+                    )
+                except Exception as e:
+                    logger.error("%s: %s", e, line)
+                queries.append(query)
+        else:
+            logger.info("no update")
+
+        logger.info("done parsing: %s, %s queries were parsed", self.name, len(queries))
+        return queries
+
