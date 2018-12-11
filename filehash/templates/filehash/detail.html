@@ -129,7 +129,10 @@
 
 <ul class="nav nav-tabs nav-pills">
     <li class="nav-item">
-        <a class="nav-link active" id="virustotal-tab" data-toggle="tab" href="#virustotal">VirusTotal</a>
+        <a class="nav-link active" id="cross-tab" data-toggle="tab" href="#cross">CrossCutting</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="virustotal-tab" data-toggle="tab" href="#virustotal">VirusTotal</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" id="umbrella-tab" data-toggle="tab" href="#umbrella">Umbrella</a>
@@ -139,7 +142,13 @@
     </li>
 </ul>
 <div class="tab-content">
-    <div class="tab-pane fade show active" id="virustotal" role="tabpanel" aria-labelledby="virustotal-tab">
+    <div class="tab-pane fade show active" id="cross" role="tabpanel" aria-labelledby="cross-tab">
+
+        <div class="my-2"></div>
+        {% include "dashboard/crosslist.html" %}
+
+    </div>
+    <div class="tab-pane fade" id="virustotal" role="tabpanel" aria-labelledby="virustotal-tab">
 
         <img class="p-3" src="{% static 'img/virustotal_logo.png' %}" height="100" alt="VirusTotal">
         <ul class="nav nav-tabs nav-pills">

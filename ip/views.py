@@ -8,6 +8,12 @@ from lib.geoip import GeoIP
 from lib.vt import VT
 from lib.threatminer import ThreatMiner
 import socket
+from django.db.models import Q
+from threat.models import Event, Attribute
+from reputation.models import blacklist
+from twitter.models import tweet
+from exploit.models import Exploit
+from vuln.models import Vuln
 
 class IndexView(TemplateView):
     template_name = 'ip/index.html'
@@ -57,6 +63,31 @@ class DetailView(TemplateView):
         context['tm_url'] = tm.getURIFromIP(ip)
         context['tm_sample'] = tm.getSamplesFromIP(ip)
         context['tm_report'] = tm.getReportFromIP(ip)
+
+        context['bls'] = blacklist.objects.filter(Q(ip=ip)|Q(url__contains=ip))
+        count = context['bls'].count()
+        if count > 0:
+            context['bls_count'] = count
+        context['events'] = Event.objects.filter(Q(info__icontains=ip)).order_by('-publish_timestamp')
+        count = context['events'].count()
+        if count > 0:
+            context['events_count'] = count
+        context['attributes'] = Attribute.objects.filter(Q(value__icontains=ip)).order_by('-timestamp')
+        count = context['attributes'].count()
+        if count > 0:
+            context['attributes_count'] = count
+        context['tws'] = tweet.objects.filter(Q(text__icontains=ip)).order_by('-datetime')
+        count = context['tws'].count()
+        if count > 0:
+            context['tws_count'] = count
+        context['exs'] = Exploit.objects.filter(Q(text__icontains=ip)).order_by('-datetime')
+        count = context['exs'].count()
+        if count > 0:
+            context['exs_count'] = count
+        context['vus'] = Vuln.objects.filter(Q(title__icontains=ip)).order_by('-vulndb_last_modified')
+        count = context['vus'].count()
+        if count > 0:
+            context['vus_count'] = count
 
         return context
 

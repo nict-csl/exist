@@ -9,28 +9,7 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-6">
-        <form class="form" action="{% url 'cross' %}" method="get">
-            <div class="form-group row">
-                <div class="col-sm-9">
-                    {{ cc_search_form }}
-                </div>
-                <button class="btn btn-outline-success my-2" type="submit">Search</button>
-            </div>
-        </form>
-    </div>
-    <div class="col-6">
-        <form class="form" action="{% url 'lookup' %}" method="get" target="_blank">
-            <div class="form-group row justify-content-end mr-1">
-                <div class="col-sm-9">
-                    {{ lookup_form }}
-                </div>
-                <button class="btn btn-outline-success my-2" type="submit">Lookup</button>
-            </div>
-        </form>
-    </div>
-</div>
+{% include "dashboard/searchBar.html" %}
 
 <div class="card mb-3">
     <h5 class="card-header">

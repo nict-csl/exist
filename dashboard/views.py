@@ -11,7 +11,8 @@ from reputation.models import blacklist
 from twitter.models import tweet
 from exploit.models import Exploit
 from vuln.models import Vuln
-from .forms import CCSearchForm, LookupForm
+#from .forms import CCSearchForm, LookupForm
+from .forms import SearchForm
 import ipaddress
 import re
 
@@ -20,8 +21,7 @@ class IndexView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['cc_search_form'] = CCSearchForm()
-        context['lookup_form'] = LookupForm()
+        context['search_form'] = SearchForm()
         context['events'] = Event.objects.order_by('-publish_timestamp')[:5]
         context['bls'] = blacklist.objects.order_by('-datetime')[:5]
         context['tws'] = tweet.objects.order_by('-datetime')[:5]
@@ -34,7 +34,7 @@ class CrossView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['cc_search_form'] = CCSearchForm(self.request.GET)
+        context['search_form'] = SearchForm(self.request.GET)
         keyword = self.request.GET.get('keyword')
         if keyword is not None:
             context['bls'] = blacklist.objects.filter(Q(ip=keyword)|Q(domain__contains=keyword)|Q(url__contains=keyword))
@@ -65,7 +65,7 @@ class CrossView(TemplateView):
 
 class LookupView(View):
     def get(self, request, **kwargs):
-        value = request.GET.get('value')
+        value = request.GET.get('keyword')
         if self.is_valid_ip(value):
             return redirect('ip:detail', pk=value)
         elif self.is_valid_domain(value):
@@ -74,6 +74,8 @@ class LookupView(View):
             return HttpResponseRedirect(reverse("url:index") + urlquote(value, safe='') + '/')
         elif self.is_valid_hash(value):
             return redirect('filehash:detail', pk=value)
+        else:
+            return redirect('/cross?keyword=' + value)
         return redirect('index')
 
     def is_valid_ip(self, value):
