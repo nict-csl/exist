@@ -43,13 +43,6 @@ class Tracker():
             'comment',
         ]
 
-    def delComment(self, l):
-        result = []
-        for line in l:
-            if not line.startswith('#'):
-                result.append(line)
-        return result
-
     def parseCidr(self, cidr):
         iplist = []
         if '-' in cidr:
@@ -74,29 +67,30 @@ class Tracker():
 
         df = self.makeDataframe()
         queries = []
-        if not df.empty:
-            df = df.drop(0)
-            df = df.fillna('')
-            for i, v in df.iterrows():
-                iplist = self.parseCidr(v.cidr)
-                for ip in iplist:
-                    line = str(self.ID) + ","
-                    line += str(ip) + str(v.values)
-                    md5 = hashlib.md5(line.encode('utf-8')).hexdigest()
-                    description = str(v.org) + '\n' + str(v.fqdn) + '\n' + str(v.comment)
-                    try:
-                        query = blacklist(
-                            id = md5,
-                            ip = str(ip),
-                            datetime = tzone.now(),
-                            description = description,
-                            source = self.ID,
-                        )
-                    except Exception as e:
-                        logger.error("%s: %s", e, line)
-                    queries.append(query)
-        else:
+        if df.empty:
             logger.info("no update")
+            return queries
+
+        df = df.drop(0)
+        df = df.fillna('')
+        for i, v in df.iterrows():
+            iplist = self.parseCidr(v.cidr)
+            for ip in iplist:
+                line = str(self.ID) + ","
+                line += str(ip) + str(v.values)
+                md5 = hashlib.md5(line.encode('utf-8')).hexdigest()
+                description = str(v.org) + '\n' + str(v.fqdn) + '\n' + str(v.comment)
+                try:
+                    query = blacklist(
+                        id = md5,
+                        ip = str(ip),
+                        datetime = tzone.now(),
+                        description = description,
+                        source = self.ID,
+                    )
+                except Exception as e:
+                    logger.error("%s: %s", e, line)
+                queries.append(query)
 
         logger.info("done parsing: %s, %s queries were parsed", self.name, len(queries))
         return queries
