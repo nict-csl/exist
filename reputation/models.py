@@ -9,6 +9,7 @@ class blacklist(models.Model):
     SOURCES = (
         (101, 'SecureWorks IP'),
         (102, 'SecureWorks Doamin'),
+        (111, 'Scanners'),
         (201, 'MalwareDomainList'),
         (211, 'abuse.ch Ransomware Tracker'),
         (212, 'abuse.ch ZeuS Tracker'),

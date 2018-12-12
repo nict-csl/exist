@@ -28,7 +28,7 @@
         </tr>
         <tr>
             <th>Description</th>
-            <td style="word-wrap:break-word;">{{ object.description | default_if_none:'' }}</td>
+            <td style="word-wrap:break-word;">{{ object.description | default_if_none:'' | linebreaksbr }}</td>
         </tr>
         <tr>
             <th>Referrer</th>
