@@ -6,21 +6,21 @@ import slackwrapper
 import sys
 import os
 import random
-from datetime import datetime, timezone, timedelta
-import django
 import configparser
 import argparse
 import json
 from requests_oauthlib import OAuth1Session
-import pymysql
-pymysql.install_as_MySQLdb()
+from datetime import datetime, timezone, timedelta
 
 version = '%(prog)s 20171116'
+
+## Django Setup
+import django
+import pymysql
+pymysql.install_as_MySQLdb()
 conffile = os.path.join(os.path.dirname(__file__), 'conf/twitter.conf')
 conf = configparser.SafeConfigParser()
 conf.read(conffile)
-
-## Django Setup
 sys.path.append(conf.get('exist', 'syspath'))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'intelligence.settings')
 django.setup()
@@ -28,16 +28,19 @@ from twitter_hunter.models import tweet, Hunt
 from django.db import IntegrityError
 
 ## Logger Setup
-from logging import getLogger, StreamHandler, FileHandler, DEBUG, Formatter
+from logging.handlers import TimedRotatingFileHandler
+from logging import getLogger, DEBUG, Formatter
 logfilename = os.path.join(os.path.dirname(__file__), 'logs/hunter.log')
-logger = getLogger(__name__)
-#handler_stream = StreamHandler()
-#handler_stream.setFormatter(logging.Formatter("%(asctime)s %(levelname)8s %(message)s"))
-handler_file = FileHandler(filename=logfilename)
-handler_file.setFormatter(Formatter("%(asctime)s %(levelname)8s %(message)s"))
+logger = getLogger()
+handler = TimedRotatingFileHandler(
+    filename=logfilename,
+    when="D",
+    interval=1,
+    backupCount=31,
+)
+handler.setFormatter(Formatter("%(asctime)s %(name)s %(funcName)s [%(levelname)s]: %(message)s"))
 logger.setLevel(DEBUG)
-#logger.addHandler(handler_stream)
-logger.addHandler(handler_file)
+logger.addHandler(handler)
 logger.propagate = False
 
 def argParse():
