@@ -24,7 +24,7 @@
         <td style="word-wrap:break-word;"><a href="{% url 'threat:event_detail' event.id %}">{{ event.info }}</a></td>
         <td style="word-wrap:break-word;">
             {% for tag in event.tags.all %}
-            <a href="{{ request.path }}?tag={{ tag.id }}"><span class="badge badge-secondary">{{ tag.name }}</span></a> 
+            <a href="{{ request.path }}?{{ request.GET.urlencode }}&tag={{ tag.id }}"><span class="badge badge-secondary shadow" style="color: {{ tag.get_textcolor }}; background-color: {{ tag.colour }};">{{ tag.name }}</span></a>
             {% endfor %}
         </td>
         <td>{{ event.get_threat_level_id_display }}</td>
