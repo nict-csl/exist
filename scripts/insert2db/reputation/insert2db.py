@@ -77,6 +77,8 @@ if __name__ == '__main__':
 
     modules = list(map(lambda x:x[0], inspect.getmembers(plugins, inspect.ismodule)))
     for module in modules:
+        if module == 'glob' or module == 'os':
+            continue
         try:
             queries = getattr(plugins, module).Tracker().parse()
         except Exception as e:
@@ -85,6 +87,8 @@ if __name__ == '__main__':
 
     modules = list(map(lambda x:x[0], inspect.getmembers(plugins_private, inspect.ismodule)))
     for module in modules:
+        if module == 'glob' or module == 'os':
+            continue
         try:
             queries = getattr(plugins_private, module).Tracker().parse()
         except Exception as e:
