@@ -138,3 +138,12 @@ class CodeView(TemplateView):
         context['websrc'] = f.read()
         f.close()
         return context
+
+def getContents(request, pk):
+    filepath = 'static/websrc/' + pk
+    f = open(filepath, 'rb')
+    contents = f.read()
+    f.close()
+    response = HttpResponse(contents)
+    response["Content-Disposition"] = "filename=%s" % pk
+    return response
