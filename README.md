@@ -2,9 +2,9 @@
 
 EXIST is a web application for aggregating and analyzing threat intelligence.
 
-## EXIST is written by the following software.
-- Python 3.5.1
-- Django 1.11.5
+- EXIST is written by the following software.
+ - Python 3.5.1
+ - Django 1.11.5
 
 ## Getting started
 
