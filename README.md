@@ -35,17 +35,17 @@ $ sudo systemctl start mariadb
 $ sudo systemctl enable mariadb
 ```
 
-### Migrate Database
+### Migrate database
 
 ```
-$ manage.py makemigrations
-$ manage.py migrate
+$ python manage.py makemigrations
+$ python manage.py migrate
 ```
 
 ### Run web server
 
 ```
-$ manage.py runserver 0.0.0.0:8000
+$ python manage.py runserver 0.0.0.0:8000
 ```
 
 - Access to http://[YourWebServer]:8000 with your browser.
@@ -72,7 +72,7 @@ $ sudo systemctl enable redis
 ### Run scripts
 
 ```
-$ scripts/insert2db/reputation/insert2db.py
+$ python scripts/insert2db/reputation/insert2db.py
 ```
 
 > **Note:** To automate information collection, write them in your cron.
