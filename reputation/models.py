@@ -10,6 +10,7 @@ class blacklist(models.Model):
         (101, 'SecureWorks IP'),
         (102, 'SecureWorks Doamin'),
         (111, 'Scanners'),
+        (121, 'TeamT5 C2'),
         (201, 'MalwareDomainList'),
         (211, 'abuse.ch Ransomware Tracker'),
         (212, 'abuse.ch ZeuS Tracker'),
