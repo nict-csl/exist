@@ -28,13 +28,13 @@ logger.addHandler(NullHandler())
 logger.setLevel(DEBUG)
 logger.propagate = True
 
-DataDir = os.path.join(os.path.dirname(__file__), '../data/')
+DataDir = conf.get('t5_c2', 'DataDir')
 
 class Tracker():
     def __init__(self):
         self.name = 'TeamT5_c2'
         self.ID = 121
-        self.DataFilePathList = glob.glob(DataDir + 't5_c2/*.csv')
+        self.DataFilePathList = glob.glob(DataDir + '*.csv')
         self.header = [
             'IP',
             'last_seen',

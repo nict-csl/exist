@@ -6,3 +6,6 @@ token = YOUR_TOKEN
 
 [malshare]
 api_key = YOUR_API_KEY
+
+[t5_c2]
+DataDir = YOUR_T5_DATA_DIR
