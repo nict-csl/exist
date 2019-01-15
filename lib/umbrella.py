@@ -26,20 +26,29 @@ class Umbrella():
     def get_dnsdb(self, domain):
         url = self.__baseURL + "dnsdb/name/a/" + domain
         r = requests.get(url, headers=self.__headers)
-        a = json.loads(r.text)
+        try:
+            a = json.loads(r.text)
+        except:
+            return
         return a
 
     def get_cname(self, domain):
         url = self.__baseURL + "dnsdb/name/cname/" + domain
         r = requests.get(url, headers=self.__headers)
-        a = json.loads(r.text)
+        try:
+            a = json.loads(r.text)
+        except:
+            return
         return a
 
     def get_score(self, domain):
         score = 0
         url = self.__baseURL + "domains/risk-score/" + domain
         r = requests.get(url, headers=self.__headers)
-        score = json.loads(r.text)
+        try:
+            score = json.loads(r.text)
+        except:
+            return
         return score
 
     def get_samples(self, domain):
@@ -48,7 +57,10 @@ class Umbrella():
             r = requests.get(url, headers=self.__headers)
         except Exception as e:
             return e
-        samples = json.loads(r.text)
+        try:
+            samples = json.loads(r.text)
+        except:
+            return
         return samples
 
     def get_sample(self, filehash):
@@ -57,7 +69,10 @@ class Umbrella():
             r = requests.get(url, headers=self.__headers)
         except Exception as e:
             return e
-        sample = json.loads(r.text)
+        try:
+            sample = json.loads(r.text)
+        except:
+            return
         return sample
 
 def ArgParse():

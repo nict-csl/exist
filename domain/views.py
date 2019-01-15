@@ -52,18 +52,18 @@ class DetailView(TemplateView):
         context['umbrella_cname'] = umb.get_cname(domain)
         try:
             context['umbrella_score'] = umb.get_score(domain)['risk_score']
-        except KeyError:
+        except Exception as e:
             pass
         context['umbrella_samples'] = umb.get_samples(domain)
 
         dt = DomainTools()
         try:
             context['domaintools_domainprofile'] = dt.getDomainProfile(domain)['response']
-        except KeyError:
+        except Exception as e:
             pass
         try:
             context['domaintools_whois'] = dt.getWhois(domain)['response']['parsed_whois']
-        except KeyError:
+        except Exception as e:
             pass
 
         vt = VT()
