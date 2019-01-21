@@ -13,7 +13,6 @@ from threat.models import Event, Attribute
 from reputation.models import blacklist
 from twitter.models import tweet
 from exploit.models import Exploit
-from vuln.models import Vuln
 
 class IndexView(TemplateView):
     template_name = 'domain/index.html'
@@ -94,10 +93,6 @@ class DetailView(TemplateView):
         count = context['exs'].count()
         if count > 0:
             context['exs_count'] = count
-        context['vus'] = Vuln.objects.filter(Q(title__icontains=domain)).order_by('-vulndb_last_modified')
-        count = context['vus'].count()
-        if count > 0:
-            context['vus_count'] = count
 
         return context
 

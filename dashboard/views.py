@@ -10,7 +10,6 @@ from threat.models import Event, Attribute
 from reputation.models import blacklist
 from twitter.models import tweet
 from exploit.models import Exploit
-from vuln.models import Vuln
 #from .forms import CCSearchForm, LookupForm
 from .forms import SearchForm
 import ipaddress
@@ -26,7 +25,6 @@ class IndexView(TemplateView):
         context['bls'] = blacklist.objects.order_by('-datetime')[:5]
         context['tws'] = tweet.objects.order_by('-datetime')[:5]
         context['exs'] = Exploit.objects.order_by('-datetime')[:5]
-        context['vus'] = Vuln.objects.exclude(vulndb_published_date='1999-01-01 00:00:00+09:00').order_by('-vulndb_last_modified')[:5]
         return context
 
 class CrossView(TemplateView):
@@ -57,10 +55,6 @@ class CrossView(TemplateView):
             count = context['exs'].count()
             if count > 0:
                 context['exs_count'] = count
-            context['vus'] = Vuln.objects.filter(Q(title__icontains=keyword)|Q(nvds__id=keyword)).order_by('-vulndb_last_modified')
-            count = context['vus'].count()
-            if count > 0:
-                context['vus_count'] = count
         return context
 
 class LookupView(View):

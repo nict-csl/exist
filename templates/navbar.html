@@ -19,7 +19,7 @@
                         <a class="dropdown-item" href="{% url 'threat:org_list' %}">Orgs</a>
                     </div>
                 </li>
-                <li class={% if request.resolver_match.app_name == 'reputation' or request.resolver_match.app_name == 'twitter' or request.resolver_match.app_name == 'exploit' or request.resolver_match.app_name == 'vuln' %}"nav-item dropdown active"{% endif %}"nav-item dropdown">
+                <li class={% if request.resolver_match.app_name == 'reputation' or request.resolver_match.app_name == 'twitter' or request.resolver_match.app_name == 'exploit' %}"nav-item dropdown active"{% endif %}"nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Tracker
                     </a>
@@ -27,7 +27,6 @@
                         <a class="dropdown-item" href="{% url 'reputation:index' %}">Reputation Tracker</a>
                         <a class="dropdown-item" href="{% url 'twitter:index' %}">Twitter Tracker</a>
                         <a class="dropdown-item" href="{% url 'exploit:index' %}">Exploit Tracker</a>
-                        <a class="dropdown-item" href="{% url 'vuln:index' %}">Vuln Tracker</a>
                     </div>
                 </li>
                 <li class={% if request.resolver_match.app_name == 'twitter_hunter' or request.resolver_match.app_name == 'threat_hunter' %}"nav-item dropdown active"{% endif %}"nav-item dropdown">
