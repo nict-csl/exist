@@ -80,7 +80,3 @@ $ python scripts/insert2db/reputation/insert2db.py
 ## Setting hunter
 
 Configration files are [scripts/hunter](scripts/hunter)/\*/conf/\*.conf. Create them in reference to \*.conf.template.
-
-
-## References
-[wiki](http://ctl-www.analysis.net/wiki/crouton/jintelligence)
