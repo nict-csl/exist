@@ -48,9 +48,6 @@
         <a class="nav-link" id="virustotal-tab" data-toggle="tab" href="#virustotal">VirusTotal</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" id="umbrella-tab" data-toggle="tab" href="#umbrella">Umbrella</a>
-    </li>
-    <li class="nav-item">
         <a class="nav-link" id="threatminer-tab" data-toggle="tab" href="#threatminer">ThreatMiner</a>
     </li>
 </ul>
@@ -158,39 +155,6 @@
                 </div>
             </div>
         </div>
-
-    </div>
-    <div class="tab-pane fade" id="umbrella" role="tabpanel" aria-labelledby="umbrella-tab">
-
-        <img class="p-3" src="{% static 'img/Cisco-Umbrella-logo.jpg' %}" height="80" alt="Umbrella">
-        <table class="table table-hover w-100">
-            <thead>
-            <tr>
-                <th>Score</th>
-                <th>sha256</th>
-                <th class="w-25">MagicType</th>
-                <th>AV Result</th>
-            </tr>
-            </thead>
-            {% for sample in umbrella_samples.samples %}
-            <tr>
-                <td>
-                {% if sample.threatScore < 20 %}
-                <button class="btn btn-sm shadow text-white bg-info">
-                {% elif sample.threatScore < 70 %}
-                <button class="btn btn-sm shadow text-dark bg-warning">
-                {% else %}
-                <button class="btn btn-sm shadow text-white bg-danger">
-                {% endif %}
-                    {{ sample.threatScore }}
-                </button>
-                </td>
-                <td><a href="{% url 'filehash:detail' sample.sha256 %}">{{ sample.sha256 }}</a></td>
-                <td>{{ sample.magicType }}</td>
-                <td>{% for av in sample.avresults %}{{ av.signature }} <p class="font-italic text-muted" style="display:inline;">({{ av.product }})</p><br>{% endfor %}</td>
-            </tr>
-            {% endfor %}
-        </table>
 
     </div>
     <div class="tab-pane fade" id="threatminer" role="tabpanel" aria-labelledby="theatminer-tab">

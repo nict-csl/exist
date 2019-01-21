@@ -2,7 +2,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import TemplateView, DetailView
 from .forms import SearchForm
-from lib.umbrella import Umbrella
 from lib.domaintools import DomainTools
 from lib.geoip import GeoIP
 from lib.vt import VT
@@ -41,9 +40,6 @@ class DetailView(TemplateView):
             context['domain'] = socket.gethostbyaddr(ip)[0]
         except Exception as e:
             pass
-
-        umb = Umbrella()
-        context['umbrella_samples'] = umb.get_samples(ip)
 
         dt = DomainTools()
         try:

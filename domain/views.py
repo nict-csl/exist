@@ -2,7 +2,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import TemplateView, DetailView
 from .forms import SearchForm
-from lib.umbrella import Umbrella
 from lib.domaintools import DomainTools
 from lib.geoip import GeoIP
 from lib.vt import VT
@@ -45,15 +44,6 @@ class DetailView(TemplateView):
             context['ipaddress'] = socket.gethostbyname(domain)
         except Exception as e:
             pass
-
-        umb = Umbrella()
-        context['umbrella_dnsdb'] = umb.get_dnsdb(domain)
-        context['umbrella_cname'] = umb.get_cname(domain)
-        try:
-            context['umbrella_score'] = umb.get_score(domain)['risk_score']
-        except Exception as e:
-            pass
-        context['umbrella_samples'] = umb.get_samples(domain)
 
         dt = DomainTools()
         try:

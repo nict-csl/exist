@@ -2,7 +2,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import TemplateView, DetailView
 from .forms import SearchForm
-from lib.umbrella import Umbrella
 from lib.vt import VT
 from lib.threatminer import ThreatMiner
 from django.db.models import Q
@@ -33,9 +32,6 @@ class DetailView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['search_form'] = SearchForm()
         filehash = self.kwargs['pk']
-
-        umb = Umbrella()
-        context['umbrella_sample'] = umb.get_sample(filehash)
 
         vt = VT()
         context['vt_hash'] = vt.getFileReport(filehash)

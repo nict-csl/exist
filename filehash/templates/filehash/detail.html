@@ -15,8 +15,6 @@
                 <td>
                     {% if vt_hash.md5 %}
                     {{ vt_hash.md5 }}
-                    {% elif umbrella_sample.md5 %}
-                    {{ umbrella_sample.md5 }}
                     {% elif tm_meta.results.0.md5 %}
                     {{ tm_meta.results.0.md5 }}
                     {% endif %}
@@ -27,8 +25,6 @@
                 <td>
                     {% if vt_hash.sha1 %}
                     {{ vt_hash.sha1 }}
-                    {% elif umbrella_sample.sha1 %}
-                    {{ umbrella_sample.sha1 }}
                     {% elif tm_meta.results.0.sha1 %}
                     {{ tm_meta.results.0.sha1 }}
                     {% endif %}
@@ -39,8 +35,6 @@
                 <td>
                     {% if vt_hash.sha256 %}
                     {{ vt_hash.sha256 }}
-                    {% elif umbrella_sample.sha256 %}
-                    {{ umbrella_sample.sha256 }}
                     {% elif tm_meta.results.0.sha256 %}
                     {{ tm_meta.results.0.sha256 }}
                     {% endif %}
@@ -63,8 +57,6 @@
                 <td>
                     {% if vt_hash.additional_info.magic %}
                     {{ vt_hash.additional_info.magic }}
-                    {% elif umbrella_sample.magicType %}
-                    {{ umbrella_sample.magicType }}
                     {% elif tm_meta.results.0.file_type %}
                     {{ tm_meta.results.0.file_type }}
                     {% endif %}
@@ -75,8 +67,6 @@
                 <td>
                     {% if vt_hash.size %}
                     {{ vt_hash.size|filesizeformat }}
-                    {% elif umbrella_sample.size %}
-                    {{ umbrella_sample.size|filesizeformat }}
                     {% elif tm_meta.results.0.file_size %}
                     {{ tm_meta.results.0.file_size|filesizeformat }}
                     {% endif %}
@@ -98,22 +88,6 @@
                 {% endif %}
                 </td>
             </tr>
-            <tr>
-                <th>Umbrella Threat Score</th>
-                <td>
-                {% if umbrella_sample.threatScore %}
-                {% if umbrella_sample.threatScore < 20 %}
-                <button class="btn btn-sm shadow text-white bg-info">
-                {% elif umbrella_sample.threatScore < 70 %}
-                <button class="btn btn-sm shadow text-dark bg-warning">
-                {% else %}
-                <button class="btn btn-sm shadow text-white bg-danger">
-                {% endif %}
-                    {{ umbrella_sample.threatScore }}
-                </button>
-                {% endif %}
-                </td>
-            </tr>
         </table>
     </div>
 </div>
@@ -124,9 +98,6 @@
     </li>
     <li class="nav-item">
         <a class="nav-link" id="virustotal-tab" data-toggle="tab" href="#virustotal">VirusTotal</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" id="umbrella-tab" data-toggle="tab" href="#umbrella">Umbrella</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" id="threatminer-tab" data-toggle="tab" href="#threatminer">ThreatMiner</a>
@@ -447,194 +418,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="tab-pane fade" id="umbrella" role="tabpanel" aria-labelledby="umbrella-tab">
-
-        <img class="p-3" src="{% static 'img/Cisco-Umbrella-logo.jpg' %}" height="80" alt="Umbrella">
-        <ul class="nav nav-tabs nav-pills">
-            <li class="nav-item">
-                <a class="nav-link active" id="umbrella-base-tab" data-toggle="tab" href="#umbrella-base">Base Info</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="umbrella-connections-tab" data-toggle="tab" href="#umbrella-connections">Connections{% if umbrella_sample.connections.connections %}<span class="badge badge-secondary ml-2">{{ umbrella_sample.connections.connections|length }}</span>{% endif %}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="umbrella-behaviors-tab" data-toggle="tab" href="#umbrella-behaviors">Behaviors{% if umbrella_sample.behaviors  %}<span class="badge badge-secondary ml-2">{{ umbrella_sample.behaviors|length }}</span>{% endif %}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="umbrella-samples-tab" data-toggle="tab" href="#umbrella-samples">Samples{% if umbrella_sample.samples.samples %}<span class="badge badge-secondary ml-2">{{ umbrella_sample.samples.samples|length }}</span>{% endif %}</a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane fade show active" id="umbrella-base" role="tabpanel" aria-labelledby="umbrella-base-tab">
-
-                <div class="container">
-                    <table class="table table-striped">
-                        <tr>
-                            <th>md5</th>
-                            <td>{{ umbrella_sample.md5 }}</td>
-                        </tr>
-                        <tr>
-                            <th>sha1</th>
-                            <td>{{ umbrella_sample.sha1 }}</td>
-                        </tr>
-                        <tr>
-                            <th>sha256</th>
-                            <td>{{ umbrella_sample.sha256 }}</td>
-                        </tr>
-                        <tr>
-                            <th>Threat Score</th>
-                            <td>
-                            {% if umbrella_sample.threatScore %}
-                            {% if umbrella_sample.threatScore < 20 %}
-                            <button class="btn btn-sm shadow text-white bg-info">
-                            {% elif umbrella_sample.threatScore < 70 %}
-                            <button class="btn btn-sm shadow text-dark bg-warning">
-                            {% else %}
-                            <button class="btn btn-sm shadow text-white bg-danger">
-                            {% endif %}
-                                {{ umbrella_sample.threatScore }}
-                            </button>
-                            {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Magic Type</th>
-                            <td>{{ umbrella_sample.magicType }}</td>
-                        </tr>
-                        <tr>
-                            <th>Size</th>
-                            <td>{{ umbrella_sample.size|filesizeformat }}</td>
-                        </tr>
-                        <tr>
-                            <th>First Seen</th>
-                            <td>{% if umbrella_sample.firstSeen %}{{ umbrella_sample.firstSeen|unixtimetostrmillisec }}{% endif %}</td>
-                        </tr>
-                        <tr>
-                            <th>Last Seen</th>
-                            <td>{% if umbrella_sample.lastSeen %}{{ umbrella_sample.lastSeen|unixtimetostrmillisec }}{% endif %}</td>
-                        </tr>
-                        <tr>
-                            <th>AV Detections</th>
-                            <td>{% for av in umbrella_sample.avresults %}{{ av.signature }} <p class="font-italic text-muted" style="display:inline;">({{ av.product }})</p><br>{% endfor %}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="umbrella-connections" role="tabpanel" aria-labelledby="umbrella-connections-tab">
-                <table class="table table-hover w-100">
-                    <thead>
-                    <tr>
-                        <th>IPs</th>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>URLs</th>
-                        <th>SecurityCategories</th>
-                        <th>ThreatTypes</th>
-                    </tr>
-                    </thead>
-                    {% for con in umbrella_sample.connections.connections %}
-                    <tr>
-                        <td>{% for ip in con.ips %}<a href="{% url 'ip:detail' ip %}">{{ ip }}</a><br>{% endfor %}</td>
-                        <td><a href="{% url 'domain:detail' con.name %}">{{ con.name }}</a></td>
-                        <td>{{ con.type }}</td>
-                        <td>{% for url in con.urls %}<a href="{% url 'url:index' %}?keyword={{ url }}">{{ url }}</a><br>{% endfor %}</td>
-                        <td>{% for cat in con.securityCategories %}{{ cat }}<br>{% endfor %}</td>
-                        <td>{% for type in con.threatTypes %}{{ type }}<br>{% endfor %}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            </div>
-            <div class="tab-pane fade" id="umbrella-behaviors" role="tabpanel" aria-labelledby="umbrella-behaviors-tab">
-        
-                <table class="table table-hover w-100">
-                    <thead>
-                    <tr>
-                        <th>Threat</th>
-                        <th>Severity</th>
-                        <th>Confidence</th>
-                        <th>Title</th>
-                        <th>Name</th>
-                        <th>Hits</th>
-                        <th>Category</th>
-                        <th>Tags</th>
-                    </tr>
-                    </thead>
-                    {% for behavior in umbrella_sample.behaviors|dictsortreversed:"threat" %}
-                    <tr>
-                        <td>
-                        {% if behavior.threat < 20 %}
-                        <button class="btn btn-sm shadow text-white bg-info">
-                        {% elif behavior.threat < 70 %}
-                        <button class="btn btn-sm shadow text-dark bg-warning">
-                        {% else %}
-                        <button class="btn btn-sm shadow text-white bg-danger">
-                        {% endif %}
-                            {{ behavior.threat }}
-                        </button>
-                        </td>
-                        <td>
-                        {% if behavior.severity < 20 %}
-                        <button class="btn btn-sm shadow text-white bg-info">
-                        {% elif behavior.severity < 70 %}
-                        <button class="btn btn-sm shadow text-dark bg-warning">
-                        {% else %}
-                        <button class="btn btn-sm shadow text-white bg-danger">
-                        {% endif %}
-                            {{ behavior.severity }}
-                        </button>
-                        </td>
-                        <td>
-                        {% if behavior.confidence < 20 %}
-                        <button class="btn btn-sm shadow text-white bg-info">
-                        {% elif behavior.confidence < 70 %}
-                        <button class="btn btn-sm shadow text-dark bg-warning">
-                        {% else %}
-                        <button class="btn btn-sm shadow text-white bg-danger">
-                        {% endif %}
-                            {{ behavior.confidence }}
-                        </button>
-                        </td>
-                        <td>{{ behavior.title }}</td>
-                        <td>{{ behavior.name }}</td>
-                        <td>{{ behavior.hits }}</td>
-                        <td>{% for cat in behavior.category %}{{ cat }}<br>{% endfor %}</td>
-                        <td>{% for tag in behavior.tags %}{{ tag }}<br>{% endfor %}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            </div>
-            <div class="tab-pane fade" id="umbrella-samples" role="tabpanel" aria-labelledby="umbrella-samples-tab">
-                <table class="table table-hover w-100">
-                    <thead>
-                    <tr>
-                        <th>Score</th>
-                        <th>sha256</th>
-                        <th class="w-25">MagicType</th>
-                        <th>AV Result</th>
-                    </tr>
-                    </thead>
-                    {% for sample in umbrella_sample.samples.samples %}
-                    <tr>
-                        <td>
-                        {% if sample.threatScore < 20 %}
-                        <button class="btn btn-sm shadow text-white bg-info">
-                        {% elif sample.threatScore < 70 %}
-                        <button class="btn btn-sm shadow text-dark bg-warning">
-                        {% else %}
-                        <button class="btn btn-sm shadow text-white bg-danger">
-                        {% endif %}
-                            {{ sample.threatScore }}
-                        </button>
-                        </td>
-                        <td><a href="{% url 'filehash:detail' sample.sha256 %}">{{ sample.sha256 }}</a></td>
-                        <td>{{ sample.magicType }}</td>
-                        <td>{% for av in sample.avresults %}{{ av.signature }} <p class="font-italic text-muted" style="display:inline;">({{ av.product }})</p><br>{% endfor %}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
             </div>
         </div>
     </div>
