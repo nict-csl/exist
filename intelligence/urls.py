@@ -15,23 +15,23 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from dashboard.views import IndexView, CrossView, LookupView
+from apps.dashboard.views import IndexView, CrossView, LookupView
 from . import apis
 
 urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
     url(r'^cross$', CrossView.as_view(), name='cross'),
     url(r'^lookup$', LookupView.as_view(), name='lookup'),
-    url(r'^reputation/', include('reputation.urls')),
-    url(r'^twitter/', include('twitter.urls')),
-    url(r'^twitter_hunter/', include('twitter_hunter.urls')),
-    url(r'^exploit/', include('exploit.urls')),
-    url(r'^threat/', include('threat.urls')),
-    url(r'^threat_hunter/', include('threat_hunter.urls')),
-    url(r'^domain/', include('domain.urls')),
-    url(r'^ip/', include('ip.urls')),
-    url(r'^hash/', include('filehash.urls')),
-    url(r'^url/', include('url.urls')),
+    url(r'^reputation/', include('apps.reputation.urls')),
+    url(r'^twitter/', include('apps.twitter.urls')),
+    url(r'^twitter_hunter/', include('apps.twitter_hunter.urls')),
+    url(r'^exploit/', include('apps.exploit.urls')),
+    url(r'^threat/', include('apps.threat.urls')),
+    url(r'^threat_hunter/', include('apps.threat_hunter.urls')),
+    url(r'^domain/', include('apps.domain.urls')),
+    url(r'^ip/', include('apps.ip.urls')),
+    url(r'^hash/', include('apps.filehash.urls')),
+    url(r'^url/', include('apps.url.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include(apis.router.urls)),
 ]

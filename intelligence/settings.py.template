@@ -83,7 +83,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries':{
-                'lookup': 'reputation.templatetags.lookup',
+                'lookup': 'apps.reputation.templatetags.lookup',
                 }
         },
     },
