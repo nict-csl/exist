@@ -20,7 +20,7 @@ conf.read(conffile)
 sys.path.append(conf.get('exist', 'syspath'))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'intelligence.settings')
 django.setup()
-from reputation.models import blacklist
+from apps.reputation.models import blacklist
 import django.utils.timezone as tzone
 from django.db import IntegrityError
 

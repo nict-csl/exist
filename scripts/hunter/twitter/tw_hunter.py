@@ -24,7 +24,7 @@ conf.read(conffile)
 sys.path.append(conf.get('exist', 'syspath'))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'intelligence.settings')
 django.setup()
-from twitter_hunter.models import tweet, Hunt
+from apps.twitter_hunter.models import tweet, Hunt
 from django.db import IntegrityError
 
 ## Logger Setup

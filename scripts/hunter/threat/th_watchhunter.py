@@ -16,7 +16,7 @@ conf.read(conffile)
 sys.path.append(conf.get('exist', 'syspath'))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'intelligence.settings')
 django.setup()
-from threat_hunter.models import Hunt
+from apps.threat_hunter.models import Hunt
 
 ## Logger Setup
 from logging.handlers import TimedRotatingFileHandler

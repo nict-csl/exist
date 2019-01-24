@@ -25,8 +25,8 @@ conf.read(conffile)
 sys.path.append(conf.get('exist', 'syspath'))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'intelligence.settings')
 django.setup()
-from threat_hunter.models import Hunt
-from threat.models import Event, Attribute
+from apps.threat_hunter.models import Hunt
+from apps.threat.models import Event, Attribute
 from django.db import IntegrityError
 from django.db.models import Q
 
