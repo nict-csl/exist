@@ -9,7 +9,10 @@ version = '%(prog)s 20180910'
 
 class GeoIP():
     def __init__(self):
-        self.reader = geoip2.database.Reader('/usr/share/GeoIP/GeoLite2-City.mmdb')
+        conffile = 'conf/geoip.conf'
+        conf = configparser.SafeConfigParser()
+        conf.read(conffile)
+        self.reader = geoip2.database.Reader(conf.get('geoip', 'database'))
 
     def lookup(self, ip):
         if ip.find(".") != -1:
