@@ -2,7 +2,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import TemplateView, DetailView
 from .forms import SearchForm
-from lib.domaintools import DomainTools
 from lib.geoip import GeoIP
 from lib.vt import VT
 from lib.threatminer import ThreatMiner
@@ -39,16 +38,6 @@ class DetailView(TemplateView):
         try:
             context['domain'] = socket.gethostbyaddr(ip)[0]
         except Exception as e:
-            pass
-
-        dt = DomainTools()
-        try:
-            context['domaintools_domainprofile'] = dt.getDomainProfile(ip)['response']
-        except KeyError:
-            pass
-        try:
-            context['domaintools_whois'] = dt.getWhois(ip)['response']['parsed_whois']
-        except KeyError:
             pass
 
         vt = VT()

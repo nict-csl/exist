@@ -22,10 +22,6 @@
             <td>{{ geoip }}</td>
         </tr>
         <tr>
-            <th>Networks</th>
-            <td>{% for net in domaintools_whois.networks %}{{ net.range.cidr }} ({{ net.name }})<br>{% endfor %}</td>
-        </tr>
-        <tr>
             <th>AS Number</th>
             <td>{{ vt_ip.asn }}</td>
         </tr>
