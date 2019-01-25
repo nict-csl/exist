@@ -1,0 +1,3 @@
+[geoip]
+#database = /usr/share/GeoIP/GeoLite2-City.mmdb
+database = YOUR_GEOIP_DB_PATH
