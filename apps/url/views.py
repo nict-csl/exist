@@ -9,6 +9,7 @@ import os
 import subprocess
 import hashlib
 import requests
+import imgkit
 from django.db.models import Q
 from apps.threat.models import Event, Attribute
 from apps.reputation.models import blacklist
@@ -109,9 +110,11 @@ class DetailView(TemplateView):
     def getImage(self, url):
         imagehash = hashlib.md5(url.encode('utf-8')).hexdigest()
         filepath = "static/webimg/" + imagehash + ".png"
+        options = {
+            'quiet': '',
+        }
         if not os.path.exists(filepath):
-            cmd = "/usr/local/bin/wkhtmltoimage " + url + " " + filepath
-            subprocess.Popen(cmd, shell=True)
+            imgkit.from_url(url, filepath, options=options)
         return filepath
 
     def getSrc(self, url):

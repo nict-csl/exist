@@ -12,6 +12,7 @@ django-pure-pagination==0.3.0
 djangorestframework==3.6.4
 geoip2==2.9.0
 idna==2.6
+imgkit==1.0.1
 kombu==4.2.1
 maxminddb==1.4.1
 numpy==1.13.3
