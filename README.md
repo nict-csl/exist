@@ -8,7 +8,7 @@ EXIST is a web application for aggregating and analyzing threat intelligence.
 
 ## Getting started
 
-After that I assume the environment of CentOS 7. Please at your own if building in other environment.
+After that I assume the environment of CentOS 7. Please at your own when deploying to other environment.
 
 ### Install python modules
 
