@@ -4,6 +4,7 @@ import socket
 import sys
 import geoip2.database
 import argparse
+import configparser
 
 version = '%(prog)s 20180910'
 
