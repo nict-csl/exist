@@ -1,15 +1,3 @@
-[auth-default]
-CK = YOUR_CK
-CS = YOUR_CS
-AT = YOUR_AT
-AS = YOUR_AS
-
-[auth-timeline]
-CK = YOUR_CK
-CS = YOUR_CS
-AT = YOUR_AT
-AS = YOUR_AS
-
 [auth-hunter00]
 CK = YOUR_CK
 CS = YOUR_CS
@@ -124,12 +112,6 @@ CS = YOUR_CS
 AT = YOUR_AT
 AS = YOUR_AS
 
-[auth-hunter-dev]
-CK = YOUR_CK
-CS = YOUR_CS
-AT = YOUR_AT
-AS = YOUR_AS
-
 [url]
 timeline = https://api.twitter.com/1.1/statuses/home_timeline.json
 filter = https://stream.twitter.com/1.1/statuses/filter.json
@@ -137,3 +119,4 @@ showuser = https://api.twitter.com/1.1/users/show.json
 
 [exist]
 syspath = YOUR_SYSPATH
+
