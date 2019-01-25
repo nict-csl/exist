@@ -38,7 +38,7 @@ $ sudo systemctl enable mariadb
 ### Migrate database
 
 ```
-$ python manage.py makemigrations
+$ python manage.py makemigrations exploit reputation threat threat_hunter twitter twitter_hunter
 $ python manage.py migrate
 ```
 
