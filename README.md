@@ -23,11 +23,6 @@ $ curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 $ sudo yum install MariaDB-server MariaDB-client
 ```
 
-### Database setting
-
-- Create datebase and user.
-- Create intelligence/settings.py in reference to [intelligence/settings.py.template](intelligence/settings.py.template). And edit according to your DB settings.
-
 ### Run database
 
 ```
@@ -35,11 +30,25 @@ $ sudo systemctl start mariadb
 $ sudo systemctl enable mariadb
 ```
 
+### Database setting
+
+- Create datebase and user.
+- Create intelligence/settings.py in reference to [intelligence/settings.py.template](intelligence/settings.py.template). And edit according to your DB settings.
+
 ### Migrate database
 
 ```
 $ python manage.py makemigrations exploit reputation threat threat_hunter twitter twitter_hunter
 $ python manage.py migrate
+```
+
+### Install Redis server
+insert2db uses redis as the cache server.
+
+```
+$ sudo yum install redis
+$ sudo systemctl start redis
+$ sudo systemctl enable redis
 ```
 
 ### Run web server
@@ -59,15 +68,6 @@ Scripts for inserting feed into database are [scripts/insert2db](scripts/insert2
 ### Configure insert2db
 
 Configration files are [scripts/insert2db](scripts/insert2db)/\*/conf/insert2db.conf. Create them in reference to insert2db.conf.template.
-
-### Install Redis server
-insert2db uses redis as the cache server.
-
-```
-$ sudo yum install redis
-$ sudo systemctl start redis
-$ sudo systemctl enable redis
-```
 
 ### Run scripts
 
