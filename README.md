@@ -8,12 +8,12 @@ EXIST is a web application for aggregating and analyzing threat intelligence.
 
 ## Getting started
 
-After that I assume the environment of CentOS 7.
+After that I assume the environment of CentOS 7. Please at your own if building in other environment.
 
 ### Install python modules
 
 ```
-$ pip install -r requirements.txt
+$ sudo pip install -r requirements.txt
 ```
 
 ### Install MariaDB
@@ -51,6 +51,11 @@ $ sudo systemctl start redis
 $ sudo systemctl enable redis
 ```
 
+### Download GeoIP DB
+
+- Download GeoIP DB from http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz
+- Write the path of GeoLite2-City.mmdb in geoip.conf
+
 ### Run web server
 
 ```
@@ -58,6 +63,7 @@ $ python manage.py runserver 0.0.0.0:8000
 ```
 
 - Access to http://[YourWebServer]:8000 with your browser.
+- WebAPI: http://[YourWebServer]:8000/api/
 
 > **Note:** I recommend to use Nginx and uWSGI when running in production environment.
 
@@ -80,3 +86,7 @@ $ python scripts/insert2db/reputation/insert2db.py
 ## Setting hunter
 
 Configration files are [scripts/hunter](scripts/hunter)/\*/conf/\*.conf. Create them in reference to \*.conf.template.
+
+## Credits
+
+This product includes GeoLite2 data created by MaxMind, available from [https://www.maxmind.com](https://www.maxmind.com).
