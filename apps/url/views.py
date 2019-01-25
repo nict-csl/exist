@@ -10,6 +10,7 @@ import subprocess
 import hashlib
 import requests
 import imgkit
+import shutil
 from django.db.models import Q
 from apps.threat.models import Event, Attribute
 from apps.reputation.models import blacklist
@@ -122,8 +123,19 @@ class DetailView(TemplateView):
         filepath = "static/websrc/" + imagehash
         if not os.path.exists(filepath):
             ua = "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv 11.0) like Gecko"
-            cmd = "/usr/bin/wget --no-check-certificate -q --user-agent=\"" + ua + "\" -O " + filepath + " \"" + url + "\""
-            subprocess.Popen(cmd, shell=True)
+            headers = {
+                'User-Agent': ua
+            }
+            try:
+                res = requests.get(url, headers=headers, verify=False)
+            except Exception as e:
+                return
+            if 'text/html' in res.headers['content-type']:
+                with open(filepath, 'w') as fp:
+                    fp.write(res.text)
+            else:
+                with open(filepath, 'wb') as fp:
+                    fp.write(res.content)
         return imagehash
 
 class CodeView(TemplateView):
