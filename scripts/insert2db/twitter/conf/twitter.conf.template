@@ -10,4 +10,4 @@ filter = https://stream.twitter.com/1.1/statuses/filter.json
 showuser = https://api.twitter.com/1.1/users/show.json
 
 [exist]
-syspath = YOUR_EXIST_DIR
+syspath = /path/to/your/exist

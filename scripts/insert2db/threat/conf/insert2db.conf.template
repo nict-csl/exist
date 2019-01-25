@@ -1,5 +1,5 @@
 [exist]
-syspath = YOUR_EXIST_DIR
+syspath = /path/to/your/exist
 
 [misp]
 MISP_URL = YOUR_MISP-URL

@@ -1,5 +1,5 @@
 [exist]
-syspath = YOUR_EXIST_DIR
+syspath = /path/to/your/exist
 
 [malshare]
 api_key = YOUR_API_KEY
