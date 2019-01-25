@@ -43,7 +43,7 @@ $ python manage.py migrate
 ```
 
 ### Install Redis server
-insert2db uses redis as the cache server.
+Reputation tracker uses redis as the cache server.
 
 ```
 $ sudo yum install redis
