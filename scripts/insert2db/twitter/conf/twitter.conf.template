@@ -1,9 +1,3 @@
-[auth-default]
-CK = YOUR_CK
-CS = YOUR_CS
-AT = YOUR_AT
-AS = YOUR_AS
-
 [auth-timeline]
 CK = YOUR_CK
 CS = YOUR_CS
