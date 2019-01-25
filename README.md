@@ -51,11 +51,6 @@ $ sudo systemctl start redis
 $ sudo systemctl enable redis
 ```
 
-### Download GeoIP DB
-
-- Download GeoIP DB from http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz
-- Write the path of GeoLite2-City.mmdb in geoip.conf
-
 ### Run web server
 
 ```
@@ -86,6 +81,19 @@ $ python scripts/insert2db/reputation/insert2db.py
 ## Setting hunter
 
 Configration files are [scripts/hunter](scripts/hunter)/\*/conf/\*.conf. Create them in reference to \*.conf.template.
+
+## Other requirement tools
+
+### GeoIP DB
+Lookup IP / Domain uses [GeoLite2 Database](https://dev.maxmind.com/geoip/geoip2/geolite2/).
+
+- Download GeoIP DB from http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz
+- Write the path to GeoLite2-City.mmdb in your conf/geoip.conf.
+
+### wkhtmltopdf
+Lookup URL uses [wkhtmltopdf](https://wkhtmltopdf.org/).
+
+- Download and install wkhtmltopdf from https://wkhtmltopdf.org/downloads.html
 
 ## Credits
 
