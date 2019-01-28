@@ -9,7 +9,7 @@ version = '%(prog)s 20171117'
 class SlackWrapper:
 
     def __init__(self):
-        conffile = os.path.join(os.path.dirname(__file__), 'conf/slack.conf')
+        conffile = os.path.join(os.path.dirname(__file__), '../conf/hunter.conf')
         conf = configparser.SafeConfigParser()
         conf.read(conffile)
         self.PROXIES = {
@@ -17,7 +17,7 @@ class SlackWrapper:
         #    "https": "https://example:port/",
         }
         self.__token = conf.get('slack', 'token')
-        self.__username = conf.get('slack', 'user')
+        self.__username = conf.get('slack', 'twitter_hunter_user')
         self.__postMessageURL = conf.get('slack', 'postMessageURL')
         self.__createChannelURL = conf.get('slack', 'createChannelURL')
         if conf.has_option('slack', 'icon'):

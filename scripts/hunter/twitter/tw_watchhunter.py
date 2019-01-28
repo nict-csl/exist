@@ -9,7 +9,7 @@ import subprocess
 import django
 import pymysql
 pymysql.install_as_MySQLdb()
-conffile = os.path.join(os.path.dirname(__file__), "conf/twitter.conf")
+conffile = os.path.join(os.path.dirname(__file__), "../conf/hunter.conf")
 conf = configparser.SafeConfigParser()
 conf.read(conffile)
 sys.path.append(conf.get('exist', 'syspath'))

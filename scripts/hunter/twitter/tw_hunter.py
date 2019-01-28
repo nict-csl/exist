@@ -18,7 +18,7 @@ version = '%(prog)s 20171116'
 import django
 import pymysql
 pymysql.install_as_MySQLdb()
-conffile = os.path.join(os.path.dirname(__file__), 'conf/twitter.conf')
+conffile = os.path.join(os.path.dirname(__file__), '../conf/hunter.conf')
 conf = configparser.SafeConfigParser()
 conf.read(conffile)
 sys.path.append(conf.get('exist', 'syspath'))
@@ -66,7 +66,7 @@ def getScreenName(tw, screen_name):
     params = {
         'screen_name': screen_name
     }
-    url = conf.get('url', 'showuser')
+    url = conf.get('twitter', 'showuser')
     try:
         res = tw.get(url, params = params)
     except Exception as e:
@@ -86,7 +86,7 @@ def getResponse(tw, track, follow):
         'track': track,
         'follow': follow,
     }
-    url = conf.get('url', 'filter')
+    url = conf.get('twitter', 'filter')
 
     try:
         res = tw.post(url, params = params, stream = True)

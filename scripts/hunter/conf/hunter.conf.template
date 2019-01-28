@@ -1,3 +1,17 @@
+[exist]
+syspath = /path/to/your/exist
+
+[slack]
+token = YOUR_TOKEN
+twitter_hunter_user = TwitterHunter
+threat_hunter_user = ThreatHunter
+postMessageURL = https://slack.com/api/chat.postMessage
+createChannelURL = https://slack.com/api/channels.create
+
+[twitter]
+filter = https://stream.twitter.com/1.1/statuses/filter.json
+showuser = https://api.twitter.com/1.1/users/show.json
+
 [auth-hunter00]
 CK = YOUR_CK
 CS = YOUR_CS
@@ -111,12 +125,4 @@ CK = YOUR_CK
 CS = YOUR_CS
 AT = YOUR_AT
 AS = YOUR_AS
-
-[url]
-timeline = https://api.twitter.com/1.1/statuses/home_timeline.json
-filter = https://stream.twitter.com/1.1/statuses/filter.json
-showuser = https://api.twitter.com/1.1/users/show.json
-
-[exist]
-syspath = /path/to/your/exist
 
