@@ -90,10 +90,15 @@ Lookup IP / Domain uses [GeoLite2 Database](https://dev.maxmind.com/geoip/geoip2
 - Download GeoIP DB from http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz
 - Write the path to GeoLite2-City.mmdb in your conf/geoip.conf.
 
-### wkhtmltopdf
-Lookup URL uses [wkhtmltopdf](https://wkhtmltopdf.org/).
+### wkhtmltopdf and Xvfb
+Lookup URL uses [wkhtmltopdf](https://wkhtmltopdf.org/) and Xvfb.
 
 - Download and install wkhtmltopdf from https://wkhtmltopdf.org/downloads.html
+- Install Xvfb.
+
+```
+$ sudo yum install xorg-x11-server-Xvfb
+```
 
 ## Credits
 
