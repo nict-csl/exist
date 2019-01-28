@@ -2,7 +2,7 @@
 
 {% block content %}
 {% load humanize %}
-{% load staticfiles %}
+{% load static %}
 {% include "reputation/searchBar.html" %}
 <canvas id="myChart" width="300" height="30"></canvas>
 <p class="text-right"> Records: {{ count| intcomma }} </p>

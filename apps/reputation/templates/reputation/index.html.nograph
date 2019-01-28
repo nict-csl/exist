@@ -2,7 +2,7 @@
 
 {% block content %}
 {% load humanize %}
-{% load staticfiles %}
+{% load static %}
 {% include "reputation/searchBar.html" %}
 <p class="text-right"> Records: {{ count| intcomma }} </p>
 <table class="table table-hover w-100">

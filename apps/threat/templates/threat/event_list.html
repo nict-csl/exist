@@ -2,7 +2,7 @@
 
 {% block content %}
 {% load humanize %}
-{% load staticfiles %}
+{% load static %}
 {% include "threat/searchBar.html" %}
 <canvas id="myChart" width="400" height="30"></canvas>
 <p class="text-right"> Events: {{ count| intcomma }} </p>
