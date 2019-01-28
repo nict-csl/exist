@@ -16,6 +16,7 @@ from apps.threat.models import Event, Attribute
 from apps.reputation.models import blacklist
 from apps.twitter.models import tweet
 from apps.exploit.models import Exploit
+from django.conf import settings
 
 class IndexView(TemplateView):
     template_name = 'url/index.html'
@@ -110,17 +111,25 @@ class DetailView(TemplateView):
 
     def getImage(self, url):
         imagehash = hashlib.md5(url.encode('utf-8')).hexdigest()
-        filepath = "static/webimg/" + imagehash + ".png"
+        if settings.STATIC_ROOT is None:
+            filepath = settings.STATICFILES_DIRS[0] + "webimg/" + imagehash + ".png"
+        else:
+            filepath = settings.STATIC_ROOT + "webimg/" + imagehash + ".png"
+        path = "static/webimg/" + imagehash + ".png"
         options = {
             'quiet': '',
         }
         if not os.path.exists(filepath):
             imgkit.from_url(url, filepath, options=options)
-        return filepath
+        return path
 
     def getSrc(self, url):
         imagehash = hashlib.md5(url.encode('utf-8')).hexdigest()
-        filepath = "static/websrc/" + imagehash
+        if settings.STATIC_ROOT is None:
+            filepath = settings.STATICFILES_DIRS[0] + "websrc/" + imagehash
+        else:
+            filepath = settings.STATIC_ROOT + "websrc/" + imagehash
+
         if not os.path.exists(filepath):
             ua = "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv 11.0) like Gecko"
             headers = {
@@ -143,14 +152,20 @@ class CodeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        srcpath = 'static/websrc/' + self.kwargs['pk']
+        if settings.STATIC_ROOT is None:
+            srcpath = settings.STATICFILES_DIRS[0] + 'websrc/' + self.kwargs['pk']
+        else:
+            srcpath = settings.STATIC_ROOT + 'websrc/' + self.kwargs['pk']
         f = open(srcpath, 'r')
         context['websrc'] = f.read()
         f.close()
         return context
 
 def getContents(request, pk):
-    filepath = 'static/websrc/' + pk
+    if settings.STATIC_ROOT is None:
+        filepath = settings.STATICFILES_DIRS[0] + 'websrc/' + pk
+    else:
+        filepath = settings.STATIC_ROOT + 'websrc/' + pk
     f = open(filepath, 'rb')
     contents = f.read()
     f.close()
