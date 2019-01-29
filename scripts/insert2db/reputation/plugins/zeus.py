@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 import django
 import pymysql
 pymysql.install_as_MySQLdb()
-conffile = os.path.join(os.path.dirname(__file__), "../conf/insert2db.conf")
+conffile = os.path.join(os.path.dirname(__file__), "../../conf/insert2db.conf")
 conf = configparser.SafeConfigParser()
 conf.read(conffile)
 sys.path.append(conf.get('exist', 'syspath'))

@@ -12,7 +12,7 @@ from requests_oauthlib import OAuth1Session
 import django
 import pymysql
 pymysql.install_as_MySQLdb()
-conffile = os.path.join(os.path.dirname(__file__), "conf/twitter.conf")
+conffile = os.path.join(os.path.dirname(__file__), "../conf/twitter.conf")
 conf = configparser.SafeConfigParser()
 conf.read(conffile)
 sys.path.append(conf.get('exist', 'syspath'))
@@ -45,11 +45,11 @@ def getTimeline_test():
 def getTimeline():
     params = {}
 
-    CK = conf.get('auth-timeline', 'CK')
-    CS = conf.get('auth-timeline', 'CS')
-    AT = conf.get('auth-timeline', 'AT')
-    AS = conf.get('auth-timeline', 'AS')
-    url = conf.get('url', 'timeline')
+    CK = conf.get('twitter', 'CK')
+    CS = conf.get('twitter', 'CS')
+    AT = conf.get('twitter', 'AT')
+    AS = conf.get('twitter', 'AS')
+    url = conf.get('twitter', 'timeline')
 
     twitter = OAuth1Session(CK, CS, AT, AS)
     try:
