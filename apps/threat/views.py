@@ -1,5 +1,3 @@
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DetailView
 from pure_pagination.mixins import PaginationMixin
 from django.db.models import Q

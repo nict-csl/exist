@@ -1,5 +1,3 @@
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DetailView
 from pure_pagination.mixins import PaginationMixin
 from django.db.models import Q
@@ -31,15 +29,6 @@ class IndexView(PaginationMixin, ListView):
         if keyword is not None:
             query = query.filter(Q(text__icontains=keyword)).order_by('-datetime')
         return query
-
-#    def post(self, request):
-#        search_form = SearchForm(request.POST)
-#        if not search_form.is_valid():
-#            return HttpResponseRedirect('/')
-#        self.object_list = self.get_queryset()
-#        context = self.get_context_data()
-#        context['search_form'] = search_form
-#        return render(request, 'twitter/index.html', context)
 
     def thirty_day_data(self):
         data = []

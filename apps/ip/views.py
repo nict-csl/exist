@@ -1,11 +1,12 @@
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.views.generic import TemplateView, DetailView
 from .forms import SearchForm
 from lib.geoip import GeoIP
 from lib.vt import VT
 from lib.threatminer import ThreatMiner
 import socket
+import ipaddress
 from django.db.models import Q
 from apps.threat.models import Event, Attribute
 from apps.reputation.models import blacklist
@@ -23,9 +24,19 @@ class IndexView(TemplateView):
     def get(self, request, **kwargs):
         if request.GET.get('keyword'):
             ip = request.GET.get('keyword')
-            return HttpResponseRedirect(ip)
+            if self.is_valid_ip(ip):
+                return HttpResponseRedirect(ip)
+            else:
+                return redirect('ip:index')
         context = self.get_context_data()
         return self.render_to_response(context)
+
+    def is_valid_ip(self, value):
+        try:
+            ipaddress.ip_address(value)
+            return True
+        except ValueError:
+            return False
 
 class DetailView(TemplateView):
     template_name = 'ip/detail.html'

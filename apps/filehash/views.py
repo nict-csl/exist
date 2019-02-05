@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import redirect
 from django.views.generic import TemplateView, DetailView
 from .forms import SearchForm
 from lib.vt import VT
@@ -9,6 +9,7 @@ from apps.threat.models import Event, Attribute
 from apps.reputation.models import blacklist
 from apps.twitter.models import tweet
 from apps.exploit.models import Exploit
+import re
 
 class IndexView(TemplateView):
     template_name = 'filehash/index.html'
@@ -21,9 +22,21 @@ class IndexView(TemplateView):
     def get(self, request, **kwargs):
         if request.GET.get('keyword'):
             filehash = request.GET.get('keyword')
-            return HttpResponseRedirect(filehash)
+            if self.is_valid_hash(filehash):
+                return HttpResponseRedirect(filehash)
+            else:
+                return redirect('filehash:index')
         context = self.get_context_data()
         return self.render_to_response(context)
+
+    def is_valid_hash(self, value):
+        compiled_pattern_md5 = re.compile(r'(?=(\b[a-fA-F0-9]{32}\b))')
+        compiled_pattern_sha1 = re.compile(r'(?=(\b[a-fA-F0-9]{40}\b))')
+        compiled_pattern_sha256 = re.compile(r'(?=(\b[a-fA-F0-9]{64}\b))')
+        if compiled_pattern_md5.match(value) or compiled_pattern_sha1.match(value) or compiled_pattern_sha256.match(value):
+            return True
+        else:
+            return False
 
 class DetailView(TemplateView):
     template_name = 'filehash/detail.html'

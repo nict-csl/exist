@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
@@ -50,19 +50,6 @@ class TweetsView(PaginationMixin, ListView):
         self.object_list = self.get_queryset(request, pk)
         context = self.get_context_data()
         return render(request, 'twitter_hunter/tweets.html', context)
-
-#def hunt_add(request):
-#    hunt = Hunt()
-#    if request.method == 'POST':
-#        form = HuntForm(request.POST, instance=hunt)
-#        if form.is_valid():
-#            hunt = form.save(commit=False)
-#            hunt.save()
-#            hunt.start()
-#            return redirect('twitter_hunter:index')
-#    else:
-#        form = HuntForm(instance=hunt)
-#    return render(request, 'twitter_hunter/hunt_edit.html', dict(form=form))
 
 class HuntCreateView(CreateView):
     model = Hunt

@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import redirect
 from django.views.generic import TemplateView, DetailView
 from django.urls import reverse
 from django.utils.http import urlquote
@@ -11,6 +11,7 @@ import hashlib
 import requests
 import imgkit
 import shutil
+import re
 from django.db.models import Q
 from apps.threat.models import Event, Attribute
 from apps.reputation.models import blacklist
@@ -29,9 +30,19 @@ class IndexView(TemplateView):
     def get(self, request, **kwargs):
         if request.GET.get('keyword'):
             url = request.GET.get('keyword')
-            return HttpResponseRedirect(reverse("url:index") + urlquote(url, safe='') + '/')
+            if self.is_valid_url(url):
+                return HttpResponseRedirect(reverse("url:index") + urlquote(url, safe='') + '/')
+            else:
+                return redirect('url:index')
         context = self.get_context_data()
         return self.render_to_response(context)
+
+    def is_valid_url(self, value):
+        compiled_pattern = re.compile('http(s)?://\w+')
+        if compiled_pattern.match(value):
+            return True
+        else:
+            return False
 
 class DetailView(TemplateView):
     template_name = 'url/detail.html'
@@ -120,7 +131,10 @@ class DetailView(TemplateView):
             'quiet': '',
         }
         if not os.path.exists(filepath):
-            imgkit.from_url(url, filepath, options=options)
+            try:
+                imgkit.from_url(url, filepath, options=options)
+            except Exception as e:
+                return
         return path
 
     def getSrc(self, url):
@@ -162,6 +176,8 @@ class CodeView(TemplateView):
         return context
 
 def getContents(request, pk):
+    if not re.compile(r'(?=(\b[a-fA-F0-9]{32}\b))').match(pk):
+        return redirect('index')
     if settings.STATIC_ROOT is None:
         filepath = settings.STATICFILES_DIRS[0] + 'websrc/' + pk
     else:
