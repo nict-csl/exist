@@ -23,7 +23,7 @@ class IndexView(PaginationMixin, ListView):
         context['count'] = count
         context['30_day_labels'] = self.thirty_day_labels()
         thirty_day_data_taskid = get_thirty_day_data.delay()
-        thirty_day_data = TaskResult.objects.filter(task_name='reputation.tasks.get_thirty_day_data', status='SUCCESS').order_by('-date_done')
+        thirty_day_data = TaskResult.objects.filter(task_name='apps.reputation.tasks.get_thirty_day_data', status='SUCCESS').order_by('-date_done')
         if len(thirty_day_data) > 0:
             context['30_day_data'] = thirty_day_data[0].result
         return context
