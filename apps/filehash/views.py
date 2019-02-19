@@ -10,6 +10,9 @@ from apps.reputation.models import blacklist
 from apps.twitter.models import tweet
 from apps.exploit.models import Exploit
 import re
+from logging import getLogger
+
+logger = getLogger('command')
 
 class IndexView(TemplateView):
     template_name = 'filehash/index.html'
@@ -46,16 +49,22 @@ class DetailView(TemplateView):
         context['search_form'] = SearchForm()
         filehash = self.kwargs['pk']
 
-        vt = VT()
-        context['vt_hash'] = vt.getFileReport(filehash)
-        context['vt_behavior'] = vt.getFileBehavior(filehash)
+        try:
+            vt = VT()
+            context['vt_hash'] = vt.getFileReport(filehash)
+            context['vt_behavior'] = vt.getFileBehavior(filehash)
+        except Exception as e:
+            logger.error(e)
 
-        tm = ThreatMiner()
-        context['tm_meta'] = tm.getMetaFromSample(filehash)
-        context['tm_http'] = tm.getHttpFromSample(filehash)
-        context['tm_host'] = tm.getHostsFromSample(filehash)
-        context['tm_av'] = tm.getAVFromSample(filehash)
-        context['tm_report'] = tm.getReportFromSample(filehash)
+        try:
+            tm = ThreatMiner()
+            context['tm_meta'] = tm.getMetaFromSample(filehash)
+            context['tm_http'] = tm.getHttpFromSample(filehash)
+            context['tm_host'] = tm.getHostsFromSample(filehash)
+            context['tm_av'] = tm.getAVFromSample(filehash)
+            context['tm_report'] = tm.getReportFromSample(filehash)
+        except Exception as e:
+            logger.error(e)
 
         #context['bls'] = blacklist.objects.filter(Q(url__contains=filehash))
         #count = context['bls'].count()

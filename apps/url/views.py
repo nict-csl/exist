@@ -18,6 +18,9 @@ from apps.reputation.models import blacklist
 from apps.twitter.models import tweet
 from apps.exploit.models import Exploit
 from django.conf import settings
+from logging import getLogger
+
+logger = getLogger('command')
 
 class IndexView(TemplateView):
     template_name = 'url/index.html'
@@ -68,8 +71,11 @@ class DetailView(TemplateView):
         context['imagefile'] = self.getImage(url)
         context['websrc'] = self.getSrc(url)
 
-        vt = VT()
-        context['vt_url'] = vt.getURLReport(url)
+        try:
+            vt = VT()
+            context['vt_url'] = vt.getURLReport(url)
+        except Exception as e:
+            logger.error(e)
 
         context['bls'] = blacklist.objects.filter(Q(url__contains=url))
         count = context['bls'].count()
@@ -100,6 +106,7 @@ class DetailView(TemplateView):
         try:
             res = requests.get(url, headers=headers, verify=False)
         except Exception as e:
+            logger.error(e)
             return
         res.encoding = res.apparent_encoding
         return res
@@ -134,6 +141,7 @@ class DetailView(TemplateView):
             try:
                 imgkit.from_url(url, filepath, options=options)
             except Exception as e:
+                logger.error(e)
                 return
         return path
 
@@ -152,6 +160,7 @@ class DetailView(TemplateView):
             try:
                 res = requests.get(url, headers=headers, verify=False)
             except Exception as e:
+                logger.error(e)
                 return
             if 'text/html' in res.headers['content-type']:
                 with open(filepath, 'w') as fp:

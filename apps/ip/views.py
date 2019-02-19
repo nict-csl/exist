@@ -12,6 +12,9 @@ from apps.threat.models import Event, Attribute
 from apps.reputation.models import blacklist
 from apps.twitter.models import tweet
 from apps.exploit.models import Exploit
+from logging import getLogger
+
+logger = getLogger('command')
 
 class IndexView(TemplateView):
     template_name = 'ip/index.html'
@@ -45,19 +48,30 @@ class DetailView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['search_form'] = SearchForm()
         ip = self.kwargs['pk']
-        context['geoip'] = GeoIP().lookup(ip)
+
+        try:
+            context['geoip'] = GeoIP().lookup(ip)
+        except Exception as e:
+            logger.error(e)
+
         try:
             context['domain'] = socket.gethostbyaddr(ip)[0]
         except Exception as e:
-            pass
+            logger.error(e)
 
-        vt = VT()
-        context['vt_ip'] = vt.getIPReport(ip)
+        try:
+            vt = VT()
+            context['vt_ip'] = vt.getIPReport(ip)
+        except Exception as e:
+            logger.error(e)
 
-        tm = ThreatMiner()
-        context['tm_url'] = tm.getURIFromIP(ip)
-        context['tm_sample'] = tm.getSamplesFromIP(ip)
-        context['tm_report'] = tm.getReportFromIP(ip)
+        try:
+            tm = ThreatMiner()
+            context['tm_url'] = tm.getURIFromIP(ip)
+            context['tm_sample'] = tm.getSamplesFromIP(ip)
+            context['tm_report'] = tm.getReportFromIP(ip)
+        except Exception as e:
+            logger.error(e)
 
         context['bls'] = blacklist.objects.filter(Q(ip=ip)|Q(url__contains=ip))
         count = context['bls'].count()

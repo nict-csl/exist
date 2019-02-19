@@ -183,3 +183,54 @@ NUMBER_GROUPING = 3
 
 # Celery
 CELERY_RESULT_BACKEND = 'django-db'
+
+# Logging
+LOGGING = {
+    'version': 1,
+    'formatters': {
+        'all': {
+            'format': '\t'.join([
+                "[%(levelname)s]",
+                "%(asctime)s",
+                "module:%(module)s",
+                "%(pathname)s",
+                "message:%(message)s",
+            ])
+        },
+        'django.server': {
+            '()': 'django.utils.log.ServerFormatter',
+            'format': '%(asctime)s %(message)s',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/django.log'),
+            'formatter': 'all',
+            'maxBytes': 1024 * 1024 * 2,
+            'backupCount': 10,
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler', 
+            'formatter': 'all'
+        },
+        'django.server': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'django.server',
+        },
+    },
+    'loggers': {
+        'command': {
+            'handlers': ['file', 'console'],
+            'level': 'DEBUG',
+        },
+        'django.server': {
+            'handlers': ['django.server'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}

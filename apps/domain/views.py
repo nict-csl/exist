@@ -12,6 +12,9 @@ from apps.threat.models import Event, Attribute
 from apps.reputation.models import blacklist
 from apps.twitter.models import tweet
 from apps.exploit.models import Exploit
+from logging import getLogger
+
+logger = getLogger('command')
 
 class IndexView(TemplateView):
     template_name = 'domain/index.html'
@@ -48,15 +51,16 @@ class DetailView(TemplateView):
         try:
             context['geoip'] = GeoIP().lookup(domain)
         except Exception as e:
-            print(e)
-            pass
+            logger.error(e)
         try:
             context['ipaddress'] = socket.gethostbyname(domain)
         except Exception as e:
-            pass
+            logger.error(e)
 
-        vt = VT()
-        context['vt_domain'] = vt.getDomainReport(domain)
+        try:
+            context['vt_domain'] = VT().getDomainReport(domain)
+        except Exception as e:
+            logger.error(e)
 
         tm = ThreatMiner()
         context['tm_url'] = tm.getURIFromDomain(domain)
