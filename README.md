@@ -14,7 +14,7 @@ EXIST is implemented by Python and Django web application framework, so it has a
 
 Researchers on an organization search threats via the web interface and the API. In addition, if the organization has servers logging network behaviors of clients (e.g., logs of DNS and HTTP proxy servers, etc.), the researchers will be able to analyze the logs by correlating with data on EXIST. Moreover, if they implement some programs by using the API, they will realize automated CTI-driven security operation center in their organization.
 
-## Future
+## Features
 
 ### Tracker
 
