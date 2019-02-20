@@ -6,6 +6,51 @@ EXIST is a web application for aggregating and analyzing threat intelligence.
  - Python 3.5.1
  - Django 1.11.20
 
+## Abstract
+
+Today, there are as many cyber threat intelligence services as there are security vendors. We have open-source community effort driven CTI as options or alternatives. There are online social networks (e.g., Twitter, etc) where adversaries, researchers, analysts, etc. post and share cyber threats daily as well, and we would like to track as many of them as possible to increase our coverage, making better decisions earlier. It is up to the consumer to accumulate all those different CTIs and unless we aggregate them in the best usable way, efficient, real time information security operation becomes difficult.
+
+EXIST is implemented by Python and Django web application framework, so it has a web interface and API. EXIST automatically aggregates data from several open-sourse CTI services, and Twitter via their APIs and feeds. In addition, EXIST enables us to set queries for gathering data from them by using specific keywords. Then, the data is stored in EXIST database.
+
+Researchers on an organization search threats via the web interface and the API. In addition, if the organization has servers logging network behaviors of clients (e.g., logs of DNS and HTTP proxy servers, etc.), the researchers will be able to analyze the logs by correlating with data on EXIST. Moreover, if they implement some programs by using the API, they will realize automated CTI-driven security operation center in their organization.
+
+## Future
+
+### Tracker
+
+Tracker automatically collects data feeds from several CTI services.
+
+- Threat Tracker
+- Reputation Tracker
+- Twitter Tracker
+- Exploit Tracker
+
+### Hunter
+
+Hunter enables us to set queries for gathering data from several CTI service and Twitter.
+
+- Twitter Hunter
+- Threat Hunter
+
+### Lookup
+
+Lookup retrieves information related to specific information (e.g. IP address, domain) from several internet services (e.g. whois).
+
+- IP Address
+- Domain
+- URL
+- File Hash
+
+### Web API
+
+Provide data stored in the EXIST database by Web API.
+
+- reputation
+- twitter
+- exploit
+- threatEvent
+- threatAttribute
+
 ## Getting started
 
 After that I assume the environment of CentOS 7. Please at your own when deploying to other environment.
@@ -224,3 +269,7 @@ $ sudo yum install xorg-x11-server-Xvfb
 ## Credits
 
 This product includes GeoLite2 data created by MaxMind, available from [https://www.maxmind.com](https://www.maxmind.com).
+
+## License
+[MIT License](LICENSE) © Cybersecurity Laboratory, NICT
+
