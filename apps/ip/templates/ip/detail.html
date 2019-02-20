@@ -31,7 +31,7 @@
         </tr>
         <tr>
             <th>Resolutions</th>
-            <td><article>{% for resolution in vt_ip.resolutions|dictsortreversed:"last_resolved" %}{{ resolution.last_resolved }}: <a href="{% url 'domain:detail' resolution.hostname %}">{{ resolution.hostname }}</a><br>{% endfor %}</article></td>
+            <td><more>{% for resolution in vt_ip.resolutions|dictsortreversed:"last_resolved" %}<div class="li">{{ resolution.last_resolved }}: <a href="{% url 'domain:detail' resolution.hostname %}">{{ resolution.hostname }}</a><br></div>{% endfor %}</more></td>
         </tr>
     </table>
 </div>
@@ -226,16 +226,4 @@
     </div>
 </div>
 
-{% endblock %}
-
-{% block javascript %}
-<script>
-$(function () {
-    $('article').readmore({
-        speed: 1000,
-        moreLink: '<a href="#">read more</a>',
-        lessLink: '<a href="#">close</a>'
-    });
-});
-</script>
 {% endblock %}

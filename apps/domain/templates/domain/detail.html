@@ -19,7 +19,7 @@
         </tr>
         <tr>
             <th>Resolutions</th>
-            <td><article>{% for resolution in vt_domain.resolutions|dictsortreversed:"last_resolved" %}{{ resolution.last_resolved }}: <a href="{% url 'ip:detail' resolution.ip_address %}">{{ resolution.ip_address }}</a><br>{% endfor %}</article></td>
+            <td><more>{% for resolution in vt_domain.resolutions|dictsortreversed:"last_resolved" %}<div class="li">{{ resolution.last_resolved }}: <a href="{% url 'ip:detail' resolution.ip_address %}">{{ resolution.ip_address }}</a><br></div>{% endfor %}</more></td>
         </tr>
         <tr>
             <th>Category</th>
@@ -27,7 +27,7 @@
         </tr>
         <tr>
             <th>Domain Siblings</th>
-            <td><article>{% for domain in vt_domain.domain_siblings %}<a href="{% url 'domain:detail' domain %}">{{ domain }}</a><br>{% endfor %}</article></td>
+            <td><more>{% for domain in vt_domain.domain_siblings %}<div class="li"><a href="{% url 'domain:detail' domain %}">{{ domain }}</a><br></div>{% endfor %}</more></td>
         </tr>
         <tr>
             <th>Country</th>
@@ -243,16 +243,4 @@
     </div>
 </div>
     
-{% endblock %}
-
-{% block javascript %}
-<script>
-$(function () {
-    $('article').readmore({
-        speed: 1000,
-        moreLink: '<a href="#">read more</a>',
-        lessLink: '<a href="#">close</a>'
-    });
-});
-</script>
 {% endblock %}

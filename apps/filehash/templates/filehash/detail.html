@@ -43,13 +43,13 @@
             <tr>
                 <th>File Name</th>
                 <td>
-                    <article>
+                    <more>
                     {% if vt_hash.submission_names %}
-                    {% for name in vt_hash.submission_names %}{{ name }}<br>{% endfor %}
+                    {% for name in vt_hash.submission_names %}<div class="li">{{ name }}<br></div>{% endfor %}
                     {% elif tm_meta.results.0.file_name %}
                     {{ tm_meta.results.0.file_name }}
                     {% endif %}
-                    </article>
+                    </more>
                 </td>
             </tr>
             <tr>
@@ -158,7 +158,7 @@
                             </tr>
                             <tr>
                                 <th>Submission Name</th>
-                                <td><article>{% for name in vt_hash.submission_names %}{{ name }}<br>{% endfor %}</article></td>
+                                <td><more>{% for name in vt_hash.submission_names %}<div class="li">{{ name }}<br></div>{% endfor %}</more></td>
                             </tr>
                             <tr>
                                 <th>Times Submitted</th>
@@ -587,16 +587,4 @@
     </div>
 </div>
 
-{% endblock %}
-
-{% block javascript %}
-<script>
-$(function () {
-    $('article').readmore({
-        speed: 1000,
-        moreLink: '<a href="#">read more</a>',
-        lessLink: '<a href="#">close</a>'
-    });
-});
-</script>
 {% endblock %}

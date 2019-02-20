@@ -112,13 +112,15 @@
                 </tr>
                 <tr>
                     <th>AV Detections</th>
-                    <td><article>
+                    <td><more>
                     {% for key, value in vt_url.scans.items %}
                     {% if value.detected == True %}
+                    <div class="li">
                     {{ value.result }} <p class="font-italic text-muted" style="display:inline;">({{ key }})</p><br>
+                    </div>
                     {% endif %}
                     {% endfor %}
-                    </article>
+                    </more>
                     </td>
                 </tr>
                 <tr>
@@ -180,14 +182,6 @@
 
 {% block javascript %}
 <script>
-$(function () {
-    $('article').readmore({
-        speed: 1000,
-        moreLink: '<a href="#">read more</a>',
-        lessLink: '<a href="#">close</a>'
-    });
-});
-
 $(function(){
   var h = $(window).height();
   $('#wrap').css('display','none');
