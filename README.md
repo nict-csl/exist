@@ -270,7 +270,7 @@ $ sudo yum install xorg-x11-server-Xvfb
 
 ## Report vulnerability
 
-Please e-mail [authors](AUTHORS) if you find any vulnerabilities.
+Please [e-mail us](mailto:exist@ml.nict.go.jp) if you find any vulnerabilities.
 
 [Vulnerability Report Template](VULN_REPORT_TEMPLATE.md)
 
