@@ -2,9 +2,11 @@
 
 EXIST is a web application for aggregating and analyzing threat intelligence.
 
-- EXIST is written by the following software.
- - Python 3.5.1
- - Django 1.11.20
+EXIST is written by the following software.
+- Python 3.5.1
+- Django 1.11.20
+
+![overview](http://10.10.2.222/git/exist/exist/raw/images/EXIST_overview.png)
 
 ## Abstract
 
@@ -265,6 +267,12 @@ $ sudo yum install xorg-x11-server-Xvfb
 - Configration files are [scripts/url](scripts/url)/url.conf. Create it in reference to url.conf.template.
 - Make [scripts/url](scripts/url)/delete_webdata.sh run every day using cron to flush old Lookup URL data.
 - Make [scripts/url](scripts/url)/delete_oldtaskresult.sh run every day using cron to flush old Celery data.
+
+## Report vulnerability
+
+Please e-mail [authors](AUTHORS) if you find any vulnerabilities.
+
+[Vulnerability Report Template](VULN_REPORT_TEMPLATE.md)
 
 ## Credits
 
