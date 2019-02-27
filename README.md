@@ -20,19 +20,19 @@ If you implement some programs by using the API, you will realize automated CTI-
 
 ## Use Cases
 
-### Investigate domain detected by IDS
+### Case1: Investigate domain detected by IDS
 
 Just type domain in the search form.
 
 ![lookup_domain](http://10.10.2.222/git/exist/exist/raw/images/Lookup_domain.png)
 
-### Access the malicious URL on behalf of the user and acquire the display image of the browser and the contents to be downloaded
+### Case2: Access the malicious URL on behalf of the user and acquire the display image of the browser and the contents to be downloaded
 
 Just type url in the search form.
 
 ![lookup_url](http://10.10.2.222/git/exist/exist/raw/images/Lookup_url.png)
 
-### Monitor cyber threats
+### Case3: Monitor cyber threats
 
 Just add keywords in the Threat Hunter or Twitter Hunter.
 
