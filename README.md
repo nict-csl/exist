@@ -1,20 +1,42 @@
 # EXIST (EXternal Information aggregation System against cyber Threat)
 
-EXIST is a web application for aggregating and analyzing threat intelligence.
+EXIST is a web application for aggregating and analyzing CTI (cyber threat intelligence).
 
 EXIST is written by the following software.
 - Python 3.5.1
 - Django 1.11.20
 
+## Concept
+
+EXIST is a tool for aggregating CTI to help security operators investigate incidents based on related indicators.
+
+EXIST automatically aggregates data from several CTI services, and Twitter via their APIs and feeds.
+You can cross-search indicators via the web interface and the API.
+
+If you have servers logging network behaviors of clients (e.g., logs of DNS and HTTP proxy servers, etc.), you will be able to analyze the logs by correlating with data on EXIST.
+If you implement some programs by using the API, you will realize automated CTI-driven security operation center.
+
 ![overview](http://10.10.2.222/git/exist/exist/raw/images/EXIST_overview.png)
 
-## Abstract
+## Use Cases
 
-Today, there are as many cyber threat intelligence services as there are security vendors. We have open-source community effort driven CTI as options or alternatives. There are online social networks (e.g., Twitter, etc) where adversaries, researchers, analysts, etc. post and share cyber threats daily as well, and we would like to track as many of them as possible to increase our coverage, making better decisions earlier. It is up to the consumer to accumulate all those different CTIs and unless we aggregate them in the best usable way, efficient, real time information security operation becomes difficult.
+### Investigate domain detected by IDS
 
-EXIST is implemented by Python and Django web application framework, so it has a web interface and API. EXIST automatically aggregates data from several open-sourse CTI services, and Twitter via their APIs and feeds. In addition, EXIST enables us to set queries for gathering data from them by using specific keywords. Then, the data is stored in EXIST database.
+Just type domain in the search form.
 
-Researchers on an organization search threats via the web interface and the API. In addition, if the organization has servers logging network behaviors of clients (e.g., logs of DNS and HTTP proxy servers, etc.), the researchers will be able to analyze the logs by correlating with data on EXIST. Moreover, if they implement some programs by using the API, they will realize automated CTI-driven security operation center in their organization.
+![lookup_domain](http://10.10.2.222/git/exist/exist/raw/images/Lookup_domain.png)
+
+### Access the malicious URL on behalf of the user and acquire the display image of the browser and the contents to be downloaded
+
+Just type url in the search form.
+
+![lookup_url](http://10.10.2.222/git/exist/exist/raw/images/Lookup_url.png)
+
+### Monitor cyber threats
+
+Just add keywords in the Threat Hunter or Twitter Hunter.
+
+![twitter_hunter](http://10.10.2.222/git/exist/exist/raw/images/Twitter_hunter.png)
 
 ## Features
 
