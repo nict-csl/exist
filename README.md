@@ -8,9 +8,9 @@ EXIST is written by the following software.
 
 ## Concept
 
-EXIST is a tool for aggregating CTI to help security operators investigate incidents based on related indicators.
+EXIST is a web application for aggregating CTI to help security operators investigate incidents based on related indicators.
 
-EXIST automatically aggregates data from several CTI services, and Twitter via their APIs and feeds.
+EXIST automatically fetches data from several CTI services and Twitter via their APIs and feeds.
 You can cross-search indicators via the web interface and the API.
 
 If you have servers logging network behaviors of clients (e.g., logs of DNS and HTTP proxy servers, etc.), you will be able to analyze the logs by correlating with data on EXIST.
