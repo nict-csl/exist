@@ -16,7 +16,7 @@ You can cross-search indicators via the web interface and the API.
 If you have servers logging network behaviors of clients (e.g., logs of DNS and HTTP proxy servers, etc.), you will be able to analyze the logs by correlating with data on EXIST.
 If you implement some programs by using the API, you will realize automated CTI-driven security operation center.
 
-![overview](http://10.10.2.222/git/exist/exist/raw/images/EXIST_overview.png)
+![overview](https://raw.githubusercontent.com/nict-csl/exist/images/EXIST_overview.png)
 
 ## Use Cases
 
@@ -24,19 +24,19 @@ If you implement some programs by using the API, you will realize automated CTI-
 
 Just type domain in the search form.
 
-![lookup_domain](http://10.10.2.222/git/exist/exist/raw/images/Lookup_domain.png)
+![lookup_domain](https://raw.githubusercontent.com/nict-csl/exist/images/Lookup_domain.png)
 
 ### Case2: Access the malicious URL on behalf of the user and acquire the display image of the browser and the contents to be downloaded
 
 Just type url in the search form.
 
-![lookup_url](http://10.10.2.222/git/exist/exist/raw/images/Lookup_url.png)
+![lookup_url](https://raw.githubusercontent.com/nict-csl/exist/images/Lookup_url.png)
 
 ### Case3: Monitor cyber threats
 
 Just add keywords in the Threat Hunter or Twitter Hunter.
 
-![twitter_hunter](http://10.10.2.222/git/exist/exist/raw/images/Twitter_hunter.png)
+![twitter_hunter](https://raw.githubusercontent.com/nict-csl/exist/images/Twitter_hunter.png)
 
 ## Features
 
