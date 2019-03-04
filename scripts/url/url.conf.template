@@ -1,4 +1,0 @@
-STATIC_DIR='/path/to/your/exist/static'
-USER='YOUR_DB_USER'
-PASS='YOUR_DB_PASSWORD'
-DB='YOUR_DB'
