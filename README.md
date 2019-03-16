@@ -51,7 +51,7 @@ Tracker automatically collects data feeds from several CTI services.
 
 ### Hunter
 
-Hunter enables us to set queries for gathering data from several CTI service and Twitter.
+Hunter enables us to set queries for gathering data from several CTI services and Twitter.
 
 - Twitter Hunter
 - Threat Hunter
@@ -214,7 +214,7 @@ Scripts for inserting feed into database are [scripts/insert2db](scripts/insert2
 
 ### Configure insert2db
 
-- Configration files are [scripts/insert2db/conf](scripts/insert2db/conf)/insert2db.conf. Create it in reference to insert2db.conf.template.
+- Configuration files are [scripts/insert2db/conf](scripts/insert2db/conf)/insert2db.conf. Create it in reference to insert2db.conf.template.
 - If you use [MISP](https://www.misp-project.org/), write MISP URL and API key to insert2db.conf.
 - If you use [Malshare](https://malshare.com/), write your API key to insert2db.conf.
 - Create your Twitter API account in https://developer.twitter.com/ for tracking with EXIST..
@@ -239,10 +239,10 @@ $ python scripts/insert2db/threat/insert2db.py
 
 Twitter Hunter can detect tweets containing specific keywords and user ID. And you can notify slack if necessary.
 
-- Configration files are [scripts/hunter/conf](scripts/hunter/conf)/hunter.conf. Create it in reference to hunter.conf.template.
+- Configuration files are [scripts/hunter/conf](scripts/hunter/conf)/hunter.conf. Create it in reference to hunter.conf.template.
 - If you use slack, write your slack token to hunter.conf.
 - Create your Twitter API account in https://developer.twitter.com/.
-- Create 18 Apps for EXIST. 
+- Create 18 Apps for EXIST.
 - Get 18 Consumer API key (CA), Consumer API secret key (CS), Access token (AT), access token secret (AS).
 - Write CA, CS, AT, AS to auth-hunter[00-18] to hunter.conf.
 - Make [scripts/hunter/twitter](scripts/hunter/twitter)/tw_watchhunter.py run every minute using cron to make Twitter Hunter persistent.
@@ -251,7 +251,7 @@ Twitter Hunter can detect tweets containing specific keywords and user ID. And y
 
 Threat Hunter can detect threat events containing specific keywords. And you can notify slack if necessary.
 
-- Configration files are [scripts/hunter/conf](scripts/hunter/conf)/hunter.conf. Create it in reference to hunter.conf.template.
+- Configuration files are [scripts/hunter/conf](scripts/hunter/conf)/hunter.conf. Create it in reference to hunter.conf.template.
 - If you use slack, write your slack token to hunter.conf.
 - Make [scripts/hunter/threat](scripts/hunter/threat)/th_watchhunter.py run every minute using cron to make Threat Hunter persistent.
 
@@ -286,7 +286,7 @@ $ sudo yum install xorg-x11-server-Xvfb
 
 ### Flush old data
 
-- Configration files are [scripts/url](scripts/url)/url.conf. Create it in reference to url.conf.template.
+- Configuration files are [scripts/url](scripts/url)/url.conf. Create it in reference to url.conf.template.
 - Make [scripts/url](scripts/url)/delete_webdata.sh run every day using cron to flush old Lookup URL data.
 - Make [scripts/url](scripts/url)/delete_oldtaskresult.sh run every day using cron to flush old Celery data.
 
