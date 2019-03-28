@@ -86,7 +86,11 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <a class="btn btn-danger" href="{% url 'twitter_hunter:hunt_del' pk=ht.id %}" role="button">Delete</a>
+                                <form action="" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="delete" value={{ ht.id }}>
+                                    <input type="submit" value="Delete" class="btn btn-danger"/>
+                                </form>
                             </div>
                         </div>
                     </div>

@@ -175,6 +175,8 @@ class CodeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        if not re.compile(r'\w{32}').match(self.kwargs['pk']):
+            return context
         if settings.STATIC_ROOT is None:
             srcpath = settings.STATICFILES_DIRS[0] + 'websrc/' + self.kwargs['pk']
         else:
