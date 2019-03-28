@@ -21,14 +21,16 @@ class IndexView(PaginationMixin, ListView):
     context_object_name = 'hunts'
     paginate_by = 30
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
     def get_queryset(self):
         query = Hunt.objects.order_by('id')
         query = query.annotate(count=Count('events'))
         return query
+
+    def post(self, request, *args, **kwargs):
+        hunt_id = request.POST['delete']
+        hunt = get_object_or_404(Hunt, id=hunt_id)
+        hunt.delete()
+        return redirect('threat_hunter:index')
 
 class EventListView(PaginationMixin, ListView):
     model = Event
@@ -36,17 +38,13 @@ class EventListView(PaginationMixin, ListView):
     context_object_name = 'events'
     paginate_by = 30
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
-    def get_queryset(self, request, pk):
+    def get_queryset(self, pk):
         pk = self.kwargs['pk']
         query = Event.objects.filter(Q(id__in=Hunt(id=pk).events.all())).order_by('-publish_timestamp')
         return query
 
     def get(self, request, pk):
-        self.object_list = self.get_queryset(request, pk)
+        self.object_list = self.get_queryset(pk)
         context = self.get_context_data()
         return render(request, 'threat_hunter/event_list.html', context)
 
@@ -67,11 +65,6 @@ class HuntUpdateView(UpdateView):
     def get_success_url(self):
         self.object.run()
         return '/threat_hunter'
-
-def hunt_del(request, pk):
-    hunt = get_object_or_404(Hunt, id=pk)
-    hunt.delete()
-    return redirect('threat_hunter:index')
 
 def hunt_export(request, pk):
     stream = StringIO()

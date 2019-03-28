@@ -19,35 +19,29 @@ class IndexView(PaginationMixin, ListView):
     context_object_name = 'hts'
     paginate_by = 30
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
-    def get_queryset(self, request):
+    def get_queryset(self):
         query = Hunt.objects.order_by('id')
         query = query.annotate(count=Count('tweet'))
         return query
 
-    def get(self, request):
-        self.object_list = self.get_queryset(request)
-        context = self.get_context_data()
-        return render(request, 'twitter_hunter/index.html', context)
+    def post(self, request, *args, **kwargs):
+        hunt_id = request.POST['delete']
+        hunt = get_object_or_404(Hunt, id=hunt_id)
+        hunt.stop()
+        hunt.delete()
+        return redirect('twitter_hunter:index')
 
 class TweetsView(PaginationMixin, ListView):
     template_name = 'twitter_hunter/tweets.html'
     context_object_name = 'tws'
     paginate_by = 30
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
-    def get_queryset(self, request, pk):
+    def get_queryset(self, pk):
         query = tweet.objects.filter(hunt_id=Hunt(id=pk)).order_by('-datetime')
         return query
 
     def get(self, request, pk):
-        self.object_list = self.get_queryset(request, pk)
+        self.object_list = self.get_queryset(pk)
         context = self.get_context_data()
         return render(request, 'twitter_hunter/tweets.html', context)
 
@@ -68,12 +62,6 @@ class HuntUpdateView(UpdateView):
     def get_success_url(self):
         self.object.restart()
         return '/twitter_hunter'
-
-def hunt_del(request, pk):
-    hunt = get_object_or_404(Hunt, id=pk)
-    hunt.stop()
-    hunt.delete()
-    return redirect('twitter_hunter:index')
 
 def hunt_export(request, pk):
     stream = StringIO()
