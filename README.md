@@ -190,6 +190,13 @@ $ sudo mkdir /var/log/celery; sudo chown YOUR_USER:YOUR_GROUP /var/log/celery
 $ sudo mkdir /var/run/celery; sudo chown YOUR_USER:YOUR_GROUP /var/run/celery
 ```
 
+- Create a configuration file in /etc/tmpfiles.d/exist.conf
+
+```
+#Type  Path               Mode  UID        GID        Age  Argument
+d      /var/run/celery    0755  YOUR_USER  YOUR_USER  -
+```
+
 - Run Celery
 
 ```
