@@ -8,6 +8,7 @@ from lib.threatminer import ThreatMiner
 from lib.abuse import AbuseIPDB
 from lib.shodan import Shodan
 from lib.censys import Censys
+from lib.ipvoid import IPVoid
 import socket
 import ipaddress
 from django.db.models import Q
@@ -91,6 +92,12 @@ class DetailView(TemplateView):
         try:
             censys = Censys()
             context['censys'] = censys.getReport(ip)
+        except Exception as e:
+            logger.error(e)
+
+        try:
+            ipvoid = IPVoid()
+            context['ipvoid'] = ipvoid.getResultFromIP(ip)
         except Exception as e:
             logger.error(e)
 
