@@ -14,3 +14,9 @@ CK = YOUR_CK
 CS = YOUR_CS
 AT = YOUR_AT
 AS = YOUR_AS
+
+[inoreader]
+AppID = YOUR_APPID
+AppKey = YOUR_APPKEY
+Email = YOUR_EMAIL
+Passwd = YOUR_PASSWD

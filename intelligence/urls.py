@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^twitter/', include('apps.twitter.urls')),
     url(r'^twitter_hunter/', include('apps.twitter_hunter.urls')),
     url(r'^exploit/', include('apps.exploit.urls')),
+    url(r'^news/', include('apps.news.urls')),
     url(r'^threat/', include('apps.threat.urls')),
     url(r'^threat_hunter/', include('apps.threat_hunter.urls')),
     url(r'^domain/', include('apps.domain.urls')),

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load humanize %}
+{% load static %}
+{% include "news/searchBar.html" %}
+<canvas id="myChart" width="400" height="30"></canvas>
+<p class="text-right"> Records: {{ count| intcomma }} </p>
+<table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
+    <thead>
+        <tr>
+            <th style="width: 200px;">Date (JST)</th>
+            <th>Title</th>
+            <th style="width: 200px;">Source</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for nw in nws %}
+    <tr>
+        <td nowrap>{{ nw.datetime }}</td>
+        <td><a href="{{ nw.referrer }}">{{ nw.title }}</a></td>
+        <td><a href="{{ nw.source_url }}">{{ nw.source_title }}</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% include "news/page.html" %}
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+var ctx = document.getElementById("myChart");
+var data = {
+    {% autoescape off %}
+    labels: {{ 30_day_labels }},
+    {% endautoescape %}
+    datasets: [{
+        label: 'count',
+        data: {{ 30_day_data }},
+        backgroundColor: "rgba(200,30,30,0.4)",
+        borderColor: "rgba(230,10,10,1)"
+    }],
+};
+var options = {
+legend: {
+    display: false,
+    }
+};
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: options,
+});
+</script>
+{% endblock %}
