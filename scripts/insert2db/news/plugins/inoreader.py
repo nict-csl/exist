@@ -23,12 +23,9 @@ from apps.news.models import News
 import django.utils.timezone as tzone
 from django.db import IntegrityError
 
-## Logger Setup
-from logging import getLogger, DEBUG, NullHandler
-logger = getLogger(__name__)
-logger.addHandler(NullHandler())
-logger.setLevel(DEBUG)
-logger.propagate = True
+### Logger Setup
+from . import getModuleLogger
+logger = getModuleLogger(__name__)
 
 class Tracker():
     def __init__(self):
@@ -51,11 +48,9 @@ class Tracker():
             logger.error(e)
 
         auth = res.text.split('Auth=')[1].rstrip()
-        logger.info(auth)
         return auth
 
     def download(self):
-        logger.info('test')
         auth = self.login()
         headers = {
             'Authorization': 'GoogleLogin auth=' + auth,
@@ -81,7 +76,7 @@ class Tracker():
         news['id'] = hashlib.md5(data['title'].encode('utf-8')).hexdigest()
 
         if 'title' in data:
-            news['title'] = data['title']
+            news['title'] = data['title'][:255]
         else:
             news['title'] = ''
 
@@ -91,9 +86,9 @@ class Tracker():
             news['content'] = ''
 
         news['datetime'] = data['published']
-        news['source_title'] = data['origin']['title']
-        news['source_url'] = data['origin']['htmlUrl']
-        news['referrer'] = data['canonical'][0]['href']
+        news['source_title'] = data['origin']['title'][:255]
+        news['source_url'] = data['origin']['htmlUrl'][:255]
+        news['referrer'] = data['canonical'][0]['href'][:255]
 
         return news
 

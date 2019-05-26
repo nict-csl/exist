@@ -6,7 +6,6 @@ import os
 import configparser
 import inspect
 import plugins
-from plugins import *
 
 ## Django Setup
 import django
@@ -36,7 +35,8 @@ handler = TimedRotatingFileHandler(
 handler.setFormatter(Formatter("%(asctime)s %(name)s %(funcName)s [%(levelname)s]: %(message)s"))
 logger.setLevel(DEBUG)
 logger.addHandler(handler)
-logger.propagate = False
+
+from plugins import *
 
 def printQuery(q):
     print("==========")
