@@ -6,27 +6,46 @@
 {% include "news/searchBar.html" %}
 <canvas id="myChart" width="400" height="30"></canvas>
 <p class="text-right"> Records: {{ count| intcomma }} </p>
-<table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
-    <thead>
-        <tr>
-            <th style="width: 200px;">Date (JST)</th>
-            <th>Title</th>
-            <th style="width: 200px;">Source</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for nw in nws %}
-    <tr>
-        <td nowrap>{{ nw.datetime }}</td>
-        <td><a href="{{ nw.referrer }}">{{ nw.title }}</a></td>
-        <td><a href="{{ nw.source_url }}">{{ nw.source_title }}</a></td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="row">
+    <div class="col-6">
+        <table class="table table-sm table-responsive table-hover" style="table-layout:fixed;width:100%;">
+            <thead>
+                <tr>
+                    <th style="width: 200px;">Date (JST)</th>
+                    <th>Title</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for nw in nws %}
+            <tr>
+                <td nowrap>{{ nw.datetime }}</td>
+                <td onclick="newsTitle(this);">
+                    <input type="hidden" value="{{ nw.content }}">
+                    <p class="text-primary">{{ nw.title }}</p>
+                    <a href="{{ nw.source_url }}" class="font-italic small text-black-50">{{ nw.source_title }}</a>
+                    <a class="btn btn-sm btn-outline-secondary" href="{{ nw.referrer }}" target="blank">
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-6 overflow-auto">
+        <div id="content"><h3 class="text-white bg-dark centor">Content</h3></div>
+    </div>
+</div>
 {% include "news/page.html" %}
 {% endblock %}
 
 {% block javascript %}
+<script>
+var newsTitle = function(news) {
+    var value = news.getElementsByTagName("input")[0].value;
+    document.getElementById("content").innerHTML = value;
+};
+</script>
+
 <script type="text/javascript">
 var ctx = document.getElementById("myChart");
 var data = {
