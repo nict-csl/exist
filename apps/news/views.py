@@ -24,7 +24,7 @@ class IndexView(PaginationMixin, ListView):
         query = News.objects.order_by('-datetime')
         keyword = self.request.GET.get('keyword')
         if keyword is not None:
-            query = query.filter(Q(text__icontains=keyword)).order_by('-datetime')
+            query = query.filter(Q(content__icontains=keyword)|Q(title__icontains=keyword)).order_by('-datetime')
         return query
 
     def thirty_day_data(self):
