@@ -8,6 +8,7 @@ from datetime import datetime
 import pytz
 from urllib import parse
 import json
+import html
 
 ## Django Setup
 import django
@@ -76,7 +77,7 @@ class Tracker():
         news['id'] = hashlib.md5(data['title'].encode('utf-8')).hexdigest()
 
         if 'title' in data:
-            news['title'] = data['title'][:255]
+            news['title'] = html.unescape(data['title'][:255])
         else:
             news['title'] = ''
 
