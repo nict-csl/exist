@@ -7,33 +7,30 @@
 <canvas id="myChart" width="400" height="30"></canvas>
 <p class="text-right"> Records: {{ count| intcomma }} </p>
 <div class="row">
-    <div class="col-6">
-        <table class="table table-sm table-responsive table-hover" style="table-layout:fixed;width:100%;">
-            <thead>
-                <tr>
-                    <th style="width: 200px;">Date (JST)</th>
-                    <th>Title</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for nw in nws %}
+    <table class="table table-sm table-responsive table-hover" style="table-layout:fixed;width:100%;">
+        <thead>
             <tr>
-                <td nowrap>{{ nw.datetime }}</td>
-                <td onclick="newsTitle(this);">
-                    <input type="hidden" value="{{ nw.content }}">
-                    <p class="text-primary">{{ nw.title }}</p>
-                    <a href="{{ nw.source_url }}" class="font-italic small text-black-50">{{ nw.source_title }}</a>
-                    <a class="btn btn-sm btn-outline-secondary" href="{{ nw.referrer }}" target="blank">
-                        <i class="fas fa-external-link-alt"></i>
-                    </a>
-                </td>
+                <th style="width: 200px;">Date (JST)</th>
+                <th style="width: 400px;">Title</th>
+                <th>Content</th>
             </tr>
-            {% endfor %}
-        </table>
-    </div>
-    <div class="col-6 overflow-auto">
-        <div id="content"><h3 class="text-white bg-dark centor">Content</h3></div>
-    </div>
+        </thead>
+        <tbody>
+        {% for nw in nws %}
+        <tr>
+            <td nowrap>{{ nw.datetime }}</td>
+            <td onclick="newsTitle(this);">
+                <input type="hidden" value="{{ nw.content }}">
+                <p class="text-primary">{{ nw.title }}</p>
+                <a href="{{ nw.source_url }}" class="font-italic small text-black-50" target="blank">{{ nw.source_title }}</a>
+                <a href="{{ nw.referrer }}" target="blank">
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </td>
+            <td>{{ nw.content|striptags|truncatewords:30 }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </div>
 {% include "news/page.html" %}
 {% endblock %}
