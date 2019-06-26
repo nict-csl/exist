@@ -52,6 +52,39 @@
 
 <div class="card mb-3">
     <h5 class="card-header">
+        <a href={% url 'news:index' %}>News Tracker</a>
+    </h5>
+    <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">Tracking security headlines.</h6>
+        <table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
+            <thead>
+            <tr>
+                <th style="width: 200px;">Date (JST)</th>
+                <th style="width: 400px;">Title</th>
+                <th>content</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for nw in nws %}
+            <tr>
+                <td nowrap>{{ nw.datetime }}</td>
+                <td>
+                    <p class="text-primary">{{ nw.title }}</p>
+                    <a href="{{ nw.source_url }}" class="font-italic small text-black-50" target="blank">{{ nw.source_title }}</a>
+                    <a href="{{ nw.referrer }}" target="blank">
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </td>
+                <td>{{ nw.content|striptags|truncatewords:30 }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <h5 class="card-header">
         <a href={% url 'reputation:index' %}>Reputation Tracker</a>
     </h5>
     <div class="card-body">
@@ -109,15 +142,6 @@
         {% endfor %}
         </tbody>
     </table>
-  </div>
-</div>
-
-<div class="card mb-3">
-    <h5 class="card-header">
-        <a href={% url 'twitter_hunter:index' %}>Twitter Hunter</a>
-    </h5>
-    <div class="card-body">
-    <h6 class="card-subtitle mb-2 text-muted">Hunt specific tweets.</h6>
   </div>
 </div>
 

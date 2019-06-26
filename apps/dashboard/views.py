@@ -10,6 +10,7 @@ from apps.threat.models import Event, Attribute
 from apps.reputation.models import blacklist
 from apps.twitter.models import tweet
 from apps.exploit.models import Exploit
+from apps.news.models import News
 #from .forms import CCSearchForm, LookupForm
 from .forms import SearchForm
 import ipaddress
@@ -25,6 +26,7 @@ class IndexView(TemplateView):
         context['bls'] = blacklist.objects.order_by('-datetime')[:5]
         context['tws'] = tweet.objects.order_by('-datetime')[:5]
         context['exs'] = Exploit.objects.order_by('-datetime')[:5]
+        context['nws'] = News.objects.order_by('-datetime')[:5]
         return context
 
 class CrossView(TemplateView):
@@ -51,10 +53,15 @@ class CrossView(TemplateView):
             count = context['tws'].count()
             if count > 0:
                 context['tws_count'] = count
+
             context['exs'] = Exploit.objects.filter(Q(text__icontains=keyword)).order_by('-datetime')
             count = context['exs'].count()
             if count > 0:
                 context['exs_count'] = count
+            context['nws'] = News.objects.filter(Q(content__icontains=keyword)|Q(title__icontains=keyword)).order_by('-datetime')
+            count = context['nws'].count()
+            if count > 0:
+                context['nws_count'] = count
         return context
 
 class LookupView(View):
