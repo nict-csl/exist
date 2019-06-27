@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'apps.twitter_hunter.apps.TwitterHunterConfig',
     'apps.exploit.apps.ExploitConfig',
     'apps.news.apps.NewsConfig',
+    'apps.news_hunter.apps.NewsHunterConfig',
     'apps.threat.apps.ThreatConfig',
     'apps.threat_hunter.apps.ThreatHunterConfig',
     'apps.dashboard.apps.DashboardConfig',

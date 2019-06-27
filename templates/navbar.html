@@ -30,13 +30,14 @@
                         <a class="dropdown-item" href="{% url 'news:index' %}">News Tracker</a>
                     </div>
                 </li>
-                <li class={% if request.resolver_match.app_name == 'twitter_hunter' or request.resolver_match.app_name == 'threat_hunter' %}"nav-item dropdown active"{% endif %}"nav-item dropdown">
+                <li class={% if request.resolver_match.app_name == 'twitter_hunter' or request.resolver_match.app_name == 'threat_hunter' or request.resolver_match.app_name == 'news_hunter' %}"nav-item dropdown active"{% endif %}"nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Hunter
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="{% url 'twitter_hunter:index' %}">Twitter Hunter</a>
                         <a class="dropdown-item" href="{% url 'threat_hunter:index' %}">Threat Hunter</a>
+                        <a class="dropdown-item" href="{% url 'news_hunter:index' %}">News Hunter</a>
                     </div>
                 </li>
                 <li class={% if request.resolver_match.app_name == 'ip' or request.resolver_match.app_name == 'domain' or request.resolver_match.app_name == 'url' or request.resolver_match.app_name == 'filehash' %}"nav-item dropdown active"{% endif %}"nav-item dropdown">
