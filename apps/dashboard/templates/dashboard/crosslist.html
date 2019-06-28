@@ -98,11 +98,8 @@
                 <tr>
                     <td nowrap>{{ nw.datetime }}</td>
                     <td>
-                        <p class="text-primary">{{ nw.title }}</p>
+                        <a href="{{ nw.referrer }}" target="blank">{{ nw.title }}</a><br>
                         <a href="{{ nw.source_url }}" class="font-italic small text-black-50" target="blank">{{ nw.source_title }}</a>
-                        <a href="{{ nw.referrer }}" target="blank">
-                            <i class="fas fa-external-link-alt"></i>
-                        </a>
                     </td>
                     <td>{{ nw.content|striptags|truncatewords:30 }}</td>
                 </tr>
