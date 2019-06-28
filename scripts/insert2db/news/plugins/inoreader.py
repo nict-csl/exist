@@ -82,7 +82,8 @@ class Tracker():
             news['title'] = ''
 
         if 'summary' in data:
-            news['content'] = data['summary']['content']
+            delstr = 'Ads from Inoreader &bull; <a target="_blank" style="text-decoration:underline;color:#424242;" href="https://www.inoreader.com/about_ads">Remove</a>'
+            news['content'] = data['summary']['content'].replace(delstr, '')
         else:
             news['content'] = ''
 
