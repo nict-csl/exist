@@ -93,7 +93,7 @@ def searchNews(keyword_list):
     for keyword_or in keyword_list:
         q_info_and = Q()
         for keyword_and in keyword_or:
-            q_info_and.add(Q(content__icontains=keyword_and)|Q(title__icontains=keyword_and)), Q.AND)
+            q_info_and.add(Q(content__icontains=keyword_and)|Q(title__icontains=keyword_and), Q.AND)
         q_info.add(q_info_and, Q.OR)
     return newss.filter(q_info)
 
