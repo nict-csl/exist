@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^exploit/', include('apps.exploit.urls')),
     url(r'^news/', include('apps.news.urls')),
     url(r'^news_hunter/', include('apps.news_hunter.urls')),
+    url(r'^vuln/', include('apps.vuln.urls')),
     url(r'^threat/', include('apps.threat.urls')),
     url(r'^threat_hunter/', include('apps.threat_hunter.urls')),
     url(r'^domain/', include('apps.domain.urls')),

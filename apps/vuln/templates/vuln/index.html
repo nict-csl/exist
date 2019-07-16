@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load humanize %}
+{% load static %}
+
+{% include "vuln/searchBar.html" %}
+<canvas id="myChart" width="400" height="30"></canvas>
+<div class="btn-group btn-group-sm" role="group">
+    <button id="btnGroupFilter" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Pre-Filter
+    </button>
+    <div class="dropdown-menu" aria-labelledby="btnGroupFilter">
+        <a class="dropdown-item" href="{{ request.path }}">None</a>
+        <a class="dropdown-item" href="{{ request.path }}?filter=cvss_high">CVSS High (cvss > 7.0)</a>
+        <a class="dropdown-item" href="{{ request.path }}?filter=attack_possible">Atack Possible (tag contains(disclosure_in_wild, exploit_public, exploit_poc_public) and cvss > 7.0)</a>
+        <a class="dropdown-item" href="{{ request.path }}?filter=in_the_wild">In The Wild (tag == disclosure_in_wild and cvss > 7.0)</a>
+    </div>
+</div>
+<span class="badge badge-primary">{{ request.GET.filter }}</span>
+<p class="text-right"> Records: {{ count| intcomma }} </p>
+<table class="table table-responsive table-hover w-100">
+    <thead>
+        <tr>
+            <th style="width: 220px;">Last Modified (JST)</th>
+            <th>Title</th>
+            <th>Tag</th>
+            <th style="width: 200px;">CVE-ID</th>
+            <th style="width: 200px;">CVSS(Base)</th>
+            <th style="width: 100px;">Product</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for vu in vus %}
+    <tr>
+        <td nowrap>{{ vu.vulndb_last_modified }}</td>
+        <td style="word-wrap:break-word;"><a href="{% url 'vuln:detail' vu.id %}">{{ vu.title }}</a></td>
+        <td style="word-wrap:break-word;">
+            {% for tag in vu.tags.all %}
+            <a href="{{ request.path }}?{{ request.GET.urlencode }}&tag={{ tag.id }}"><span class="badge badge-secondary shadow" style="color: {{ tag.get_textcolor }}; background-color: {{ tag.get_backgroundcolor }};" data-toggle="tooltip" title="{{ tag.description }}">{{ tag.name }}</span></a>
+            {% endfor %}
+        </td>
+        <td style="word-wrap:break-word;">
+            {% for nvd in vu.nvds.all %}
+            <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name={{ nvd.id }}" target="_blank">{{ nvd.id }}</a><br>
+            {% endfor %}
+        </td>
+        <td style="word-wrap:break-word;">
+            {% for cvss in vu.cvsses.all %}
+            {% if cvss.score < 4.0 %}
+            <button class="btn shadow text-white bg-info" data-toggle="tooltip" title="{{ cvss.source }}">
+            {% elif cvss.score < 7.0 %}
+            <button class="btn shadow text-dark bg-warning" data-toggle="tooltip" title="{{ cvss.source }}">
+            {% else %}
+            <button class="btn shadow text-white bg-danger" data-toggle="tooltip" title="{{ cvss.source }}">
+            {% endif %}
+                {{ cvss.score }}
+            </button>
+            {% endfor %}
+        </td>
+        <td style="word-wrap:break-word;">
+            <button class="btn btn-sm shadow text-white bg-info">
+                {% for product in vu.products.all %}
+                {{ product.name }}
+                {% endfor %}
+            </button>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% include "vuln/page.html" %}
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+var ctx = document.getElementById("myChart");
+var data = {
+    {% autoescape off %}
+    labels: {{ 30_day_labels }},
+    {% endautoescape %}
+    datasets: [{
+        label: 'count',
+        data: {{ 30_day_data }},
+        backgroundColor: "rgba(200,30,30,0.4)",
+        borderColor: "rgba(230,10,10,1)"
+    }],
+};
+var options = {
+legend: {
+    display: false,
+    }
+};
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: options,
+});
+</script>
+{% endblock %}
+

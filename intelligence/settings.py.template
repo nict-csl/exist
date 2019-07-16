@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'apps.exploit.apps.ExploitConfig',
     'apps.news.apps.NewsConfig',
     'apps.news_hunter.apps.NewsHunterConfig',
+    'apps.vuln.apps.VulnConfig',
     'apps.threat.apps.ThreatConfig',
     'apps.threat_hunter.apps.ThreatHunterConfig',
     'apps.dashboard.apps.DashboardConfig',
