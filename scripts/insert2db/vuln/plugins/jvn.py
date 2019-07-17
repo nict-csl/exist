@@ -195,7 +195,7 @@ class Tracker():
                 disclosure_date = datetime.strptime(item.get('dcterms:issued'), '%Y-%m-%dT%H:%M:%S+09:00').replace(tzinfo=tzone.get_fixed_timezone(540)),
                 solution = detail['Solution']['SolutionItem']['Description'],
                 impact = detail['Impact']['ImpactItem']['Description'],
-                link = detail.get('link'),
+                link = item.get('link'),
                 source = self.ID,
             )
         except Exception as e:

@@ -28,6 +28,15 @@
                    <td>{{ cvss.score }}</td>
                    </tr>
                    <tr>
+                   <th>Version</th>
+                   <td>{{ cvss.version }}</td>
+                   </tr>
+                   <tr>
+                   <th>Vector</th>
+                   <td>{{ cvss.vector }}</td>
+                   </tr>
+                   {% if cvss.version == 2 %}
+                   <tr>
                    <th>Access Vector</th>
                    <td>{{ cvss.access_vector }}</td>
                    </tr>
@@ -62,6 +71,8 @@
                    <tr>
                    <th>Generated On</th>
                    <td>{{ cvss.generated_on }}</td>
+                   </tr>
+                   {% endif %}
                </table>
            </div>
         </div>
@@ -196,7 +207,7 @@
                     {% elif ref.reftype == "Related VulnDB ID" %}
                     <td><a href="{% url 'vuln:detail' ref.value %}">{{ ref.value }}</a></td>
                     {% else %}
-                    <td>{{ ref.value|urlize }}</td>
+                    <td><a href='{{ ref.url }}' target="_blank">{{ ref.value|urlize }}</a></td>
                     {% endif %}
                     </tr>
                     {% endfor %}
