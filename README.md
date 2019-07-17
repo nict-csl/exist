@@ -77,7 +77,7 @@ Provide data stored in the EXIST database by Web API.
 
 ## Getting started
 
-After that I assume the environment of CentOS 7. Please at your own when deploying to other environment.
+After that I assume the environment of CentOS 7 or Ubuntu 18.04 LTS. Please at your own when deploying to other environment.
 
 ### Install python modules
 
@@ -86,10 +86,15 @@ $ sudo pip install -r requirements.txt
 ```
 
 ### Install MariaDB
-
+- CentOS 7
 ```
 $ curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 $ sudo yum install MariaDB-server MariaDB-client
+```
+
+- Ubuntu 18.04 LTS
+```
+$ sudo apt install mariadb-server mariadb-client
 ```
 
 ### Run database
@@ -114,17 +119,26 @@ $ python manage.py migrate
 ### Install Redis server
 Reputation tracker uses redis as the Celery cache server backend.
 
+- CentOS 7
 ```
 $ sudo yum install redis
 $ sudo systemctl start redis
 $ sudo systemctl enable redis
 ```
 
+- Ubuntu 18.04 LTS
+```
+$ sudo apt install redis-server
+$ sudo systemctl start redis-server
+$ sudo systemctl enable redis-server
+```
+
 ### Setup Celery
 Reputation tracker uses Celery as an asynchronous task job queue.
 
-- Create a celery config
-/etc/sysconfig/celery
+- Create a celery config. I recommend that the config is set on the following paths:
+  + CentOS 7: /etc/sysconfig/celery
+  + Ubuntu 18.04 LTS: /etc/celery.conf
 
 ```
 # Name of nodes to start
@@ -156,8 +170,8 @@ CELERYD_LOG_FILE="/var/log/celery/%n%I.log"
 CELERYD_LOG_LEVEL="INFO"
 ```
 
-- Create a celery service management script.
-/etc/systemd/system/celery.service
+- Create a celery service management script on `/etc/systemd/system/celery.service`. Also, you must set your celery config path to `EnvironmentFile`.
+
 
 ```
 [Unit]
@@ -289,6 +303,11 @@ Lookup URL uses [wkhtmltopdf](https://wkhtmltopdf.org/) and Xvfb.
 
 ```
 $ sudo yum install xorg-x11-server-Xvfb
+```
+
+If you deploy EXIST on Ubuntu 18.04 LTS, you can install these packages by using apt.
+```
+$ sudo apt install wkhtmltopdf xvfb
 ```
 
 ### Flush old data

@@ -136,6 +136,7 @@ class DetailView(TemplateView):
         path = "static/webimg/" + imagehash + ".png"
         options = {
             'quiet': '',
+            'xvfb': '',
         }
         if not os.path.exists(filepath):
             try:
