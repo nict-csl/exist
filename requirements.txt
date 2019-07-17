@@ -9,7 +9,7 @@ django-bootstrap4==0.0.4
 django-celery-results==1.0.4
 django-filter==2.0.0
 django-pure-pagination==0.3.0
-djangorestframework==3.6.4
+djangorestframework==3.9.1
 geoip2==2.9.0
 idna==2.6
 imgkit==1.0.1
