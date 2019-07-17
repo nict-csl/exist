@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from rest_framework.filters import SearchFilter, FilterSet
-from django_filters import DateTimeFromToRangeFilter, CharFilter
+from rest_framework.filters import SearchFilter
+from django_filters import DateTimeFromToRangeFilter, CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 from apps.twitter.models import tweet
 from apps.twitter.serializers import twSerializer

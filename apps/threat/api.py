@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from rest_framework.filters import SearchFilter, FilterSet
-from django_filters import DateTimeFromToRangeFilter, CharFilter, ChoiceFilter
+from rest_framework.filters import SearchFilter
+from django_filters import DateTimeFromToRangeFilter, CharFilter, ChoiceFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 from apps.threat.models import Event, Attribute
 from apps.threat.serializers import EventSerializer, AttributeSerializer
