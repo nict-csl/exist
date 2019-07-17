@@ -8,6 +8,9 @@ API_KEY = YOUR_MISP_API_KEY
 [malshare]
 api_key = YOUR_API_KEY
 
+[abuse]
+api_key = YOUR_API_KEY
+
 [twitter]
 timeline = https://api.twitter.com/1.1/statuses/home_timeline.json
 CK = YOUR_CK
