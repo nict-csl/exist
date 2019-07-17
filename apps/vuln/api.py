@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from rest_framework.filters import SearchFilter, FilterSet
-from django_filters import DateTimeFromToRangeFilter, CharFilter, ModelMultipleChoiceFilter
+from rest_framework.filters import SearchFilter
+from django_filters import DateTimeFromToRangeFilter, CharFilter, ModelMultipleChoiceFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 from apps.vuln.models import Vuln, Tag
 from apps.vuln.serializers import vulnSerializer

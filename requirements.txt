@@ -4,12 +4,12 @@ celery==4.2.1
 certifi==2017.7.27.1
 chardet==3.0.4
 configparser==3.5.0
-Django==1.11.20
+Django==1.11.22
 django-bootstrap4==0.0.4
 django-celery-results==1.0.4
 django-filter==2.0.0
 django-pure-pagination==0.3.0
-djangorestframework==3.6.4
+djangorestframework==3.9.4
 geoip2==2.9.0
 idna==2.6
 imgkit==1.0.1
