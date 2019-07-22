@@ -11,7 +11,7 @@ except ImportError:
 
 class AbuseIPDB():
     def __init__(self):
-        conffile = 'conf/abuse.conf'
+        conffile = 'conf/exist.conf'
         conf = configparser.SafeConfigParser()
         conf.read(conffile)
         self.__baseURL = conf.get('abuse', 'baseURL')

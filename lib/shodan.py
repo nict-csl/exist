@@ -11,7 +11,7 @@ except ImportError:
 
 class Shodan():
     def __init__(self):
-        conffile = 'conf/shodan.conf'
+        conffile = 'conf/exist.conf'
         conf = configparser.SafeConfigParser()
         conf.read(conffile)
         self.__baseURL = conf.get('shodan', 'baseURL')

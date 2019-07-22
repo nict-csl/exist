@@ -11,7 +11,7 @@ except ImportError:
 
 class Censys():
     def __init__(self):
-        conffile = 'conf/censys.conf'
+        conffile = 'conf/exist.conf'
         conf = configparser.SafeConfigParser()
         conf.read(conffile)
         self.__baseURL = conf.get('censys', 'baseURL')

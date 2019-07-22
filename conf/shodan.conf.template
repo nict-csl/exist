@@ -1,3 +1,0 @@
-[shodan]
-baseURL = https://api.shodan.io/shodan/host/
-apikey = YOUR_API_KEY

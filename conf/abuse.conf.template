@@ -1,3 +1,0 @@
-[abuse]
-baseURL = https://api.abuseipdb.com/api/v2/check
-apikey = YOUR_API_KEY
