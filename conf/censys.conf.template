@@ -1,0 +1,4 @@
+[censys]
+baseURL = https://censys.io/api/v1/
+api_id = YOUR_API_ID
+secret = YOUR_SECRET

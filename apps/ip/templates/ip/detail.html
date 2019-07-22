@@ -52,6 +52,9 @@
     <li class="nav-item">
         <a class="nav-link" id="shodan-tab" data-toggle="tab" href="#shodan">Shodan</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" id="censys-tab" data-toggle="tab" href="#censys">Censys</a>
+    </li>
 </ul>
 
 <div class="tab-content">
@@ -436,6 +439,65 @@
                     </table>
                 </div>
                 {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="censys" role="tabpanel" aria-labelledby="censys-tab">
+        <img class="p-3" src="{% static 'img/censys_logo.png' %}" height="100" alt="Censys">
+        <ul class="nav nav-tabs nav-pills">
+            <li class="nav-item">
+            <a class="nav-link active" id="censys-base-tab" data-toggle="tab" href="#censys-base">Base info</a>
+            </li>
+        </ul>
+        <div class="container">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="censys-base" role="tabpanel" aria-labelledby="censys-base-tab">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>province</th>
+                            <td>
+                                {{ censys.province }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Country</th>
+                            <td>
+                                <img src="{% static 'flags/'|add:censys.location.country_code|lower|add:'.png' %}"> {{ censys.location.country }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Updated at</th>
+                            <td>
+                                {{ censys.updated_at }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Protocols</th>
+                            <td>
+                                {{ censys.protocols }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>ASN</th>
+                            <td>
+                                {{ censys.autonomous_system.asn }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>AS name</th>
+                            <td>
+                                {{ censys.autonomous_system.name }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Tags</th>
+                            <td>
+                                {{ censys.tags }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
