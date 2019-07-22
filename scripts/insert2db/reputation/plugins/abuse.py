@@ -44,13 +44,13 @@ class Tracker():
             'Key': self.key,
             'Accept': 'application/json'
         }
-        payloads = {
+        params = {
             'countMinimum': 15,
             'maxAgeInDays':  30,
             'confidenceMinimum': 90,
         }
         try:
-            res = requests.post(self.URL, headers=headers, data=payloads)
+            res = requests.get(self.URL, headers=headers, params=params)
         except Exception as e:
             logger.error(e)
         try:
