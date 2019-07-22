@@ -29,7 +29,7 @@ class GeoIP():
             record
         except NameError:
             return None
-        return record.country.iso_code
+        return record.country
 
 def ArgParse():
     parser = argparse.ArgumentParser(description=

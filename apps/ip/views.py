@@ -5,6 +5,7 @@ from .forms import SearchForm
 from lib.geoip import GeoIP
 from lib.vt import VT
 from lib.threatminer import ThreatMiner
+from lib.abuse import AbuseIPDB
 import socket
 import ipaddress
 from django.db.models import Q
@@ -70,6 +71,12 @@ class DetailView(TemplateView):
             context['tm_url'] = tm.getURIFromIP(ip)
             context['tm_sample'] = tm.getSamplesFromIP(ip)
             context['tm_report'] = tm.getReportFromIP(ip)
+        except Exception as e:
+            logger.error(e)
+
+        try:
+            abuse = AbuseIPDB()
+            context['abuse_ip'] = abuse.getReport(ip)
         except Exception as e:
             logger.error(e)
 

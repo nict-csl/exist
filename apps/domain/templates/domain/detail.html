@@ -31,7 +31,7 @@
         </tr>
         <tr>
             <th>Country</th>
-            <td>{{ geoip }}</td>
+            <td><img src="{% static 'flags/'|add:geoip.iso_code|lower|add:'.png' %}"> {{ geoip.names.en }}</td>
         </tr>
         <tr>
             <th>VirusTotal Detections</th>
