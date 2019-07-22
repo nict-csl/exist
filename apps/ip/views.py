@@ -6,6 +6,7 @@ from lib.geoip import GeoIP
 from lib.vt import VT
 from lib.threatminer import ThreatMiner
 from lib.abuse import AbuseIPDB
+from lib.shodan import Shodan
 import socket
 import ipaddress
 from django.db.models import Q
@@ -77,6 +78,12 @@ class DetailView(TemplateView):
         try:
             abuse = AbuseIPDB()
             context['abuse_ip'] = abuse.getReport(ip)
+        except Exception as e:
+            logger.error(e)
+
+        try:
+            shodan = Shodan()
+            context['shodan'] = shodan.getReport(ip)
         except Exception as e:
             logger.error(e)
 
