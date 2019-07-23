@@ -61,6 +61,9 @@
         <a class="nav-link" id="threatminer-tab" data-toggle="tab" href="#threatminer">ThreatMiner</a>
     </li>
     <li class="nav-item">
+        <a class="nav-link" id="ipvoid-tab" data-toggle="tab" href="#ipvoid">IPVoid</a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link" id="abuse-tab" data-toggle="tab" href="#abuse">AbuseIPDB</a>
     </li>
     <li class="nav-item">
@@ -69,17 +72,12 @@
     <li class="nav-item">
         <a class="nav-link" id="censys-tab" data-toggle="tab" href="#censys">Censys</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" id="ipvoid-tab" data-toggle="tab" href="#ipvoid">IPVoid</a>
-    </li>
 </ul>
 
 <div class="tab-content">
     <div class="tab-pane fade show active" id="cross" role="tabpanel" aria-labelledby="cross-tab">
-
         <div class="my-2"></div>
         {% include "dashboard/crosslist.html" %}
-
     </div>
     <div class="tab-pane fade" id="virustotal" role="tabpanel" aria-labelledby="virustotal-tab">
 
@@ -177,10 +175,9 @@
                 </div>
             </div>
         </div>
-
     </div>
-    <div class="tab-pane fade" id="threatminer" role="tabpanel" aria-labelledby="theatminer-tab">
 
+    <div class="tab-pane fade" id="threatminer" role="tabpanel" aria-labelledby="theatminer-tab">
         <img class="p-3" src="{% static 'img/threatminer_logo.png' %}" height="120" alt="ThreatMiner">
         <ul class="nav nav-tabs nav-pills">
             <li class="nav-item">
@@ -248,6 +245,33 @@
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="ipvoid" role="tabpanel" aria-labelledby="ipvoid-tab">
+        <img class="p-3" src="{% static 'img/ipvoid_logo.png' %}" height="100" alt="IPVoid">
+        <div class="container">
+            <table class="table table-hover w-100">
+                <thead>
+                <tr>
+                    <th>Engine</th>
+                    <th>Listed</th>
+                </tr>
+                </thead>
+                {% for result in ipvoid.results %}
+                <tr>
+                    <td><a href="{{ result.referrer }}">{{ result.engine }}</a></td>
+                    <td>
+                        {% if result.listed %}
+                            <button class="btn btn-sm shadow text-white bg-danger">
+                        {% else %}
+                            <button class="btn btn-sm shadow text-white bg-info">
+                        {% endif %}
+                        {{ result.listed }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
         </div>
     </div>
 
@@ -516,33 +540,6 @@
                     </table>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="tab-pane fade" id="ipvoid" role="tabpanel" aria-labelledby="ipvoid-tab">
-        <img class="p-3" src="{% static 'img/ipvoid_logo.png' %}" height="100" alt="IPVoid">
-        <div class="container">
-            <table class="table table-hover w-100">
-                <thead>
-                <tr>
-                    <th>Engine</th>
-                    <th>Listed</th>
-                </tr>
-                </thead>
-                {% for result in ipvoid.results %}
-                <tr>
-                    <td><a href="{{ result.referrer }}">{{ result.engine }}</a></td>
-                    <td>
-                        {% if result.listed %}
-                            <button class="btn btn-sm shadow text-white bg-danger">
-                        {% else %}
-                            <button class="btn btn-sm shadow text-white bg-info">
-                        {% endif %}
-                        {{ result.listed }}
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
         </div>
     </div>
 </div>
