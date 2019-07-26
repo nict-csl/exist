@@ -13,8 +13,6 @@
     <div class="dropdown-menu" aria-labelledby="btnGroupFilter">
         <a class="dropdown-item" href="{{ request.path }}">None</a>
         <a class="dropdown-item" href="{{ request.path }}?filter=cvss_high">CVSS High (cvss > 7.0)</a>
-        <a class="dropdown-item" href="{{ request.path }}?filter=attack_possible">Atack Possible (tag contains(disclosure_in_wild, exploit_public, exploit_poc_public) and cvss > 7.0)</a>
-        <a class="dropdown-item" href="{{ request.path }}?filter=in_the_wild">In The Wild (tag == disclosure_in_wild and cvss > 7.0)</a>
     </div>
 </div>
 <span class="badge badge-primary">{{ request.GET.filter }}</span>
