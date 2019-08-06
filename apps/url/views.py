@@ -163,9 +163,10 @@ class DetailView(TemplateView):
             except Exception as e:
                 logger.error(e)
                 return
-            if 'text/html' in res.headers['content-type']:
-                with open(filepath, 'w') as fp:
-                    fp.write(res.text)
+            if "content-type" in res.headers:
+                if 'text/html' in res.headers['content-type']:
+                    with open(filepath, 'w') as fp:
+                        fp.write(res.text)
             else:
                 with open(filepath, 'wb') as fp:
                     fp.write(res.content)
