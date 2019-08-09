@@ -397,7 +397,9 @@
                         <tr>
                             <th>Country</th>
                             <td>
+                                {% if shodan.country_code %}
                                 <img src="{% static 'flags/'|add:shodan.country_code|lower|add:'.png' %}"> {{ shodan.country_name }}
+                                {% endif %}
                             </td>
                         </tr>
                         <tr>
@@ -504,7 +506,9 @@
                         <tr>
                             <th>Country</th>
                             <td>
+                                {% if censys.location %}
                                 <img src="{% static 'flags/'|add:censys.location.country_code|lower|add:'.png' %}"> {{ censys.location.country }}
+                                {% endif %}
                             </td>
                         </tr>
                         <tr>
