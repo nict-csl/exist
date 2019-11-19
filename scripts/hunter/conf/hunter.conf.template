@@ -5,6 +5,7 @@ syspath = /path/to/your/exist
 token = YOUR_TOKEN
 twitter_hunter_user = TwitterHunter
 threat_hunter_user = ThreatHunter
+news_hunter_user = NewsHunter
 postMessageURL = https://slack.com/api/chat.postMessage
 createChannelURL = https://slack.com/api/channels.create
 

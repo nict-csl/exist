@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load humanize %}
+{% load static %}
+<p class="text-right"> Events: {{ count| intcomma }} </p>
+<table class="table table-sm table-responsive table-hover" style="table-layout:fixed;width:100%;">
+    <thead>
+        <tr>
+            <th style="width: 200px;">Date (JST)</th>
+            <th style="width: 400px;">Title</th>
+            <th>Content</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for nw in newss %}
+    <tr>
+        <td nowrap>{{ nw.datetime }}</td>
+        <td>
+            <a href="{{ nw.referrer }}" target="blank">{{ nw.title }}</a><br>
+            <a href="{{ nw.source_url }}" class="font-italic small text-black-50" target="blank">{{ nw.source_title }}</a>
+        </td>
+        <td>{{ nw.content|striptags|truncatewords:30 }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% include "news_hunter/page.html" %}
+{% endblock %}

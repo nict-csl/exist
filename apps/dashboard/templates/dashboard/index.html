@@ -52,6 +52,36 @@
 
 <div class="card mb-3">
     <h5 class="card-header">
+        <a href={% url 'news:index' %}>News Tracker</a>
+    </h5>
+    <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">Tracking security headlines.</h6>
+        <table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
+            <thead>
+            <tr>
+                <th style="width: 200px;">Date (JST)</th>
+                <th style="width: 400px;">Title</th>
+                <th>content</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for nw in nws %}
+            <tr>
+                <td nowrap>{{ nw.datetime }}</td>
+                <td>
+                    <a href="{{ nw.referrer }}" target="blank">{{ nw.title }}</a><br>
+                    <a href="{{ nw.source_url }}" class="font-italic small text-black-50" target="blank">{{ nw.source_title }}</a>
+                </td>
+                <td>{{ nw.content|striptags|truncatewords:30 }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <h5 class="card-header">
         <a href={% url 'reputation:index' %}>Reputation Tracker</a>
     </h5>
     <div class="card-body">
@@ -114,15 +144,6 @@
 
 <div class="card mb-3">
     <h5 class="card-header">
-        <a href={% url 'twitter_hunter:index' %}>Twitter Hunter</a>
-    </h5>
-    <div class="card-body">
-    <h6 class="card-subtitle mb-2 text-muted">Hunt specific tweets.</h6>
-  </div>
-</div>
-
-<div class="card mb-3">
-    <h5 class="card-header">
         <a href={% url 'exploit:index' %}>Exploit Tracker</a>
     </h5>
     <div class="card-body">
@@ -144,6 +165,56 @@
             </tr>
             {% endfor %}
             </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <h5 class="card-header">
+        <a href={% url 'vuln:index' %}>Vuln Tracker</a>
+    </h5>
+    <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">Tracking vulnerabilities by VulnDB.</h6>
+        <table class="table table-responsive table-hover" style="table-layout:fixed;width:100%;">
+            <thead>
+                <tr>
+                    <th style="width: 220px;">Last Modified (JST)</th>
+                    <th>Title</th>
+                    <th>Tag</th>
+                    <th style="width: 200px;">CVE-ID</th>
+                    <th style="width: 200px;">CVSS(Base)</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for vu in vus %}
+            <tr>
+                <td nowrap>{{ vu.vulndb_last_modified }}</td>
+                <td style="word-wrap:break-word;"><a href="{% url 'vuln:detail' vu.id %}">{{ vu.title }}</a></td>
+                <td style="word-wrap:break-word;">
+                    {% for tag in vu.tags.all %}
+                    <a href="{% url 'vuln:index' %}?tag={{ tag.id }}"><span class="badge badge-secondary shadow" style="color: {{ tag.get_textcolor }}; background-color: {{ tag.get_backgroundcolor }};">{{ tag.name }}</span></a>
+                    {% endfor %}
+                </td>
+                <td style="word-wrap:break-word;">
+                    {% for nvd in vu.nvds.all %}
+                    <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name={{ nvd.id }}" target="_blank">{{ nvd.id }}</a><br>
+                    {% endfor %}
+                </td>
+                <td style="word-wrap:break-word;">
+                    {% for cvss in vu.cvsses.all %}
+                    {% if cvss.score < 4.0 %}
+                    <button class="btn shadow text-white bg-info">
+                    {% elif cvss.score < 7.0 %}
+                    <button class="btn shadow text-dark bg-warning">
+                    {% else %}
+                    <button class="btn shadow text-white bg-danger">
+                    {% endif %}
+                        {{ cvss.score }}
+                    </button>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
         </table>
     </div>
 </div>

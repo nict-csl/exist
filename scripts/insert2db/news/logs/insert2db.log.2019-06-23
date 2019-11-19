@@ -1,0 +1,5 @@
+2019-06-23 14:48:27,145 root <module> [INFO]: ./insert2db.py start
+2019-06-23 14:48:27,145 plugins.inoreader parse [INFO]: start parsing: Inoreader
+2019-06-23 14:48:30,382 plugins.inoreader parse [INFO]: done parsing: Inoreader, 100 queries were parsed
+2019-06-23 14:48:30,589 root saveQuery [INFO]: 88 queries were inserted
+2019-06-23 14:48:30,590 root <module> [INFO]: ./insert2db.py done

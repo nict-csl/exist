@@ -1,0 +1,19 @@
+[vt]
+baseURL = https://www.virustotal.com/vtapi/v2/
+apikey = YOUR_KEY
+
+[geoip]
+database = /path/to/your/GeoLite2-City.mmdb
+
+[shodan]
+baseURL = https://api.shodan.io/shodan/host/
+apikey = YOUR_API_KEY
+
+[censys]
+baseURL = https://censys.io/api/v1/
+api_id = YOUR_API_ID
+secret = YOUR_SECRET
+
+[abuse]
+baseURL = https://api.abuseipdb.com/api/v2/check
+apikey = YOUR_API_KEY

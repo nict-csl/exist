@@ -21,6 +21,7 @@ class blacklist(models.Model):
         (271, 'CyberCrime Tracker'),
         (281, 'Malshare'),
         (291, 'Minotr.net'),
+        (301, 'AbuseIPDB'),
     )
     id = models.SlugField(max_length=32, primary_key=True)
     ip = models.GenericIPAddressField(protocol='IPv4', null=True)

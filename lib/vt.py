@@ -14,7 +14,7 @@ version = '%(prog)s 20180912'
 
 class VT():
     def __init__(self):
-        conffile = 'conf/vt.conf'
+        conffile = 'conf/exist.conf'
         conf = configparser.SafeConfigParser()
         conf.read(conffile)
         self.__baseURL = conf.get('vt', 'baseURL')

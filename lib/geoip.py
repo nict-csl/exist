@@ -10,7 +10,7 @@ version = '%(prog)s 20180910'
 
 class GeoIP():
     def __init__(self):
-        conffile = 'conf/geoip.conf'
+        conffile = 'conf/exist.conf'
         conf = configparser.SafeConfigParser()
         conf.read(conffile)
         self.reader = geoip2.database.Reader(conf.get('geoip', 'database'))
@@ -29,7 +29,7 @@ class GeoIP():
             record
         except NameError:
             return None
-        return record.country.iso_code
+        return record.country
 
 def ArgParse():
     parser = argparse.ArgumentParser(description=

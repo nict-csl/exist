@@ -3,8 +3,8 @@
 EXIST is a web application for aggregating and analyzing CTI (cyber threat intelligence).
 
 EXIST is written by the following software.
-- Python 3.5.1
-- Django 1.11.20
+- Python 3.5.4
+- Django 1.11.22
 
 ## Concept
 
@@ -48,6 +48,8 @@ Tracker automatically collects data feeds from several CTI services.
 - Reputation Tracker
 - Twitter Tracker
 - Exploit Tracker
+- News Tracker
+- Vuln Tracker
 
 ### Hunter
 
@@ -55,6 +57,7 @@ Hunter enables us to set queries for gathering data from several CTI services an
 
 - Twitter Hunter
 - Threat Hunter
+- News Hunter
 
 ### Lookup
 
@@ -74,6 +77,8 @@ Provide data stored in the EXIST database by Web API.
 - exploit
 - threatEvent
 - threatAttribute
+- news
+- vuln
 
 ## Getting started
 
@@ -112,7 +117,7 @@ $ sudo systemctl enable mariadb
 ### Migrate database
 
 ```
-$ python manage.py makemigrations exploit reputation threat threat_hunter twitter twitter_hunter
+$ python manage.py makemigrations exploit reputation threat threat_hunter twitter twitter_hunter news news_hunter vuln
 $ python manage.py migrate
 ```
 
@@ -238,7 +243,7 @@ Scripts for inserting feed into database are [scripts/insert2db](scripts/insert2
 - Configuration files are [scripts/insert2db/conf](scripts/insert2db/conf)/insert2db.conf. Create it in reference to insert2db.conf.template.
 - If you use [MISP](https://www.misp-project.org/), write MISP URL and API key to insert2db.conf.
 - If you use [Malshare](https://malshare.com/), write your API key to insert2db.conf.
-- Create your Twitter API account in https://developer.twitter.com/ for tracking with EXIST..
+- Create your Twitter API account in https://developer.twitter.com/ for tracking with EXIST.
 - Create an App for EXIST.
 - Get Consumer API key (CA), Consumer API secret key (CS), Access token (AT), access token secret (AS).
 - Write CA, CS, AT, AS to insert2db.conf.
@@ -250,6 +255,8 @@ $ python scripts/insert2db/reputation/insert2db.py
 $ python scripts/insert2db/twitter/insert2db.py
 $ python scripts/insert2db/exploit/insert2db.py
 $ python scripts/insert2db/threat/insert2db.py
+$ python scripts/insert2db/news/insert2db.py
+$ python scripts/insert2db/vuln/insert2db.py
 ```
 
 > **Note:** To automate information collection, write them to your cron.

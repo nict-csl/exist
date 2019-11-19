@@ -19,7 +19,7 @@
         </tr>
         <tr>
             <th>Country</th>
-            <td>{{ geoip }}</td>
+            <td><img src="{% static 'flags/'|add:geoip.iso_code|lower|add:'.png' %}"> {{ geoip.names.en }}</td>
         </tr>
         <tr>
             <th>AS Number</th>
@@ -32,6 +32,20 @@
         <tr>
             <th>Resolutions</th>
             <td><more>{% for resolution in vt_ip.resolutions|dictsortreversed:"last_resolved" %}<div class="li">{{ resolution.last_resolved }}: <a href="{% url 'domain:detail' resolution.hostname %}">{{ resolution.hostname }}</a><br></div>{% endfor %}</more></td>
+        </tr>
+        <tr>
+            <th>IPVoid Score</th>
+            <td>
+                {% if ipvoid.hits < 2 %}
+                    <button class="btn btn-sm shadow text-white bg-info">
+                {% elif ipvoid.hits < 10 %}
+                    <button class="btn btn-sm shadow text-dark bg-warning">
+                {% else %}
+                    <button class="btn btn-sm shadow text-white bg-danger">
+                {% endif %}
+                {{ ipvoid.score }}
+                    </button>
+            </td>
         </tr>
     </table>
 </div>
@@ -46,14 +60,24 @@
     <li class="nav-item">
         <a class="nav-link" id="threatminer-tab" data-toggle="tab" href="#threatminer">ThreatMiner</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" id="ipvoid-tab" data-toggle="tab" href="#ipvoid">IPVoid</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="abuse-tab" data-toggle="tab" href="#abuse">AbuseIPDB</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="shodan-tab" data-toggle="tab" href="#shodan">Shodan</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="censys-tab" data-toggle="tab" href="#censys">Censys</a>
+    </li>
 </ul>
 
 <div class="tab-content">
     <div class="tab-pane fade show active" id="cross" role="tabpanel" aria-labelledby="cross-tab">
-
         <div class="my-2"></div>
         {% include "dashboard/crosslist.html" %}
-
     </div>
     <div class="tab-pane fade" id="virustotal" role="tabpanel" aria-labelledby="virustotal-tab">
 
@@ -151,10 +175,9 @@
                 </div>
             </div>
         </div>
-
     </div>
-    <div class="tab-pane fade" id="threatminer" role="tabpanel" aria-labelledby="theatminer-tab">
 
+    <div class="tab-pane fade" id="threatminer" role="tabpanel" aria-labelledby="theatminer-tab">
         <img class="p-3" src="{% static 'img/threatminer_logo.png' %}" height="120" alt="ThreatMiner">
         <ul class="nav nav-tabs nav-pills">
             <li class="nav-item">
@@ -219,6 +242,305 @@
                             <td>{{ result.year }}</a></td>
                         </tr>
                         {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="ipvoid" role="tabpanel" aria-labelledby="ipvoid-tab">
+        <img class="p-3" src="{% static 'img/ipvoid_logo.png' %}" height="100" alt="IPVoid">
+        <div class="container">
+            <table class="table table-hover w-100">
+                <thead>
+                <tr>
+                    <th>Engine</th>
+                    <th>Listed</th>
+                </tr>
+                </thead>
+                {% for result in ipvoid.results %}
+                <tr>
+                    <td><a href="{{ result.referrer }}">{{ result.engine }}</a></td>
+                    <td>
+                        {% if result.listed %}
+                            <button class="btn btn-sm shadow text-white bg-danger">
+                        {% else %}
+                            <button class="btn btn-sm shadow text-white bg-info">
+                        {% endif %}
+                        {{ result.listed }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="abuse" role="tabpanel" aria-labelledby="abuse-tab">
+        <img class="p-3" src="{% static 'img/abuseipdb_logo.png' %}" height="100" alt="AbuseIPDB">
+        <div class="container">
+            <table class="table table-striped">
+                <tr>
+                    <th>isWhitelisted</th>
+                    <td>
+                        {{ abuse_ip.data.isWhitelisted }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>abuseConfidenceScore</th>
+                    <td>
+                    {% if abuse_ip.data.abuseConfidenceScore < 20 %}
+                    <button class="btn btn-sm shadow text-white bg-info">
+                    {% elif abuse_ip.data.abuseConfidenceScore < 80 %}
+                    <button class="btn btn-sm shadow text-dark bg-warning">
+                    {% else %}
+                    <button class="btn btn-sm shadow text-white bg-danger">
+                    {% endif %}
+                        {{ abuse_ip.data.abuseConfidenceScore }}
+                    </button>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Country</th>
+                    <td>
+                        <img src="{% static 'flags/'|add:abuse_ip.data.countryCode|lower|add:'.png' %}"> {{ abuse_ip.data.countryName }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>usageType</th>
+                    <td>
+                        {{ abuse_ip.data.usageType }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>ISP</th>
+                    <td>
+                        {{ abuse_ip.data.isp }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>domain</th>
+                    <td>
+                        {{ abuse_ip.data.domain }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>totalReports</th>
+                    <td>
+                        {{ abuse_ip.data.totalReports }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>numDistinctUsers</th>
+                    <td>
+                        {{ abuse_ip.data.numDistinctUsers }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>lastReportedAt</th>
+                    <td>
+                        {{ abuse_ip.data.lastReportedAt }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <h3>Reports</h3>
+        <table class="table table-hover w-100" style="table-layout:fixed">
+            <thead>
+            <tr>
+                <th style="width:280px;">ReportedAt</th>
+                <th style="width:100px;">Reporter</th>
+                <th style="width:100px;">Country</th>
+                <th style="width:100px;">Categories</th>
+                <th>comment</th>
+            </tr>
+            </thead>
+            {% for report in abuse_ip.data.reports|dictsort:"reportedAt" %}
+            <tr>
+                <td>{{ report.reportedAt }}</td>
+                <td><a href="https://www.abuseipdb.com/user/{{ report.reporterId }}">{{ report.reporterId }}</a></td>
+                <td><img src="{% static 'flags/'|add:report.reporterCountryCode|lower|add:'.png' %}">{{ report.reporterCountryName }}</td>
+                <td><a href="https://www.abuseipdb.com/categories">{{ report.categories }}</a></td>
+                <td>{{ report.comment }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="tab-pane fade" id="shodan" role="tabpanel" aria-labelledby="shodan-tab">
+        <img class="p-3" src="{% static 'img/shodan_logo.png' %}" height="100" alt="Shodan">
+        <ul class="nav nav-tabs nav-pills">
+            <li class="nav-item">
+            <a class="nav-link active" id="shodan-base-tab" data-toggle="tab" href="#shodan-base">Base info</a>
+            </li>
+            {% for d in shodan.data %}
+            <li class="nav-item">
+            <a class="nav-link" id="{{ d.port }}-{{ d.transport }}-tab" data-toggle="tab" href="#{{ d.port }}-{{ d.transport }}">{{ d.port }}/{{ d.transport }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="container">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="shodan-base" role="tabpanel" aria-labelledby="shodan-base-tab">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Last Update</th>
+                            <td>
+                                {{ shodan.last_update }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Organization</th>
+                            <td>
+                                {{ shodan.org }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Country</th>
+                            <td>
+                                {% if shodan.country_code %}
+                                <img src="{% static 'flags/'|add:shodan.country_code|lower|add:'.png' %}"> {{ shodan.country_name }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>ISP</th>
+                            <td>
+                                {{ shodan.isp }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>ASN</th>
+                            <td>
+                                {{ shodan.asn }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>OS</th>
+                            <td>
+                                {{ shodan.os }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Ports</th>
+                            <td>
+                                {{ shodan.ports }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Vulnerabilities</th>
+                            <td>
+                                {{ shodan.vulns }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Tags</th>
+                            <td>
+                                {{ shodan.tags }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                {% for d in shodan.data %}
+                <div class="tab-pane fade" id="{{ d.port }}-{{ d.transport }}" role="tabpanel" aria-labelledby="{{ d.port }}-{{ d.transport }}-tab">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Timestamp</th>
+                            <td>
+                                {{ d.timestamp }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Product</th>
+                            <td>
+                                {{ d.product }} {{ d.version }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>OS</th>
+                            <td>
+                                {{ d.OS }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>data</th>
+                            <td>
+                                {{ d.data }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Options</th>
+                            <td>
+                                {{ d.opts }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>info</th>
+                            <td>
+                                {{ d.info }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="censys" role="tabpanel" aria-labelledby="censys-tab">
+        <img class="p-3" src="{% static 'img/censys_logo.png' %}" height="100" alt="Censys">
+        <ul class="nav nav-tabs nav-pills">
+            <li class="nav-item">
+            <a class="nav-link active" id="censys-base-tab" data-toggle="tab" href="#censys-base">Base info</a>
+            </li>
+        </ul>
+        <div class="container">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="censys-base" role="tabpanel" aria-labelledby="censys-base-tab">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>province</th>
+                            <td>
+                                {{ censys.province }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Country</th>
+                            <td>
+                                {% if censys.location %}
+                                <img src="{% static 'flags/'|add:censys.location.country_code|lower|add:'.png' %}"> {{ censys.location.country }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Updated at</th>
+                            <td>
+                                {{ censys.updated_at }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Protocols</th>
+                            <td>
+                                {{ censys.protocols }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>ASN</th>
+                            <td>
+                                {{ censys.autonomous_system.asn }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>AS name</th>
+                            <td>
+                                {{ censys.autonomous_system.name }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Tags</th>
+                            <td>
+                                {{ censys.tags }}
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
