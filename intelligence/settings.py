@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv
+
+load_dotenv(verbose=True)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,12 +23,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('EXIST_SECRET_KEY', 'application_secretkey')
+SECRET_KEY = os.environ.get('EXIST_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('EXIST_DEBUG_MODE', 'False').lower() in ['true', 'yes', '1']
 
-ALLOWED_HOSTS = os.environ.get('EXIST_ALLOWED_HOSTS', 'localhost').split(' | ')
+ALLOWED_HOSTS = os.environ.get('EXIST_ALLOWED_HOSTS').split('|')
 
 
 # Application definition
@@ -100,8 +103,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.environ.get('EXIST_DB_NAME', 'intelligence_db'),
-        'USER': os.environ.get('EXIST_DB_USER', 'exist'),
-        'PASSWORD': os.environ.get('EXIST_DB_PASSWORD', 'password'),
+        'USER': os.environ.get('EXIST_DB_USER'),
+        'PASSWORD': os.environ.get('EXIST_DB_PASSWORD'),
         'HOST': os.environ.get('EXIST_DB_HOST', 'localhost'),
         'PORT': os.environ.get('EXIST_DB_PORT', '3306'),
         'OPTIONS': {
