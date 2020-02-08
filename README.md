@@ -114,7 +114,7 @@ $ sudo systemctl enable mariadb
 - Create datebase and user.
 - Create `.env` in reference to [.env.example](.env.example). And edit according to your DB settings.
 
-###Generate secret key for Django
+### Generate secret key for Django
 
 Secret key for Django has to be written in `.env` file.
 
