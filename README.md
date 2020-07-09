@@ -3,8 +3,8 @@
 EXIST is a web application for aggregating and analyzing CTI (cyber threat intelligence).
 
 EXIST is written by the following software.
-- Python 3.5.4
-- Django 1.11.22
+- Python 3
+- Django 1.11
 
 ## Concept
 
