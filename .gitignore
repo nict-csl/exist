@@ -1,0 +1,14 @@
+# dotenv production file
+.env
+
+# Temporary adding for Docker environment.
+Dockerfile
+docker-compose.yml
+mysql/
+redis/
+
+# Other (like development environment junks).
+.python-version
+.vscode/
+.DS_Store
+._*

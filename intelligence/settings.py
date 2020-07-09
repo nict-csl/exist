@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv
+
+# Load from .env file
+load_dotenv(verbose=True)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,14 +24,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&ug=2p3t^x+&!9vt*kjr--g-)ta5=o)4@v&6ks-w#k69nl+v$k'
+SECRET_KEY = os.environ.get('EXIST_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('EXIST_DEBUG_MODE', 'False').lower() in ['true', 'yes', '1']
 
-ALLOWED_HOSTS = [
-#    '192.168.56.101',
-]
+ALLOWED_HOSTS = os.environ.get('EXIST_ALLOWED_HOSTS').split('|')
 
 
 # Application definition
@@ -100,14 +102,12 @@ WSGI_APPLICATION = 'intelligence.wsgi.application'
 
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'intelligence_db',
-        'USER': 'YOUR_DB_USER',
-        'PASSWORD': 'YOUR_DB_PASSWORD',
-        'HOST': '',
-        'PORT': '',
+        'NAME': os.environ.get('EXIST_DB_NAME', 'intelligence_db'),
+        'USER': os.environ.get('EXIST_DB_USER'),
+        'PASSWORD': os.environ.get('EXIST_DB_PASSWORD'),
+        'HOST': os.environ.get('EXIST_DB_HOST', 'localhost'),
+        'PORT': os.environ.get('EXIST_DB_PORT', '3306'),
         'OPTIONS': {
             'charset': 'utf8mb4',
             'init_command': 'SET character_set_connection=utf8mb4;'
@@ -141,9 +141,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'ja'
+LANGUAGE_CODE = os.environ.get('EXIST_LANGUAGE_CODE', 'ja')
 
-TIME_ZONE = 'Asia/Tokyo'
+TIME_ZONE = os.environ.get('EXIST_TIME_ZONE', 'Asia/Tokyo')
 
 USE_I18N = True
 

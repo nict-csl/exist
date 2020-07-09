@@ -4,7 +4,7 @@ celery==4.2.1
 certifi==2017.7.27.1
 chardet==3.0.4
 configparser==3.5.0
-Django==1.11.22
+Django==1.11.23
 django-bootstrap4==0.0.4
 django-celery-results==1.0.4
 django-filter==2.0.0
@@ -20,6 +20,7 @@ oauthlib==2.0.6
 pandas==0.20.3
 PyMySQL==0.7.11
 python-dateutil==2.6.1
+python-dotenv==0.10.5
 pytz==2017.2
 redis==2.10.6
 requests==2.21.0

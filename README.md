@@ -112,7 +112,27 @@ $ sudo systemctl enable mariadb
 ### Database setting
 
 - Create datebase and user.
-- Create intelligence/settings.py in reference to [intelligence/settings.py.template](intelligence/settings.py.template). And edit according to your DB settings.
+- Create `.env` in reference to [.env.example](.env.example). And edit according to your DB settings.
+
+### Generate secret key for Django
+
+Secret key for Django has to be written in `.env` file.
+
+First, run the key generator:
+
+```
+$ python keygen.py
+(example)> 70mm6h)()h3r&*b9xq$e52=-7($p=5983gfoyz%$d-j-gd7u5@
+```
+
+and write secret key to the `.env` file:
+
+```
+...
+# EXIST Application Settings
+EXIST_SECRET_KEY="70mm6h)()h3r&*b9xq$e52=-7($p=5983gfoyz%$d-j-gd7u5@"
+...
+```
 
 ### Migrate database
 
