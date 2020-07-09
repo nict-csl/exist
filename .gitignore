@@ -12,3 +12,16 @@ redis/
 .vscode/
 .DS_Store
 ._*
+__pycache__/
+migrations/
+*.py[cod]
+*.conf
+*.log
+*.log.*
+scripts/insert2db/reputation/data/*/*
+scripts/insert2db/vuln/data/*/*
+scripts/insert2db/exploit/data/*/data/*
+scripts/insert2db/exploit/data/*/*
+static/webimg/*
+static/websrc/*
+dev/
