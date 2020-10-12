@@ -17,5 +17,6 @@ urlpatterns = [
     url(r'^label/',include([
         url(r'add_label/$', views.add_label, name='add_label'),
         url(r'delete_label/$', views.delete_label, name='delete_label'),
-    ]))
+    ])),
+    url(r'^download/$', views.export_annotation, name='download'),
 ]

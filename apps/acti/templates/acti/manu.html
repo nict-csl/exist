@@ -10,9 +10,10 @@
     </button>
     <div class="collapse navbar-collapse" id="navmenu1">
       <div class="navbar-nav">
-        <a class={% if mode == 'check' %}"active nav-item nav-link"{% endif %}"nav-item nav-link"  href="{% url 'acti:tweet_list' mode='check' %}">アノテーション未</a>
-        <a class={% if mode == 'already' %}"active nav-item nav-link"{% endif %}"nav-item nav-link" href="{% url 'acti:tweet_list' mode='already' %}">アノテーション済み</a>
-        <a class={% if mode == 'all' %}"active nav-item nav-link"{% endif %}"nav-item nav-link" href="{% url 'acti:tweet_list' mode='all' %}">全データ</a>
+        <a class={% if mode == 'check' %}"active nav-item nav-link"{% else %}"nav-item nav-link"{% endif %}  href="{% url 'acti:tweet_list' mode='check' %}">アノテーション未</a>
+        <a class={% if mode == 'already' %}"active nav-item nav-link"{% else %}"nav-item nav-link"{% endif %} href="{% url 'acti:tweet_list' mode='already' %}">アノテーション済み</a>
+        <a class={% if mode == 'all' %}"active nav-item nav-link"{% else %}"nav-item nav-link"{% endif %} href="{% url 'acti:tweet_list' mode='all' %}">全データ</a>
+        <a class="nav-item nav-link" href="{% url 'acti:download' %}">Export CSV</a>
       </div>
     </div>
   </nav>

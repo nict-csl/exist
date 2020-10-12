@@ -26,7 +26,7 @@ class Label(models.Model):
 
 class Annotation(models.Model):
     """アノテーション"""
-    text_key = models.ForeignKey(Tweet, verbose_name='tweet_ID', related_name='text_key', on_delete=models.CASCADE)
+    text_key = models.ForeignKey(Tweet, verbose_name='テキストNo', related_name='text_key', on_delete=models.CASCADE)
     label_name = models.ForeignKey(Label, verbose_name='ラベル名', related_name='labels', on_delete=models.CASCADE)
     annotation = models.CharField('アノテーション内容', max_length=255, blank=True)
     start_off = models.IntegerField('スタートオフセット', default=0)
