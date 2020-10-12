@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^ip/', include('apps.ip.urls')),
     url(r'^hash/', include('apps.filehash.urls')),
     url(r'^url/', include('apps.url.urls')),
+    url(r'^acti/', include('apps.acti.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include(apis.router.urls)),
 ]

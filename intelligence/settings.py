@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'apps.ip.apps.IpConfig',
     'apps.filehash.apps.FilehashConfig',
     'apps.url.apps.UrlConfig',
+    'apps.acti.apps.ActiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

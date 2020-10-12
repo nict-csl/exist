@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% load static %}
+
+{% block title %}ACTI{% endblock title %}
+
+{% block content %}
+{% include "acti/manu.html" %}
+	<div id="main" class="container">
+		<app></app>
+	</div>
+
+	<script type="text/javascript">
+		var text = "{{ text|safe|escapejs }}";
+		var labels = {{ labels|safe|escape }};
+		var annotation = {{ annotation|safe|escape }};
+		const twkey = "{{tweet_id}}";
+	</script>
+
+	<script type="text/x-template" id="app-header-button-template">
+		<div class="m-1">
+			<button class="btn btn-sm" style="font-weight: bold;" :style="styleColor">[[ labelName ]]</button>
+			<a v-if="edit" aria-label="Close" class="text-danger" style="cursor:pointer;"><span aria-hidden="true">&times;</span></a>
+		</div>
+	</script>
+
+	<script type="text/x-template" id="app-header-template">
+		<div class="row bg-secondary pt-1 pb-1">
+			<div class="col-10">
+				<div class="row">
+					<app-header-button v-for="label in labels" :labelName="label.labelName" :color="label.color"></app-header-button>
+				</div>
+			</div>
+			<div class="col-2">
+				<app-header-editmodal :labels="labels"></app-header-editmodal>
+			</div>
+		</div>
+	</script>
+
+	<script type="text/x-template" id="app-text-template">
+		<div class="mt-1" style="font-size:20px;line-height:1.6;" @click="selected">
+			<span v-for="ann in slices" :style="styles(ann.color)" class="inline">[[ text.slice(ann.start_offset,ann.end_offset) ]]</span>
+		</div>
+	</script>
+
+	<script type="text/x-template" id="app-template">
+		<div class="w-auto" style="background-color:aliceblue;">
+			<app-header class="row mx-1" :labels="labels"></app-header>
+			<app-text class="mx-1 bg-white text-left" :text="text" ref="apptext" :anns="anns"></app-text>
+			<div class="mt-1 mx-1">
+				<a href="{% url 'acti:tweet_list' mode='check' %}" class="btn btn-secondary btn-sm">戻る</a>
+			</div>
+		</div>
+	</script>
+{% endblock content %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static '/js/acti/vue.min.js' %}"></script>
+<script type="text/javascript" src="{% static '/js/acti/annotation_labeling.js' %}"></script>
+{% endblock %}
