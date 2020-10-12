@@ -55,6 +55,13 @@
                 <li class={% if request.resolver_match.app_name == 'api' %}"nav-item active"{% endif %}"nav-item">
                     <a class="nav-link" href="/api/">WebAPI</a>
                 </li>
+                <li class={% if request.resolver_match.app_name == 'Tools'%}"nav-item dropdown active"{% endif %}"nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Tools
+                    </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+			        <a class="dropdown-item" href="{% url 'acti:index' %}">Annotation Tool</a>
+                </div>
             </ul>
         </div>
     </div>
