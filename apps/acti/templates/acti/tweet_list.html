@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+{% include "acti/manu.html" %}
+{% include "twitter/searchBar.html" %}
+<div>
+    <h4 class="mt-4 border-bottom">データの一覧</h4>
+    <table id="tweet" class="table table-sm table-bordered" style="width: 100%;table-layout: fixed;">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col" style="width:15%;">User</th>
+            <th scope="col" style="width:50%;">Tweet</th>
+            <th scope="col" style="width:15%;">Date (JST)</th>
+            <th scope="col" style="width:20%;">Controller</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for tweet in　tweets %}
+        <tr>
+            <td class="text-truncate">{{ tweet.tweet.screen_name }}</td>
+            <td class="text-truncate">{{ tweet.tweet.text }}</td>
+            <td>{{ tweet.tweet.datetime }}</td>
+            <td>
+                <a href="{% url 'acti:tweet_annotation' tweet_id=tweet.tweet.id %}" class="btn btn-outline-primary btn-sm">Annotation</a>
+                <a href="{% url 'acti:tweet_view' tweet_id=tweet.tweet.id %}" class="btn btn-outline-info btn-sm">View</a>
+            </td>
+        </tr>
+        {% empty %}
+
+        {% endfor %}
+        </tbody>
+    </table>
+    {% include "acti/page.html" %}
+</div>
+{% endblock content %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static '/js/acti/jquery.tablesorter.min.js' %}"></script>
+<script type="text/javascript">
+$(window).load(function() {
+    $('#tweet').tablesorter();
+});
+</script>
+{% endblock javascript %}
