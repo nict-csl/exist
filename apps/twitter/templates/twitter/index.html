@@ -13,6 +13,7 @@
             <th style="width: 200px;">Date (JST)</th>
             <th>Tweet</th>
             <th style="width: 400px;">User</th>
+            <th>Annotation Target</th>
         </tr>
     </thead>
     <tbody>
@@ -21,11 +22,12 @@
         <td nowrap>{{ tw.datetime }}</td>
         <td>{{ tw.text | urlize | add_a_tag_name_tooltip | linebreaksbr }}</td>
         <td><a href="https://twitter.com/{{ tw.screen_name }}">{{ tw.user }} @{{ tw.screen_name }}</a></td>
+        <td><div class="form-check"><input class="form-check-input" type="checkbox"  value="{{tw.id}}" onchange="postAnnotationTarget(checked,this.value);"></div></td>
     </tr>
     {% endfor %}
 </table>
 {% include "twitter/page.html" %}
-{% endblock %}
+{% endblock content %}
 
 {% block javascript %}
 <script type="text/javascript">
@@ -75,4 +77,86 @@ var myChart = new Chart(ctx, {
     options: options,
 });
 </script>
-{% endblock %}
+<script type="text/javascript">
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue
+};
+
+function csrfSafeMethod(method) {
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+};
+
+$(document).ready(function() {
+    var checkBoxes = document.getElementsByClassName('form-check-input');
+    var ids = [];
+    for (var i = 0; i < checkBoxes.length; i++) {
+            ids.push(checkBoxes[i].value);
+    };
+    var csrftoken = getCookie('csrftoken');
+    $.ajax({
+        type: "POST",
+        data: {
+            pks:ids
+        },
+        url: "{% url 'acti:tweet_get'%}",
+        contentType: "application/json",
+        traditional: true,
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        },
+        success: function(data) {
+            inputs = document.getElementsByClassName('form-check-input');
+            values=[];
+            for (var i = 0; i<inputs.length; i++){
+                index = data["checks"][0].indexOf(Number(inputs[i].value))
+                if ( index != -1){
+                    id = data["checks"][0][index];
+                    checked = data["checks"][1][index];
+                    inputs[i].checked = checked;
+                }
+            };
+
+        },
+        error: function(xhr, status, error) {
+                console.log(status + "\n" + "Status: " + xhr.status + "\n" + error);
+        }
+    });
+});
+
+function postAnnotationTarget(checked,value){
+    var csrftoken = getCookie('csrftoken');
+    $.ajax({
+        type: "POST",
+        data: {
+        	"pk":value,
+		"checked":checked
+        },
+        url: "{% url 'acti:tweet_add'%}",
+        contentType: "application/json",
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        },
+        success: function(data) {
+        },
+        error: function(xhr, status, error) {
+            console.log(status + "\n" + "Status: " + xhr.status + "\n" + error);
+        }
+    })
+};
+</script>
+{% endblock javascript %}
