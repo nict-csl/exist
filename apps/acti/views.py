@@ -81,6 +81,7 @@ def annotation(request):
         json_dict = json.loads(dic_str)
         tweet_id = int(json_dict["tweet_id"])
         annotations = json_dict["anns"]
+        print(QueryDict(request.body, encoding='utf-8').getlist("cf"))
         tw1 = tw.objects.get(id=tweet_id)
         tweet = get_object_or_404(Tweet, tweet=tw1)
         annotation = tweet.text_key.all().order_by('tweet_id')
@@ -89,6 +90,8 @@ def annotation(request):
         #POSTされたアノテーション内容を追加．
         add_annotation = []
         for ann in annotations:
+            print(ann)
+            print(Label.objects.all())
             label = Label.objects.filter(label=ann["label"]).first()
             ann_tmp = Annotation(text_key=tweet,
                                  label_name=label,
