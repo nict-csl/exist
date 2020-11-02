@@ -86,7 +86,6 @@ def annotation(request):
         annotation = tweet.text_key.all()
         #一度アノテーションを全て削除
         annotation.delete()
-        print(annotations)
         #POSTされたアノテーション内容を追加．
         add_annotation = []
         for ann in annotations:
