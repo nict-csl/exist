@@ -106,11 +106,11 @@
 			<app-header class="row mx-1" @update="annotate" @labelupdate="labelUpdate" @removelabel="removeLabel" :labels="labels"></app-header>
 			<app-text class="mx-1 bg-white text-left" :text="text" @add-label="addLabel" @clear-label="clearLabel" ref="apptext" :anns="anns"></app-text>
 			<div class="mt-1 mx-1">
-<!--				<form method="post">-->
-<!--					{% csrf_token %}-->
+				<form method="post">
+					{% csrf_token %}
 					<a href="{% url 'acti:tweet_list' mode='check' %}" class="btn btn-primary btn-sm" @click="save">保存</a>
 					<a href="{% url 'acti:tweet_list' mode='check' %}" class="btn btn-secondary btn-sm">戻る</a>
-<!--				</form>-->
+				</form>
 			</div>
 		</div>
 	</script>
