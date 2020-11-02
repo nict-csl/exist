@@ -146,7 +146,7 @@ let AppText = {
                     start_offset: this.startOffset,
                     end_offset: this.endOffset,
                     color: label.color,
-                    label: label.labelName,
+                    labelName: label.labelName,
                     text: this.text.slice(this.startOffset,this.endOffset),
                     check: true
                 };
@@ -290,6 +290,7 @@ new Vue({
 })
 
 function getCookie(name) {
+
   var cookieValue = null;
   if (document.cookie && document.cookie !== '') {
     var cookies = document.cookie.split(';');
