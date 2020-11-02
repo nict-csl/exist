@@ -17,7 +17,7 @@ class Tweet(models.Model):
 
 class Label(models.Model):
     """ラベル"""
-    color = models.CharField('color',default="0",max_length=6)
+    color = models.CharField('color',default="0",max_length=7)
     label = models.CharField('ラベル名', max_length=255)
 
     def __str__(self):
