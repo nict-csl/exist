@@ -5,7 +5,7 @@
 {% block title %}ACTI{% endblock title %}
 
 {% block content %}
-{% include "acti/manu.html" %}
+{% include "acti/menu.html" %}
 	<div id="main" class="container">
 		<app></app>
 	</div>
@@ -48,7 +48,7 @@
 			<app-header class="row mx-1" :labels="labels"></app-header>
 			<app-text class="mx-1 bg-white text-left" :text="text" ref="apptext" :anns="anns"></app-text>
 			<div class="mt-1 mx-1">
-				<a href="{% url 'acti:tweet_list' mode='check' %}" class="btn btn-secondary btn-sm">戻る</a>
+				<a href="{% url 'acti:tweet_list' mode='check' %}" class="btn btn-secondary btn-sm">Back</a>
 			</div>
 		</div>
 	</script>
