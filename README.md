@@ -71,7 +71,7 @@ Lookup retrieves information related to specific information (e.g. IP address, d
 ### Tools
 
 A tool for annotating tweets from twitter tracker.
-- [Annotation Tool](#AnnotationTools)
+- [Annotation Tool](#AnnotationTool)
 
 ### Web API
 
