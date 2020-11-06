@@ -1,0 +1,19 @@
+  <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <a href="{% url 'acti:tweet_list' mode='check' %}" class="navbar-brand">ACTI</a>
+    <button class="navbar-toggler" type="button"
+        data-toggle="collapse"
+        data-target="#navmenu1"
+        aria-controls="navmenu1"
+        aria-expanded="false"
+        aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navmenu1">
+      <div class="navbar-nav">
+        <a class={% if mode == 'check' %}"active nav-item nav-link"{% else %}"nav-item nav-link"{% endif %}  href="{% url 'acti:tweet_list' mode='check' %}">Unannotated targets</a>
+        <a class={% if mode == 'already' %}"active nav-item nav-link"{% else %}"nav-item nav-link"{% endif %} href="{% url 'acti:tweet_list' mode='already' %}">Annotated targets</a>
+        <a class={% if mode == 'all' %}"active nav-item nav-link"{% else %}"nav-item nav-link"{% endif %} href="{% url 'acti:tweet_list' mode='all' %}">All targets</a>
+        <a class="nav-item nav-link" href="{% url 'acti:download' %}">Export CSV</a>
+      </div>
+    </div>
+  </nav>

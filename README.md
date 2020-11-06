@@ -68,6 +68,11 @@ Lookup retrieves information related to specific information (e.g. IP address, d
 - URL
 - File Hash
 
+### Tools
+
+A tool for annotating tweets from twitter tracker.
+- [Annotation Tool](#AnnotationTool)
+
 ### Web API
 
 Provide data stored in the EXIST database by Web API.
@@ -342,6 +347,21 @@ $ sudo apt install wkhtmltopdf xvfb
 - Configuration files are [scripts/url](scripts/url)/url.conf. Create it in reference to url.conf.template.
 - Make [scripts/url](scripts/url)/delete_webdata.sh run every day using cron to flush old Lookup URL data.
 - Make [scripts/url](scripts/url)/delete_oldtaskresult.sh run every day using cron to flush old Celery data.
+
+## AnnotationTool
+
+An annotation tool for creating training data for tweets. This tool is for machine learning researchers.
+
+### How to use
+
+1. Check the annotation target.
+![annotation_target](https://raw.githubusercontent.com/nict-csl/exist/images/annotation_target.png)
+1. Click on Annotation button.
+![annotation_button](https://raw.githubusercontent.com/nict-csl/exist/images/annotation_button.png)
+1. Select the word to be labeled
+![annotation_labeled](https://raw.githubusercontent.com/nict-csl/exist/images/annotation_labeled.png)
+1. Click on the label button.
+1. Save
 
 ## Report vulnerability
 
