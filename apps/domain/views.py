@@ -85,7 +85,7 @@ class DetailView(TemplateView):
 
         return context
 
-def update_context_vt(request, **kwargs):
+def get_context_vt(request, **kwargs):
     domain = kwargs['pk']
     context = {}
     try:
@@ -94,7 +94,7 @@ def update_context_vt(request, **kwargs):
         logger.error(e)
     return render(request, 'domain/virustotal.html', context)
 
-def update_context_tm(self, **kwargs):
+def get_context_tm(self, **kwargs):
     domain = kwargs['pk']
     context = {}
     tm = ThreatMiner()
