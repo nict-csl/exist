@@ -1,5 +1,5 @@
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
+$(function(){
+    $('[data-toggle="tooltip"]').tooltip()
 });
 
 $(function(){
@@ -17,5 +17,30 @@ $(function(){
             $ele.find('.li').fadeIn();
             $ele.find('.morelink').hide();
         });
+    });
+});
+
+$(function(){
+    $('[data-toggle="tab"]').on('show.bs.tab', function(e){
+        if((e.target).id == 'virustotal-tab'){
+            $.ajax({
+                url: location.href + 'update_vt',
+                method: "GET",
+            })
+            .then(
+                data => $('#virustotal').html(data),
+                error => $('#virustotal').html('<div class="alert alert-danger" role="alert">Failed to access VirusTotal</div>')
+            );
+        }
+        if((e.target).id == 'threatminer-tab'){
+            $.ajax({
+                url: location.href + 'update_tm',
+                method: "GET"
+            })
+            .then(
+                data => $('#threatminer').html(data),
+                error => $('#threatminer').html('<div class="alert alert-danger" role="alert">Failed to access ThreatMiner</div>')
+            );
+        }
     });
 });
