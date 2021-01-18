@@ -88,7 +88,6 @@ class DetailView(TemplateView):
 def update_context_vt(request, **kwargs):
     domain = kwargs['pk']
     context = {}
-    
     try:
         context['vt_domain'] = VT().getDomainReport(domain)
     except Exception as e:
@@ -97,6 +96,7 @@ def update_context_vt(request, **kwargs):
 
 def update_context_tm(self, **kwargs):
     domain = kwargs['pk']
+    context = {}
     tm = ThreatMiner()
     try:
         context['tm_url'] = tm.getURIFromDomain(domain)
