@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.views.generic import TemplateView, DetailView
 from .forms import SearchForm
 from lib.geoip import GeoIP
@@ -69,38 +69,6 @@ class DetailView(TemplateView):
         except Exception as e:
             logger.error(e)
 
-        try:
-            tm = ThreatMiner()
-            context['tm_url'] = tm.getURIFromIP(ip)
-            context['tm_sample'] = tm.getSamplesFromIP(ip)
-            context['tm_report'] = tm.getReportFromIP(ip)
-        except Exception as e:
-            logger.error(e)
-
-        try:
-            abuse = AbuseIPDB()
-            context['abuse_ip'] = abuse.getReport(ip)
-        except Exception as e:
-            logger.error(e)
-
-        try:
-            shodan = Shodan()
-            context['shodan'] = shodan.getReport(ip)
-        except Exception as e:
-            logger.error(e)
-
-        try:
-            censys = Censys()
-            context['censys'] = censys.getReport(ip)
-        except Exception as e:
-            logger.error(e)
-
-        try:
-            ipvoid = IPVoid()
-            context['ipvoid'] = ipvoid.getResultFromIP(ip)
-        except Exception as e:
-            logger.error(e)
-
         context['bls'] = blacklist.objects.filter(Q(ip=ip)|Q(url__contains=ip))
         count = context['bls'].count()
         if count > 0:
@@ -123,4 +91,66 @@ class DetailView(TemplateView):
             context['exs_count'] = count
 
         return context
+
+def get_context_vt(request, **kwargs):
+    ip = kwargs['pk']
+    context = {}
+    try:
+        vt = VT()
+        context['vt_ip'] = vt.getIPReport(ip)
+    except Exception as e:
+        logger.error(e)
+    return render(request, 'ip/virustotal.html', context)
+
+def get_context_tm(request, **kwargs):
+    ip = kwargs['pk']
+    context = {}
+    try:
+        tm = ThreatMiner()
+        context['tm_url'] = tm.getURIFromIP(ip)
+        context['tm_sample'] = tm.getSamplesFromIP(ip)
+        context['tm_report'] = tm.getReportFromIP(ip)
+    except Exception as e:
+        logger.error(e)
+    return render(request, 'ip/threatminer.html', context)
+
+def get_context_ipvoid(request, **kwargs):
+    ip = kwargs['pk']
+    context = {}
+    try:
+        ipvoid = IPVoid()
+        context['ipvoid'] = ipvoid.getResultFromIP(ip)
+    except Exception as e:
+        logger.error(e)
+    return render(request, 'ip/ipvoid.html', context)
+
+def get_context_abuse(request, **kwargs):
+    ip = kwargs['pk']
+    context = {}
+    try:
+        abuse = AbuseIPDB()
+        context['abuse_ip'] = abuse.getReport(ip)
+    except Exception as e:
+        logger.error(e)
+    return render(request, 'ip/abuse.html', context)
+
+def get_context_shodan(request, **kwargs):
+    ip = kwargs['pk']
+    context = {}
+    try:
+        shodan = Shodan()
+        context['shodan'] = shodan.getReport(ip)
+    except Exception as e:
+        logger.error(e)
+    return render(request, 'ip/shodan.html', context)
+
+def get_context_censys(request, **kwargs):
+    ip = kwargs['pk']
+    context = {}
+    try:
+        censys = Censys()
+        context['censys'] = censys.getReport(ip)
+    except Exception as e:
+        logger.error(e)
+    return render(request, 'ip/censys.html', context)
 

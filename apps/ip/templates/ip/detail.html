@@ -33,20 +33,6 @@
             <th>Resolutions</th>
             <td><more>{% for resolution in vt_ip.resolutions|dictsortreversed:"last_resolved" %}<div class="li">{{ resolution.last_resolved }}: <a href="{% url 'domain:detail' resolution.hostname %}">{{ resolution.hostname }}</a><br></div>{% endfor %}</more></td>
         </tr>
-        <tr>
-            <th>IPVoid Score</th>
-            <td>
-                {% if ipvoid.hits < 2 %}
-                    <button class="btn btn-sm shadow text-white bg-info">
-                {% elif ipvoid.hits < 10 %}
-                    <button class="btn btn-sm shadow text-dark bg-warning">
-                {% else %}
-                    <button class="btn btn-sm shadow text-white bg-danger">
-                {% endif %}
-                {{ ipvoid.score }}
-                    </button>
-            </td>
-        </tr>
     </table>
 </div>
 
@@ -80,469 +66,49 @@
         {% include "dashboard/crosslist.html" %}
     </div>
     <div class="tab-pane fade" id="virustotal" role="tabpanel" aria-labelledby="virustotal-tab">
-
-        <img class="p-3" src="{% static 'img/virustotal_logo.png' %}" height="100" alt="VirusTotal">
-        <ul class="nav nav-tabs nav-pills">
-            <li class="nav-item">
-            <a class="nav-link active" id="detected-urls-tab" data-toggle="tab" href="#detected-urls">Detected URLs{% if vt_ip.detected_urls %}<span class="badge badge-secondary ml-2">{{ vt_ip.detected_urls|length }}</span>{% endif %}</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" id="detected-communicating-samples-tab" data-toggle="tab" href="#detected-communicating-samples">Detected Communicating Samples{% if vt_ip.detected_communicating_samples %}<span class="badge badge-secondary ml-2">{{ vt_ip.detected_communicating_samples|length }}</span>{% endif %}</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" id="detected-downloaded-samples-tab" data-toggle="tab" href="#detected-downloaded-samples">Detected Downloaded Samples{% if vt_ip.detected_downloaded_samples %}<span class="badge badge-secondary ml-2">{{ vt_ip.detected_downloaded_samples|length }}</span>{% endif %}</a>
-            </li>
-        </ul>
-        <div class="container">
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="detected-urls" role="tabpanel" aria-labelledby="detected-urls-tab">
-                    <table class="table table-hover w-100" style="table-layout:fixed">
-                        <thead>
-                        <tr>
-                            <th>URL</th>
-                            <th style="width:100px;">Score</th>
-                            <th style="width:220px;">Scan Date</th>
-                        </tr>
-                        </thead>
-                        {% for url in vt_ip.detected_urls|dictsort:"url" %}
-                        <tr>
-                            <td style="word-wrap:break-word;"><a href="{% url 'url:index' %}?keyword={{ url.url }}">{{ url.url }}</a></td>
-                            <td>
-                            {% if url.positives < 2 %}
-                            <button class="btn btn-sm shadow text-white bg-info">
-                            {% elif url.positives < 5 %}
-                            <button class="btn btn-sm shadow text-dark bg-warning">
-                            {% else %}
-                            <button class="btn btn-sm shadow text-white bg-danger">
-                            {% endif %}
-                            {{ url.positives }} / {{ url.total }}</button></td>
-                            <td>{{ url.scan_date }}</td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-                <div class="tab-pane fade" id="detected-communicating-samples" role="tabpanel" aria-labelledby="detected-communicating-samples-tab">
-                    <table class="table table-hover w-100">
-                        <thead>
-                        <tr>
-                            <th>sha256</th>
-                            <th>Score</th>
-                            <th>Date</th>
-                        </tr>
-                        </thead>
-                        {% for sample in vt_ip.detected_communicating_samples|dictsortreversed:"positives" %}
-                        <tr>
-                            <td><a href="{% url 'filehash:detail' sample.sha256 %}">{{ sample.sha256 }}</a></td>
-                            <td>
-                            {% if sample.positives < 2 %}
-                            <button class="btn btn-sm shadow text-white bg-info">
-                            {% elif sample.positives < 5 %}
-                            <button class="btn btn-sm shadow text-dark bg-warning">
-                            {% else %}
-                            <button class="btn btn-sm shadow text-white bg-danger">
-                            {% endif %}
-                            {{ sample.positives }} / {{ sample.total }}</button></td>
-                            <td>{{ sample.date }}</td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-                <div class="tab-pane fade" id="detected-downloaded-samples" role="tabpanel" aria-labelledby="detected-downloaded-samples-tab">
-                    <table class="table table-hover w-100">
-                        <thead>
-                        <tr>
-                            <th>sha256</th>
-                            <th>Score</th>
-                            <th>Date</th>
-                        </tr>
-                        </thead>
-                        {% for sample in vt_ip.detected_downloaded_samples|dictsortreversed:"positives" %}
-                        <tr>
-                            <td><a href="{% url 'filehash:detail' sample.sha256 %}">{{ sample.sha256 }}</a></td>
-                            <td>
-                            {% if sample.positives < 2 %}
-                            <button class="btn btn-sm shadow text-white bg-info">
-                            {% elif sample.positives < 5 %}
-                            <button class="btn btn-sm shadow text-dark bg-warning">
-                            {% else %}
-                            <button class="btn btn-sm shadow text-white bg-danger">
-                            {% endif %}
-                            {{ sample.positives }} / {{ sample.total }}</button></td>
-                            <td>{{ sample.date }}</td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                </div>
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border my-5" role="status">
+                <span class="sr-only">Loading...</span>
             </div>
         </div>
     </div>
 
     <div class="tab-pane fade" id="threatminer" role="tabpanel" aria-labelledby="theatminer-tab">
-        <img class="p-3" src="{% static 'img/threatminer_logo.png' %}" height="120" alt="ThreatMiner">
-        <ul class="nav nav-tabs nav-pills">
-            <li class="nav-item">
-            <a class="nav-link active" id="threatminer-urls-tab" data-toggle="tab" href="#threatminer-urls">URLs{% if tm_url.results %}<span class="badge badge-secondary ml-2">{{ tm_url.results|length }}</span>{% endif %}</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" id="threatminer-samples-tab" data-toggle="tab" href="#threatminer-samples">Samples{% if tm_sample.results %}<span class="badge badge-secondary ml-2">{{ tm_sample.results|length }}</span>{% endif %}</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" id="threatminer-reports-tab" data-toggle="tab" href="#threatminer-reports">Reports{% if tm_report.results %}<span class="badge badge-secondary ml-2">{{ tm_report.results|length }}</span>{% endif %}</a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane fade show active" id="threatminer-urls" role="tabpanel" aria-labelledby="threatminer-urls-tab">
-                <table class="table table-hover w-100" style="table-layout:fixed">
-                    <thead>
-                    <tr>
-                        <th style="width:220px;">Last Seen</th>
-                        <th>Domain</th>
-                        <th>IP</th>
-                        <th style="width:1000px;">URL</th>
-                    </tr>
-                    </thead>
-                    {% for result in tm_url.results|dictsortreversed:"last_seen" %}
-                    <tr>
-                        <td>{{ result.last_seen }}</td>
-                        <td><a href="{% url 'domain:detail' result.domain %}">{{ result.domain }}</a></td>
-                        <td>{% if result.ip %}<a href="{% url 'ip:detail' result.ip %}">{{ result.ip }}</a>{% endif %}</td>
-                        <td style="word-wrap:break-word;"><a href="{% url 'url:index' %}?keyword={{ result.uri }}">{{ result.uri }}</a></td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            </div>
-            <div class="tab-pane fade" id="threatminer-samples" role="tabpanel" aria-labelledby="threatminer-samples-tab">
-                <div class="container">
-                    <table class="table table-hover w-100">
-                        <thead>
-                        <tr>
-                            <th>Samples</th>
-                        </tr>
-                        </thead>
-                        {% for result in tm_sample.results %}
-                        <tr>
-                            <td><a href="{% url 'filehash:detail' result %}">{{ result }}</a></td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="threatminer-reports" role="tabpanel" aria-labelledby="threatminer-reports-tab">
-                <div class="container">
-                    <table class="table table-hover w-100">
-                        <thead>
-                        <tr>
-                            <th>Reports</th>
-                            <th>Year</th>
-                        </tr>
-                        </thead>
-                        {% for result in tm_report.results|dictsortreversed:"year" %}
-                        <tr>
-                            <td><a href="{{ result.URL }}">{{ result.filename }}</a></td>
-                            <td>{{ result.year }}</a></td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                </div>
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border my-5" role="status">
+                <span class="sr-only">Loading...</span>
             </div>
         </div>
     </div>
 
     <div class="tab-pane fade" id="ipvoid" role="tabpanel" aria-labelledby="ipvoid-tab">
-        <img class="p-3" src="{% static 'img/ipvoid_logo.png' %}" height="100" alt="IPVoid">
-        <div class="container">
-            <table class="table table-hover w-100">
-                <thead>
-                <tr>
-                    <th>Engine</th>
-                    <th>Listed</th>
-                </tr>
-                </thead>
-                {% for result in ipvoid.results %}
-                <tr>
-                    <td><a href="{{ result.referrer }}">{{ result.engine }}</a></td>
-                    <td>
-                        {% if result.listed %}
-                            <button class="btn btn-sm shadow text-white bg-danger">
-                        {% else %}
-                            <button class="btn btn-sm shadow text-white bg-info">
-                        {% endif %}
-                        {{ result.listed }}
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border my-5" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
     </div>
 
     <div class="tab-pane fade" id="abuse" role="tabpanel" aria-labelledby="abuse-tab">
-        <img class="p-3" src="{% static 'img/abuseipdb_logo.png' %}" height="100" alt="AbuseIPDB">
-        <div class="container">
-            <table class="table table-striped">
-                <tr>
-                    <th>isWhitelisted</th>
-                    <td>
-                        {{ abuse_ip.data.isWhitelisted }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>abuseConfidenceScore</th>
-                    <td>
-                    {% if abuse_ip.data.abuseConfidenceScore < 20 %}
-                    <button class="btn btn-sm shadow text-white bg-info">
-                    {% elif abuse_ip.data.abuseConfidenceScore < 80 %}
-                    <button class="btn btn-sm shadow text-dark bg-warning">
-                    {% else %}
-                    <button class="btn btn-sm shadow text-white bg-danger">
-                    {% endif %}
-                        {{ abuse_ip.data.abuseConfidenceScore }}
-                    </button>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Country</th>
-                    <td>
-                        <img src="{% static 'flags/'|add:abuse_ip.data.countryCode|lower|add:'.png' %}"> {{ abuse_ip.data.countryName }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>usageType</th>
-                    <td>
-                        {{ abuse_ip.data.usageType }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>ISP</th>
-                    <td>
-                        {{ abuse_ip.data.isp }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>domain</th>
-                    <td>
-                        {{ abuse_ip.data.domain }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>totalReports</th>
-                    <td>
-                        {{ abuse_ip.data.totalReports }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>numDistinctUsers</th>
-                    <td>
-                        {{ abuse_ip.data.numDistinctUsers }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>lastReportedAt</th>
-                    <td>
-                        {{ abuse_ip.data.lastReportedAt }}
-                    </td>
-                </tr>
-            </table>
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border my-5" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
-        <h3>Reports</h3>
-        <table class="table table-hover w-100" style="table-layout:fixed">
-            <thead>
-            <tr>
-                <th style="width:280px;">ReportedAt</th>
-                <th style="width:100px;">Reporter</th>
-                <th style="width:100px;">Country</th>
-                <th style="width:100px;">Categories</th>
-                <th>comment</th>
-            </tr>
-            </thead>
-            {% for report in abuse_ip.data.reports|dictsort:"reportedAt" %}
-            <tr>
-                <td>{{ report.reportedAt }}</td>
-                <td><a href="https://www.abuseipdb.com/user/{{ report.reporterId }}">{{ report.reporterId }}</a></td>
-                <td><img src="{% static 'flags/'|add:report.reporterCountryCode|lower|add:'.png' %}">{{ report.reporterCountryName }}</td>
-                <td><a href="https://www.abuseipdb.com/categories">{{ report.categories }}</a></td>
-                <td>{{ report.comment }}</td>
-            </tr>
-            {% endfor %}
-        </table>
     </div>
 
     <div class="tab-pane fade" id="shodan" role="tabpanel" aria-labelledby="shodan-tab">
-        <img class="p-3" src="{% static 'img/shodan_logo.png' %}" height="100" alt="Shodan">
-        <ul class="nav nav-tabs nav-pills">
-            <li class="nav-item">
-            <a class="nav-link active" id="shodan-base-tab" data-toggle="tab" href="#shodan-base">Base info</a>
-            </li>
-            {% for d in shodan.data %}
-            <li class="nav-item">
-            <a class="nav-link" id="{{ d.port }}-{{ d.transport }}-tab" data-toggle="tab" href="#{{ d.port }}-{{ d.transport }}">{{ d.port }}/{{ d.transport }}</a>
-            </li>
-            {% endfor %}
-        </ul>
-        <div class="container">
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="shodan-base" role="tabpanel" aria-labelledby="shodan-base-tab">
-                    <table class="table table-striped">
-                        <tr>
-                            <th>Last Update</th>
-                            <td>
-                                {{ shodan.last_update }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Organization</th>
-                            <td>
-                                {{ shodan.org }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Country</th>
-                            <td>
-                                {% if shodan.country_code %}
-                                <img src="{% static 'flags/'|add:shodan.country_code|lower|add:'.png' %}"> {{ shodan.country_name }}
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>ISP</th>
-                            <td>
-                                {{ shodan.isp }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>ASN</th>
-                            <td>
-                                {{ shodan.asn }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>OS</th>
-                            <td>
-                                {{ shodan.os }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Ports</th>
-                            <td>
-                                {{ shodan.ports }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Vulnerabilities</th>
-                            <td>
-                                {{ shodan.vulns }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Tags</th>
-                            <td>
-                                {{ shodan.tags }}
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                {% for d in shodan.data %}
-                <div class="tab-pane fade" id="{{ d.port }}-{{ d.transport }}" role="tabpanel" aria-labelledby="{{ d.port }}-{{ d.transport }}-tab">
-                    <table class="table table-striped">
-                        <tr>
-                            <th>Timestamp</th>
-                            <td>
-                                {{ d.timestamp }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Product</th>
-                            <td>
-                                {{ d.product }} {{ d.version }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>OS</th>
-                            <td>
-                                {{ d.OS }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>data</th>
-                            <td>
-                                {{ d.data }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Options</th>
-                            <td>
-                                {{ d.opts }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>info</th>
-                            <td>
-                                {{ d.info }}
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                {% endfor %}
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border my-5" role="status">
+                <span class="sr-only">Loading...</span>
             </div>
         </div>
     </div>
 
     <div class="tab-pane fade" id="censys" role="tabpanel" aria-labelledby="censys-tab">
-        <img class="p-3" src="{% static 'img/censys_logo.png' %}" height="100" alt="Censys">
-        <ul class="nav nav-tabs nav-pills">
-            <li class="nav-item">
-            <a class="nav-link active" id="censys-base-tab" data-toggle="tab" href="#censys-base">Base info</a>
-            </li>
-        </ul>
-        <div class="container">
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="censys-base" role="tabpanel" aria-labelledby="censys-base-tab">
-                    <table class="table table-striped">
-                        <tr>
-                            <th>province</th>
-                            <td>
-                                {{ censys.province }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Country</th>
-                            <td>
-                                {% if censys.location %}
-                                <img src="{% static 'flags/'|add:censys.location.country_code|lower|add:'.png' %}"> {{ censys.location.country }}
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Updated at</th>
-                            <td>
-                                {{ censys.updated_at }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Protocols</th>
-                            <td>
-                                {{ censys.protocols }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>ASN</th>
-                            <td>
-                                {{ censys.autonomous_system.asn }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>AS name</th>
-                            <td>
-                                {{ censys.autonomous_system.name }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Tags</th>
-                            <td>
-                                {{ censys.tags }}
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border my-5" role="status">
+                <span class="sr-only">Loading...</span>
             </div>
         </div>
     </div>

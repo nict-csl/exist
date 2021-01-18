@@ -1,0 +1,89 @@
+{% load static %}
+        <img class="p-3" src="{% static 'img/abuseipdb_logo.png' %}" height="100" alt="AbuseIPDB">
+        <div class="container">
+            <table class="table table-striped">
+                <tr>
+                    <th>isWhitelisted</th>
+                    <td>
+                        {{ abuse_ip.data.isWhitelisted }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>abuseConfidenceScore</th>
+                    <td>
+                    {% if abuse_ip.data.abuseConfidenceScore < 20 %}
+                    <button class="btn btn-sm shadow text-white bg-info">
+                    {% elif abuse_ip.data.abuseConfidenceScore < 80 %}
+                    <button class="btn btn-sm shadow text-dark bg-warning">
+                    {% else %}
+                    <button class="btn btn-sm shadow text-white bg-danger">
+                    {% endif %}
+                        {{ abuse_ip.data.abuseConfidenceScore }}
+                    </button>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Country</th>
+                    <td>
+                        <img src="{% static 'flags/'|add:abuse_ip.data.countryCode|lower|add:'.png' %}"> {{ abuse_ip.data.countryName }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>usageType</th>
+                    <td>
+                        {{ abuse_ip.data.usageType }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>ISP</th>
+                    <td>
+                        {{ abuse_ip.data.isp }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>domain</th>
+                    <td>
+                        {{ abuse_ip.data.domain }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>totalReports</th>
+                    <td>
+                        {{ abuse_ip.data.totalReports }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>numDistinctUsers</th>
+                    <td>
+                        {{ abuse_ip.data.numDistinctUsers }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>lastReportedAt</th>
+                    <td>
+                        {{ abuse_ip.data.lastReportedAt }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <h3>Reports</h3>
+        <table class="table table-hover w-100" style="table-layout:fixed">
+            <thead>
+            <tr>
+                <th style="width:280px;">ReportedAt</th>
+                <th style="width:100px;">Reporter</th>
+                <th style="width:100px;">Country</th>
+                <th style="width:100px;">Categories</th>
+                <th>comment</th>
+            </tr>
+            </thead>
+            {% for report in abuse_ip.data.reports|dictsort:"reportedAt" %}
+            <tr>
+                <td>{{ report.reportedAt }}</td>
+                <td><a href="https://www.abuseipdb.com/user/{{ report.reporterId }}">{{ report.reporterId }}</a></td>
+                <td><img src="{% static 'flags/'|add:report.reporterCountryCode|lower|add:'.png' %}">{{ report.reporterCountryName }}</td>
+                <td><a href="https://www.abuseipdb.com/categories">{{ report.categories }}</a></td>
+                <td>{{ report.comment }}</td>
+            </tr>
+            {% endfor %}
+        </table>

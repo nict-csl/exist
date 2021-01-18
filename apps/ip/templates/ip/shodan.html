@@ -1,0 +1,118 @@
+{% load static %}
+        <img class="p-3" src="{% static 'img/shodan_logo.png' %}" height="100" alt="Shodan">
+        <ul class="nav nav-tabs nav-pills">
+            <li class="nav-item">
+            <a class="nav-link active" id="shodan-base-tab" data-toggle="tab" href="#shodan-base">Base info</a>
+            </li>
+            {% for d in shodan.data %}
+            <li class="nav-item">
+            <a class="nav-link" id="{{ d.port }}-{{ d.transport }}-tab" data-toggle="tab" href="#{{ d.port }}-{{ d.transport }}">{{ d.port }}/{{ d.transport }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="container">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="shodan-base" role="tabpanel" aria-labelledby="shodan-base-tab">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Last Update</th>
+                            <td>
+                                {{ shodan.last_update }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Organization</th>
+                            <td>
+                                {{ shodan.org }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Country</th>
+                            <td>
+                                {% if shodan.country_code %}
+                                <img src="{% static 'flags/'|add:shodan.country_code|lower|add:'.png' %}"> {{ shodan.country_name }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>ISP</th>
+                            <td>
+                                {{ shodan.isp }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>ASN</th>
+                            <td>
+                                {{ shodan.asn }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>OS</th>
+                            <td>
+                                {{ shodan.os }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Ports</th>
+                            <td>
+                                {{ shodan.ports }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Vulnerabilities</th>
+                            <td>
+                                {{ shodan.vulns }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Tags</th>
+                            <td>
+                                {{ shodan.tags }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                {% for d in shodan.data %}
+                <div class="tab-pane fade" id="{{ d.port }}-{{ d.transport }}" role="tabpanel" aria-labelledby="{{ d.port }}-{{ d.transport }}-tab">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Timestamp</th>
+                            <td>
+                                {{ d.timestamp }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Product</th>
+                            <td>
+                                {{ d.product }} {{ d.version }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>OS</th>
+                            <td>
+                                {{ d.OS }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>data</th>
+                            <td>
+                                {{ d.data }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Options</th>
+                            <td>
+                                {{ d.opts }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>info</th>
+                            <td>
+                                {{ d.info }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
