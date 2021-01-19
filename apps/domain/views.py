@@ -88,20 +88,14 @@ class DetailView(TemplateView):
 def get_context_vt(request, **kwargs):
     domain = kwargs['pk']
     context = {}
-    try:
-        context['vt_domain'] = VT().getDomainReport(domain)
-    except Exception as e:
-        logger.error(e)
+    context['vt_domain'] = VT().getDomainReport(domain)
     return render(request, 'domain/virustotal.html', context)
 
-def get_context_tm(self, **kwargs):
+def get_context_tm(request, **kwargs):
     domain = kwargs['pk']
     context = {}
     tm = ThreatMiner()
-    try:
-        context['tm_url'] = tm.getURIFromDomain(domain)
-        context['tm_sample'] = tm.getSamplesFromDomain(domain)
-        context['tm_report'] = tm.getReportFromDomain(domain)
-    except Exception as e:
-        logger.error(e)
+    context['tm_url'] = tm.getURIFromDomain(domain)
+    context['tm_sample'] = tm.getSamplesFromDomain(domain)
+    context['tm_report'] = tm.getReportFromDomain(domain)
     return render(request, 'domain/threatminer.html', context)

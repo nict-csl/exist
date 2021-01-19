@@ -95,62 +95,44 @@ class DetailView(TemplateView):
 def get_context_vt(request, **kwargs):
     ip = kwargs['pk']
     context = {}
-    try:
-        vt = VT()
-        context['vt_ip'] = vt.getIPReport(ip)
-    except Exception as e:
-        logger.error(e)
+    vt = VT()
+    context['vt_ip'] = vt.getIPReport(ip)
     return render(request, 'ip/virustotal.html', context)
 
 def get_context_tm(request, **kwargs):
     ip = kwargs['pk']
     context = {}
-    try:
-        tm = ThreatMiner()
-        context['tm_url'] = tm.getURIFromIP(ip)
-        context['tm_sample'] = tm.getSamplesFromIP(ip)
-        context['tm_report'] = tm.getReportFromIP(ip)
-    except Exception as e:
-        logger.error(e)
+    tm = ThreatMiner()
+    context['tm_url'] = tm.getURIFromIP(ip)
+    context['tm_sample'] = tm.getSamplesFromIP(ip)
+    context['tm_report'] = tm.getReportFromIP(ip)
     return render(request, 'ip/threatminer.html', context)
 
 def get_context_ipvoid(request, **kwargs):
     ip = kwargs['pk']
     context = {}
-    try:
-        ipvoid = IPVoid()
-        context['ipvoid'] = ipvoid.getResultFromIP(ip)
-    except Exception as e:
-        logger.error(e)
+    ipvoid = IPVoid()
+    context['ipvoid'] = ipvoid.getResultFromIP(ip)
     return render(request, 'ip/ipvoid.html', context)
 
 def get_context_abuse(request, **kwargs):
     ip = kwargs['pk']
     context = {}
-    try:
-        abuse = AbuseIPDB()
-        context['abuse_ip'] = abuse.getReport(ip)
-    except Exception as e:
-        logger.error(e)
+    abuse = AbuseIPDB()
+    context['abuse_ip'] = abuse.getReport(ip)
     return render(request, 'ip/abuse.html', context)
 
 def get_context_shodan(request, **kwargs):
     ip = kwargs['pk']
     context = {}
-    try:
-        shodan = Shodan()
-        context['shodan'] = shodan.getReport(ip)
-    except Exception as e:
-        logger.error(e)
+    shodan = Shodan()
+    context['shodan'] = shodan.getReport(ip)
     return render(request, 'ip/shodan.html', context)
 
 def get_context_censys(request, **kwargs):
     ip = kwargs['pk']
     context = {}
-    try:
-        censys = Censys()
-        context['censys'] = censys.getReport(ip)
-    except Exception as e:
-        logger.error(e)
+    censys = Censys()
+    context['censys'] = censys.getReport(ip)
     return render(request, 'ip/censys.html', context)
 
