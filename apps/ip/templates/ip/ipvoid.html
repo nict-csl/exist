@@ -1,0 +1,42 @@
+{% load static %}
+        <img class="p-3" src="{% static 'img/ipvoid_logo.png' %}" height="100" alt="IPVoid">
+        <div class="container">
+            <table class="table table-hover w-100">
+                <tr>
+                    <th>Score</th>
+                    <td>
+                        {% if ipvoid.hits < 2 %}
+                            <button class="btn btn-sm shadow text-white bg-info">
+                        {% elif ipvoid.hits < 10 %}
+                            <button class="btn btn-sm shadow text-dark bg-warning">
+                        {% else %}
+                            <button class="btn btn-sm shadow text-white bg-danger">
+                        {% endif %}
+                        {{ ipvoid.score }}
+                            </button>
+                    </td>
+                </tr>
+            </table>
+
+            <table class="table table-hover w-100">
+                <thead>
+                <tr>
+                    <th>Engine</th>
+                    <th>Listed</th>
+                </tr>
+                </thead>
+                {% for result in ipvoid.results %}
+                <tr>
+                    <td><a href="{{ result.referrer }}">{{ result.engine }}</a></td>
+                    <td>
+                        {% if result.listed %}
+                            <button class="btn btn-sm shadow text-white bg-danger">
+                        {% else %}
+                            <button class="btn btn-sm shadow text-white bg-info">
+                        {% endif %}
+                        {{ result.listed }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>

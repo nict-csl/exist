@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.views.generic import TemplateView, DetailView
 from .forms import SearchForm
 from lib.geoip import GeoIP
@@ -62,11 +62,6 @@ class DetailView(TemplateView):
         except Exception as e:
             logger.error(e)
 
-        tm = ThreatMiner()
-        context['tm_url'] = tm.getURIFromDomain(domain)
-        context['tm_sample'] = tm.getSamplesFromDomain(domain)
-        context['tm_report'] = tm.getReportFromDomain(domain)
-
         context['bls'] = blacklist.objects.filter(Q(domain=domain)|Q(url__contains=domain))
         count = context['bls'].count()
         if count > 0:
@@ -90,3 +85,17 @@ class DetailView(TemplateView):
 
         return context
 
+def get_context_vt(request, **kwargs):
+    domain = kwargs['pk']
+    context = {}
+    context['vt_domain'] = VT().getDomainReport(domain)
+    return render(request, 'domain/virustotal.html', context)
+
+def get_context_tm(request, **kwargs):
+    domain = kwargs['pk']
+    context = {}
+    tm = ThreatMiner()
+    context['tm_url'] = tm.getURIFromDomain(domain)
+    context['tm_sample'] = tm.getSamplesFromDomain(domain)
+    context['tm_report'] = tm.getReportFromDomain(domain)
+    return render(request, 'domain/threatminer.html', context)

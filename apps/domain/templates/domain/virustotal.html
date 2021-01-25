@@ -1,0 +1,96 @@
+{% load static %}
+
+        <img class="p-3" src="{% static 'img/virustotal_logo.png' %}" height="100" alt="VirusTotal">
+        <ul class="nav nav-tabs nav-pills">
+            <li class="nav-item">
+            <a class="nav-link active" id="detected-urls-tab" data-toggle="tab" href="#detected-urls">Detected URLs{% if vt_domain.detected_urls %}<span class="badge badge-secondary ml-2">{{ vt_domain.detected_urls|length }}</span>{% endif %}</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" id="detected-communicating-samples-tab" data-toggle="tab" href="#detected-communicating-samples">Detected Communicating Samples{% if vt_domain.detected_communicating_samples %}<span class="badge badge-secondary ml-2">{{ vt_domain.detected_communicating_samples|length }}</span>{% endif %}</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" id="detected-downloaded-samples-tab" data-toggle="tab" href="#detected-downloaded-samples">Detected Downloaded Samples{% if vt_domain.detected_downloaded_samples %}<span class="badge badge-secondary ml-2">{{ vt_domain.detected_downloaded_samples|length }}</span>{% endif %}</a>
+            </li>
+        </ul>
+        <div class="container">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="detected-urls" role="tabpanel" aria-labelledby="detected-urls-tab">
+                    <table class="table table-hover w-100" style="table-layout:fixed">
+                        <thead>
+                        <tr>
+                            <th>URL</th>
+                            <th style="width:100px;">Score</th>
+                            <th style="width:220px;">Scan Date</th>
+                        </tr>
+                        </thead>
+                        {% for url in vt_domain.detected_urls|dictsort:"url" %}
+                        <tr>
+                            <td style="word-wrap:break-word;"><a href="{% url 'url:index' %}?keyword={{ url.url }}">{{ url.url }}</a></td>
+                            <td>
+                            {% if url.positives < 2 %}
+                            <button class="btn btn-sm shadow text-white bg-info">
+                            {% elif url.positives < 5 %}
+                            <button class="btn btn-sm shadow text-dark bg-warning">
+                            {% else %}
+                            <button class="btn btn-sm shadow text-white bg-danger">
+                            {% endif %}
+                            {{ url.positives }} / {{ url.total }}</button></td>
+                            <td>{{ url.scan_date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="detected-communicating-samples" role="tabpanel" aria-labelledby="detected-communicating-samples-tab">
+                    <table class="table table-hover w-100">
+                        <thead>
+                        <tr>
+                            <th>sha256</th>
+                            <th>Score</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        {% for sample in vt_domain.detected_communicating_samples|dictsortreversed:"positives" %}
+                        <tr>
+                            <td><a href="{% url 'filehash:detail' sample.sha256 %}">{{ sample.sha256 }}</a></td>
+                            <td>
+                            {% if sample.positives < 2 %}
+                            <button class="btn btn-sm shadow text-white bg-info">
+                            {% elif sample.positives < 5 %}
+                            <button class="btn btn-sm shadow text-dark bg-warning">
+                            {% else %}
+                            <button class="btn btn-sm shadow text-white bg-danger">
+                            {% endif %}
+                            {{ sample.positives }} / {{ sample.total }}</button></td>
+                            <td>{{ sample.date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="detected-downloaded-samples" role="tabpanel" aria-labelledby="detected-downloaded-samples-tab">
+                    <table class="table table-hover w-100">
+                        <thead>
+                        <tr>
+                            <th>sha256</th>
+                            <th>Score</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        {% for sample in vt_domain.detected_downloaded_samples|dictsortreversed:"positives" %}
+                        <tr>
+                            <td><a href="{% url 'filehash:detail' sample.sha256 %}">{{ sample.sha256 }}</a></td>
+                            <td>
+                            {% if sample.positives < 2 %}
+                            <button class="btn btn-sm shadow text-white bg-info">
+                            {% elif sample.positives < 5 %}
+                            <button class="btn btn-sm shadow text-dark bg-warning">
+                            {% else %}
+                            <button class="btn btn-sm shadow text-white bg-danger">
+                            {% endif %}
+                            {{ sample.positives }} / {{ sample.total }}</button></td>
+                            <td>{{ sample.date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
