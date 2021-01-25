@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.views.generic import TemplateView, DetailView
 from django.urls import reverse
 from django.utils.http import urlquote
@@ -201,3 +201,10 @@ def getContents(request, pk):
     response = HttpResponse(contents)
     response["Content-Disposition"] = "filename=%s" % pk
     return response
+
+def get_context_vt(request, **kwargs):
+    url = kwargs['pk']
+    context = {}
+    context['vt_url'] = VT().getURLReport(url)
+    return render(request, 'url/virustotal.html', context)
+

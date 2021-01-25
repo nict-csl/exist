@@ -1,0 +1,69 @@
+{% load static %}
+        <img class="p-3" src="{% static 'img/threatminer_logo.png' %}" height="120" alt="ThreatMiner">
+        <ul class="nav nav-tabs nav-pills">
+            <li class="nav-item">
+            <a class="nav-link active" id="threatminer-urls-tab" data-toggle="tab" href="#threatminer-urls">URLs{% if tm_url.results %}<span class="badge badge-secondary ml-2">{{ tm_url.results|length }}</span>{% endif %}</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" id="threatminer-samples-tab" data-toggle="tab" href="#threatminer-samples">Samples{% if tm_sample.results %}<span class="badge badge-secondary ml-2">{{ tm_sample.results|length }}</span>{% endif %}</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" id="threatminer-reports-tab" data-toggle="tab" href="#threatminer-reports">Reports{% if tm_report.results %}<span class="badge badge-secondary ml-2">{{ tm_report.results|length }}</span>{% endif %}</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="threatminer-urls" role="tabpanel" aria-labelledby="threatminer-urls-tab">
+                <table class="table table-hover w-100" style="table-layout:fixed">
+                    <thead>
+                    <tr>
+                        <th style="width:220px;">Last Seen</th>
+                        <th>Domain</th>
+                        <th>IP</th>
+                        <th style="width:1000px;">URL</th>
+                    </tr>
+                    </thead>
+                    {% for result in tm_url.results|dictsortreversed:"last_seen" %}
+                    <tr>
+                        <td>{{ result.last_seen }}</td>
+                        <td><a href="{% url 'domain:detail' result.domain %}">{{ result.domain }}</a></td>
+                        <td>{% if result.ip %}<a href="{% url 'ip:detail' result.ip %}">{{ result.ip }}</a>{% endif %}</td>
+                        <td style="word-wrap:break-word;"><a href="{% url 'url:index' %}?keyword={{ result.uri }}">{{ result.uri }}</a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="tab-pane fade" id="threatminer-samples" role="tabpanel" aria-labelledby="threatminer-samples-tab">
+                <div class="container">
+                    <table class="table table-hover w-100">
+                        <thead>
+                        <tr>
+                            <th>Samples</th>
+                        </tr>
+                        </thead>
+                        {% for result in tm_sample.results %}
+                        <tr>
+                            <td><a href="{% url 'filehash:detail' result %}">{{ result }}</a></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="threatminer-reports" role="tabpanel" aria-labelledby="threatminer-reports-tab">
+                <div class="container">
+                    <table class="table table-hover w-100">
+                        <thead>
+                        <tr>
+                            <th>Reports</th>
+                            <th>Year</th>
+                        </tr>
+                        </thead>
+                        {% for result in tm_report.results|dictsortreversed:"year" %}
+                        <tr>
+                            <td><a href="{{ result.URL }}">{{ result.filename }}</a></td>
+                            <td>{{ result.year }}</a></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>

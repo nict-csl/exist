@@ -94,86 +94,10 @@
 
     </div>
     <div class="tab-pane fade" id="virustotal" role="tabpanel" aria-labelledby="virustotal-tab">
-
-        <img class="p-3" src="{% static 'img/virustotal_logo.png' %}" height="100" alt="VirusTotal">
-        <div class="container">
-            <table class="table">
-                <tr>
-                    <th>First Seen</th>
-                    <td>{{ vt_url.first_seen }}</td>
-                </tr>
-                <tr>
-                    <th>Last Seen</th>
-                    <td>{{ vt_url.last_seen }}</td>
-                </tr>
-                <tr>
-                    <th>Scan Date</th>
-                    <td>{{ vt_url.scan_date }}</td>
-                </tr>
-                <tr>
-                    <th>AV Detections</th>
-                    <td><more>
-                    {% for key, value in vt_url.scans.items %}
-                    {% if value.detected == True %}
-                    <div class="li">
-                    {{ value.result }} <p class="font-italic text-muted" style="display:inline;">({{ key }})</p><br>
-                    </div>
-                    {% endif %}
-                    {% endfor %}
-                    </more>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Additional Info</th>
-                    <td>
-                        <table class="table table-striped">
-                        {% for key, value in vt_url.additional_info.items %}
-                        {% if key != "Response headers" %}
-                            <tr>
-                                <th>{{ key|capfirst }}</th>
-                                {% if key == "categories" or key == "tags" %}
-                                <td>{% for cat in value %}{{ cat }}<br>{% endfor %}</td>
-                                {% elif key == "URL after redirects" %}
-                                <td><a href="{% url 'url:index' %}?keyword={{ value }}">{{ value }}</a></td>
-                                {% elif key == "redirecting_urls" %}
-                                <td>{% for url in value %}<a href="{% url 'url:index' %}?keyword={{ url }}">{{ url }}</a><br>{% endfor %}</td>
-                                {% elif key == "resolution" %}
-                                <td><a href="{% url 'ip:detail' value %}">{{ value }}</a></td>
-                                {% elif key == "rlength" %}
-                                <td>{{ value|filesizeformat }}</td>
-                                {% elif key == "Response content SHA-256" %}
-                                <td><a href="{% url 'filehash:detail' value %}">{{ value }}</a></td>
-                                {% else %}
-                                <td>{{ value }}</td>
-                                {% endif %}
-                            </tr>
-                        {% endif %}
-                        {% endfor %}
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Response Header</th>
-                    <td>
-                        {% for k, v in vt_url.additional_info.items %}
-                        {% if k == "Response headers" %}
-                        <table class="table table-striped">
-                            {% for key, value in v.items %}
-                            <tr>
-                                <th>{{ key|capfirst }}</th>
-                                {% if key == "content-length" %}
-                                <td>{{ value|filesizeformat }}</td>
-                                {% else %}
-                                <td>{{ value }}</td>
-                                {% endif %}
-                            </tr>
-                            {% endfor %}
-                        {% endif %}
-                        {% endfor %}
-                        </table>
-                    </td>
-                </tr>
-            </table>
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border my-5" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
     </div>
 </div>
