@@ -1,0 +1,311 @@
+{% load static %}
+{% load getkey_tag %}
+{% load unixtime_tag %}
+        <img class="p-3" src="{% static 'img/virustotal_logo.png' %}" height="100" alt="VirusTotal">
+        <ul class="nav nav-tabs nav-pills">
+            <li class="nav-item">
+                <a class="nav-link active" id="virustotal-base-tab" data-toggle="tab" href="#virustotal-base">Base Info</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="virustotal-exiftool-tab" data-toggle="tab" href="#virustotal-exiftool">ExifTool</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" id="virustotal-av-tab" data-toggle="tab" href="#virustotal-av">AV Detections{% if vt_hash.positives > 0 %}<span class="badge badge-secondary ml-2">{{ vt_hash.positives }}</span>{% endif %}</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" id="virustotal-behavior-tab" data-toggle="tab" href="#virustotal-behavior">Behavior</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="virustotal-base" role="tabpanel" aria-labelledby="virustotal-base-tab">
+                <div class="container">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <tr>
+                                <th>md5</th>
+                                <td>{{ vt_hash.md5 }}</td>
+                            </tr>
+                            <tr>
+                                <th>sha1</th>
+                                <td>{{ vt_hash.sha1 }}</td>
+                            </tr>
+                            <tr>
+                                <th>sha256</th>
+                                <td>{{ vt_hash.sha256 }}</td>
+                            </tr>
+                            <tr>
+                                <th>Type</th>
+                                <td>{{ vt_hash.type }}</td>
+                            </tr>
+                            <tr>
+                                <th>Magic Type</th>
+                                <td>{{ vt_hash.additional_info.magic }}</td>
+                            </tr>
+                            <tr>
+                                <th>Size</th>
+                                <td>{{ vt_hash.size|filesizeformat }}</td>
+                            </tr>
+                            <tr>
+                                <th>Submission Name</th>
+                                <td><more>{% for name in vt_hash.submission_names %}<div class="li">{{ name }}<br></div>{% endfor %}</more></td>
+                            </tr>
+                            <tr>
+                                <th>Times Submitted</th>
+                                <td>{{ vt_hash.times_submitted }}</td>
+                            </tr>
+                            <tr>
+                                <th>Timestamp</th>
+                                <td>
+                                    {% for key, value in vt_hash.additional_info.items %}
+                                    {% if key == "pe-timestamp" %}
+                                    {{ value|unixtimetostr }}
+                                    {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Sig Check</th>
+                                <td>
+                                    <table class="table table-sm">
+                                    {% for key, value in vt_hash.additional_info.sigcheck.items %}
+                                        <tr>
+                                            <th>{{ key }}</th>
+                                            <td>{{ value }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>ssdeep</th>
+                                <td>{{ vt_hash.ssdeep }}</td>
+                            </tr>
+                            <tr>
+                                <th>First Seen</th>
+                                <td>{{ vt_hash.first_seen }}</td>
+                            </tr>
+                            <tr>
+                                <th>Last Seen</th>
+                                <td>{{ vt_hash.last_seen }}</td>
+                            </tr>
+                            <tr>
+                                <th>Scan Date</th>
+                                <td>{{ vt_hash.scan_date }}</td>
+                            </tr>
+                            <tr>
+                                <th>Tags</th>
+                                <td>{% for tag in vt_hash.tags %}{{ tag }}<br>{% endfor %}</td>
+                            </tr>
+                            <tr>
+                                <th>Compressed Parents</th>
+                                <td>{% for parent in vt_hash.additional_info.compressed_parents %}<a href="{% url 'filehash:detail' parent %}">{{ parent }}</a><br>{% endfor %}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    {% if vt_hash.md5 %}
+                    <a class="btn btn-sm btn-primary mb-3 shadow" href="{% url 'filehash:getpcap' vt_hash.sha256 %}" download>Download PCAP</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="tab-pane fade" id="virustotal-exiftool" role="tabpanel" aria-labelledby="virustotal-exiftool-tab">
+                <div class="container">
+                    <table class="table table-striped">
+                        {% for key, value in vt_hash.additional_info.exiftool.items %}
+                        <tr>
+                            <th>{{ key }}</th>
+                            <td>{{ value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="virustotal-av" role="tabpanel" aria-labelledby="virustotal-av-tab">
+                <div class="container">
+                    <table class="table table-hover w-100">
+                        <thead>
+                        <tr>
+                            <th>Detection</th>
+                            <th>Product</th>
+                        </tr>
+                        </thead>
+                        {% for key, value in vt_hash.scans.items %}
+                        {% if value.detected == True %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>{{ value.result }}</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="virustotal-behavior" role="tabpanel" aria-labelledby="virustotal-behavior-tab">
+                <ul class="nav nav-tabs nav-pills">
+                    <li class="nav-item">
+                    <a class="nav-link active" id="virustotal-host-tab" data-toggle="tab" href="#virustotal-host">Hosts{% if vt_behavior.network.hosts %}<span class="badge badge-secondary ml-2">{{ vt_behavior.network.hosts|length }}</span>{% endif %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="virustotal-http-tab" data-toggle="tab" href="#virustotal-http">HTTP{% if vt_behavior.network.http %}<span class="badge badge-secondary ml-2">{{ vt_behavior.network.http|length }}</span>{% endif %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="virustotal-dns-tab" data-toggle="tab" href="#virustotal-dns">DNS{% if vt_behavior.network.dns %}<span class="badge badge-secondary ml-2">{{ vt_behavior.network.dns|length }}</span>{% endif %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="virustotal-tcp-tab" data-toggle="tab" href="#virustotal-tcp">TCP{% if vt_behavior.network.tcp %}<span class="badge badge-secondary ml-2">{{ vt_behavior.network.tcp|length }}</span>{% endif %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="virustotal-udp-tab" data-toggle="tab" href="#virustotal-udp">UDP{% if vt_behavior.network.udp %}<span class="badge badge-secondary ml-2">{{ vt_behavior.network.udp|length }}</span>{% endif %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="virustotal-file-tab" data-toggle="tab" href="#virustotal-file">Files{% if vt_behavior.network.files %}<span class="badge badge-secondary ml-2">{{ vt_behavior.network.files|length }}</span>{% endif %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="virustotal-mutex-tab" data-toggle="tab" href="#virustotal-mutex">Mutexes{% if vt_behavior.network.summary.mutexes %}<span class="badge badge-secondary ml-2">{{ vt_behavior.network.summary.mutexes|length }}</span>{% endif %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="virustotal-key-tab" data-toggle="tab" href="#virustotal-key">Keys{% if vt_behavior.network.summary.keys %}<span class="badge badge-secondary ml-2">{{ vt_behavior.network.summary.keys|length }}</span>{% endif %}</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="virustotal-host" role="tabpanel" aria-labelledby="virustotal-host-tab">
+                        <div class="container">
+                            <table class="table table-striped">
+                                {% for host in vt_behavior.network.hosts %}
+                                <tr>
+                                    <td><a href="{% url 'ip:detail' host %}">{{ host }}</a></td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="virustotal-http" role="tabpanel" aria-labelledby="virustotal-http-tab">
+                        <div class="table-responsive">
+                            <table class="table table-hover w-100">
+                                <thead>
+                                <tr>
+                                    <th>URI</th>
+                                    <th>Host</th>
+                                    <th>Port</th>
+                                    <th>Method</th>
+                                    <th>Path</th>
+                                    <th>Version</th>
+                                    <th>User Agent</th>
+                                    <th>Body</th>
+                                    <th>Data</th>
+                                </tr>
+                                </thead>
+                                {% for http in vt_behavior.network.http %}
+                                <tr>
+                                    <td>{{ http.uri }}</td>
+                                    <td>{% if http.host %}<a href="{% url 'domain:detail' http.host %}">{{ http.host }}</a>{% endif %}</td>
+                                    <td>{{ http.port }}</td>
+                                    <td>{{ http.method }}</td>
+                                    <td>{{ http.path }}</td>
+                                    <td>{{ http.version }}</td>
+                                    <td>{{ http|getkey:'user-agent' }}</td>
+                                    <td>{{ http.body }}</td>
+                                    <td>{{ http.data }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="virustotal-dns" role="tabpanel" aria-labelledby="virustotal-dns-tab">
+                        <div class="container">
+                            <table class="table table-hover w-100">
+                                <thead>
+                                <tr>
+                                    <th>IP</th>
+                                    <th>Hostname</th>
+                                </tr>
+                                <thead>
+                                {% for dns in vt_behavior.network.dns %}
+                                <tr>
+                                    <td>{% if dns.ip %}<a href="{% url 'ip:detail' dns.ip %}">{{ dns.ip }}</a>{% endif %}</td>
+                                    <td>{% if dns.hostname %}<a href="{% url 'domain:detail' dns.hostname %}">{{ dns.hostname }}</a>{% endif %}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="virustotal-tcp" role="tabpanel" aria-labelledby="virustotal-tcp-tab">
+                        <div class="container">
+                            <table class="table table-hover w-100">
+                                <thead>
+                                <tr>
+                                    <th>Src IP</th>
+                                    <th>Src Port</th>
+                                    <th>Dst IP</th>
+                                    <th>Dst Port</th>
+                                </tr>
+                                <thead>
+                                {% for tcp in vt_behavior.network.tcp %}
+                                <tr>
+                                    <td>{% if tcp.src %}<a href="{% url 'ip:detail' tcp.src %}">{{ tcp.src }}</a>{% endif %}</td>
+                                    <td>{{ tcp.sport }}</td>
+                                    <td>{% if tcp.dst %}<a href="{% url 'ip:detail' tcp.dst %}">{{ tcp.dst }}</a>{% endif %}</td>
+                                    <td>{{ tcp.dport }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="virustotal-udp" role="tabpanel" aria-labelledby="virustotal-udp-tab">
+                        <div class="container">
+                            <table class="table table-hover w-100">
+                                <thead>
+                                <tr>
+                                    <th>Src IP</th>
+                                    <th>Src Port</th>
+                                    <th>Dst IP</th>
+                                    <th>Dst Port</th>
+                                </tr>
+                                </thead>
+                                {% for udp in vt_behavior.network.udp %}
+                                <tr>
+                                    <td>{% if udp.src %}<a href="{% url 'ip:detail' udp.src %}">{{ udp.src }}</a>{% endif %}</td>
+                                    <td>{{ udp.sport }}</td>
+                                    <td>{% if udp.dst %}<a href="{% url 'ip:detail' udp.dst %}">{{ udp.dst }}</a>{% endif %}</td>
+                                    <td>{{ udp.dport }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="virustotal-file" role="tabpanel" aria-labelledby="virustotal-file-tab">
+                        <div class="container">
+                            <table class="table table-striped">
+                                {% for file in vt_behavior.behavior.summary.files %}
+                                <tr>
+                                    <td>{{ file }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="virustotal-mutex" role="tabpanel" aria-labelledby="virustotal-mutex-tab">
+                        <div class="container">
+                            <table class="table table-striped">
+                                {% for mutex in vt_behavior.behavior.summary.mutexes %}
+                                <tr>
+                                    <td>{{ mutex }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="virustotal-key" role="tabpanel" aria-labelledby="virustotal-key-tab">
+                        <div class="container">
+                            <table class="table table-striped">
+                                {% for key in vt_behavior.behavior.summary.keys %}
+                                <tr>
+                                    <td>{{ key }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
