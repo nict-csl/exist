@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.views.generic import TemplateView, DetailView
 from .forms import SearchForm
 from lib.vt import VT
@@ -56,15 +56,15 @@ class DetailView(TemplateView):
         except Exception as e:
             logger.error(e)
 
-#        try:
-#            tm = ThreatMiner()
-#            context['tm_meta'] = tm.getMetaFromSample(filehash)
-#            context['tm_http'] = tm.getHttpFromSample(filehash)
-#            context['tm_host'] = tm.getHostsFromSample(filehash)
-#            context['tm_av'] = tm.getAVFromSample(filehash)
-#            context['tm_report'] = tm.getReportFromSample(filehash)
-#        except Exception as e:
-#            logger.error(e)
+        try:
+            tm = ThreatMiner()
+            context['tm_meta'] = tm.getMetaFromSample(filehash)
+            context['tm_http'] = tm.getHttpFromSample(filehash)
+            context['tm_host'] = tm.getHostsFromSample(filehash)
+            context['tm_av'] = tm.getAVFromSample(filehash)
+            context['tm_report'] = tm.getReportFromSample(filehash)
+        except Exception as e:
+            logger.error(e)
 
         #context['bls'] = blacklist.objects.filter(Q(url__contains=filehash))
         #count = context['bls'].count()
@@ -94,21 +94,3 @@ def getpcap(request, pk):
     response["Content-Disposition"] = "filename=%s.pcap" % pk
     return response
 
-def get_context_vt(request, **kwargs):
-    filehash = kwargs['pk']
-    context = {}
-    vt = VT()
-    context['vt_hash'] = vt.getFileReport(filehash)
-    context['vt_behavior'] = vt.getFileBehavior(filehash)
-    return render(request, 'filehash/virustotal.html', context)
-
-def get_context_tm(request, **kwargs):
-    filehash = kwargs['pk']
-    context = {}
-    tm = ThreatMiner()
-    context['tm_meta'] = tm.getMetaFromSample(filehash)
-    context['tm_http'] = tm.getHttpFromSample(filehash)
-    context['tm_host'] = tm.getHostsFromSample(filehash)
-    context['tm_av'] = tm.getAVFromSample(filehash)
-    context['tm_report'] = tm.getReportFromSample(filehash)
-    return render(request, 'filehash/threatminer.html', context)
