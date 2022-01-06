@@ -1,6 +1,6 @@
 amqp==2.3.2
 billiard==3.5.0.4
-celery==4.2.1
+celery==5.2.2
 certifi==2017.7.27.1
 chardet==3.0.4
 configparser==3.5.0
