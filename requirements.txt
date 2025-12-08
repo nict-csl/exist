@@ -1,7 +1,7 @@
 amqp==2.3.2
 billiard==3.5.0.4
 celery==4.2.1
-certifi==2017.7.27.1
+certifi==2023.7.22
 chardet==3.0.4
 configparser==3.5.0
 Django==1.11.29
@@ -28,7 +28,7 @@ requests-oauthlib==0.8.0
 simplejson==3.11.1
 six==1.11.0
 tweepy==3.5.0
-urllib3==1.24.2
+urllib3==1.26.18
 uWSGI==2.0.15
 vine==1.1.4
 xmltodict==0.12.0
