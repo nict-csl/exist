@@ -15,7 +15,7 @@ idna==2.6
 imgkit==1.0.1
 kombu==4.2.1
 maxminddb==1.4.1
-numpy==1.13.3
+numpy==1.22.0
 oauthlib==2.0.6
 pandas==0.20.3
 PyMySQL==0.7.11
