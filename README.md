@@ -1,5 +1,7 @@
 # EXIST (EXternal Information aggregation System against cyber Threat)
 
+⚠️ This repository is unmaintained / archived. Security issues will not be fixed.
+
 EXIST is a web application for aggregating and analyzing CTI (cyber threat intelligence).
 
 EXIST is written by the following software.
